@@ -1,0 +1,23 @@
+<div class="mb-4 p-8">
+  <p-card>
+    <ng-template #title>Criar uma questão</ng-template>
+    <ng-template #subtitle>Preencha os campos necessários para criar uma questão</ng-template>
+    <!-- Card creation form (body of the card) -->
+    
+    <form [formGroup]="questionCreationForm" class="flex flex-col gap-2">
+      <label for="question-text">Texto da questão</label>
+      <!-- TODO - check how many characters the corresponding database column allows -->
+      <textarea id="question-text" rows="5" cols="30"
+        pTextarea formControlName="questionText" [maxlength]="maxChars">
+      </textarea>
+      
+      <ng-template #footer>
+        <div class="flex gap-4 mt-1">
+          <p-button label="Criar" class="w-full" styleClass="w-full" />
+          <p-button label="Voltar" severity="secondary" class="w-full" [outlined]="true" styleClass="w-full" />
+        </div>
+      </ng-template>
+    </form>
+    
+  </p-card>
+</div>
