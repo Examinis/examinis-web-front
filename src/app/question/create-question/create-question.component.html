@@ -1,50 +1,52 @@
 <div class="mb-4 p-8">
   <p-panel header="Criar uma questão">
 
+    <!-- Subheading -->
     <div class="mb-3">
-      <h1 class="text-2xl"></h1>
       <h2 class="text-base">Preencha os campos necessários para criar uma questão</h2>
     </div>
 
     <!-- Card creation form (body of the card) -->
 
-    <form [formGroup]="questionCreationForm" class="flex flex-col gap-3">
+    <form [formGroup]="questionCreationForm" class="flex flex-col gap-4">
       <label for="question-text">Texto da questão</label>
       <!-- TODO - check how many characters the corresponding database column allows -->
-      <textarea id="question-text" rows="5" cols="30" pTextarea formControlName="questionText"
-        [maxlength]="maxChars">
+      <textarea id="question-text" rows="5" cols="30" pTextarea formControlName="questionText" [maxlength]="maxChars">
       </textarea>
 
-      <div class="flex gap-4">
-        <p-select [options]="subjects" formControlName="subject" optionLabel="name"
-          [filter]="true" filterBy="name"
-          [showClear]="true" placeholder="Selecione um assunto" class="w-full">
-          <ng-template let-selectedOption>
-            <div>{{ selectedOption.name }}</div>
-          </ng-template>
-          <!-- <ng-template let-country #item>
-            <div>{{ country.name }}</div>
-          </ng-template> -->
-        </p-select>
-  
-        <p-select [options]="difficulties" formControlName="difficulty" optionLabel="name"
-          [filter]="true" filterBy="name"
-          [showClear]="true" placeholder="Selecione uma dificuldade" class="w-full">
-          <ng-template let-selectedOption>
-            <div>{{ selectedOption.name }}</div>
-          </ng-template>
-          <ng-template let-country #item>
-            <div>{{ country.name }}</div>
-          </ng-template>
-        </p-select>
+      <!-- Container for difficulty and subject select fields -->
+      <div class="flex gap-4 max-[768px]:flex-col">
+
+        <!-- Subject -->
+        <div class="flex flex-col gap-2 md:w-1/2">
+          <label for="subject-select" (click)="subjectSelect.show(true)">Assunto</label>
+          <p-select #subjectSelect id="subject-select" [options]="subjects" formControlName="subject" optionLabel="name"
+            [filter]="true" filterBy="name" [showClear]="true" placeholder="Selecione um assunto" class="w-full">
+            <ng-template let-selectedOption>
+              <div>{{ selectedOption.name }}</div>
+            </ng-template>
+          </p-select>
+        </div>
+
+        <!-- Difficulty -->
+        <div class="flex flex-col gap-2 md:w-1/2">
+          <label for="difficulty-select" (click)="difficultySelect.show(true)">Dificuldade</label>
+          <p-select #difficultySelect id="difficulty-select" [options]="difficulties" formControlName="difficulty"
+            optionLabel="name" [filter]="true" filterBy="name" [showClear]="true"
+            placeholder="Selecione uma dificuldade" class="w-full">
+            <ng-template let-selectedOption>
+              <div>{{ selectedOption.name }}</div>
+            </ng-template>
+          </p-select>
+        </div>
+
       </div>
 
-      <ng-template #footer>
-        <div class="flex gap-4 mt-1">
-          <p-button label="Criar" class="w-full" styleClass="w-full" />
-          <p-button label="Voltar" severity="secondary" class="w-full" [outlined]="true" styleClass="w-full" />
-        </div>
-      </ng-template>
+      <!-- Submit form -->
+      <div class="flex gap-4 mt-1">
+        <p-button label="Criar" class="w-full" styleClass="w-full" />
+        <p-button label="Voltar" severity="secondary" class="w-full" [outlined]="true" styleClass="w-full" />
+      </div>
     </form>
 
   </p-panel>

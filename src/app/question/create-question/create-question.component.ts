@@ -5,13 +5,14 @@ import { PanelModule } from 'primeng/panel';
 import { TextareaModule } from 'primeng/textarea';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { SelectModule } from 'primeng/select';
+import { FileUploadModule } from 'primeng/fileupload';
 import { Subject } from '../../shared/models/subject';
 import { Difficulty } from '../../shared/models/difficulty';
 
 @Component({
   selector: 'app-create-question',
   imports: [PanelModule, ButtonModule, TextareaModule, ReactiveFormsModule, IftaLabelModule,
-    SelectModule,
+    SelectModule, FileUploadModule,
   ],
   templateUrl: './create-question.component.html',
   styleUrl: './create-question.component.css'
