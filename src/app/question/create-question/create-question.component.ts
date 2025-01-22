@@ -8,6 +8,7 @@ import { SelectModule } from 'primeng/select';
 import { FileUpload } from 'primeng/fileupload';
 import { Subject } from '../../shared/models/subject';
 import { Difficulty } from '../../shared/models/difficulty';
+import { OptionSelectComponent } from "./option-select/option-select.component";
 
 interface UploadEvent {
   files: File[];
@@ -16,13 +17,12 @@ interface UploadEvent {
 @Component({
   selector: 'app-create-question',
   imports: [PanelModule, ButtonModule, TextareaModule, ReactiveFormsModule, IftaLabelModule,
-    SelectModule, FileUpload
-  ],
+    SelectModule, FileUpload, OptionSelectComponent],
   templateUrl: './create-question.component.html',
   styleUrl: './create-question.component.css'
 })
 export class CreateQuestionComponent implements OnInit {
-  
+
   readonly maxChars = 200;
   subjects: Subject[] = [];
   difficulties: Difficulty[] = [];
@@ -52,18 +52,22 @@ export class CreateQuestionComponent implements OnInit {
   });
 
   /**
-   * React to an event triggered by a file upload event. This event comes
-   * from an user file input.
+   * Handles the file upload event triggered by a user interaction.
+   * This method processes the files provided by the event and 
+   * updates the list of uploaded files.
    * 
-   * @param event a file upload event
+   * Functionality:
+   * - If no files are currently uploaded, adds the first file from the event to the list.
+   * 
+   * @param {UploadEvent} event - The event containing the uploaded file(s).
+   * @example
+   * // Example of triggering the upload:
+   * <input type="file" (change)="onUpload($event)">
    */
   onUpload(event: UploadEvent) {
     if (this.uploadedFiles.length === 0) {
       this.uploadedFiles.push(event.files[0]);
     }
-    // for(let file of event.files) {
-    //   this.uploadedFiles.push(file);
-    // }
     // this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
-}
+  }
 }
