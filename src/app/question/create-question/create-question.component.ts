@@ -5,14 +5,18 @@ import { PanelModule } from 'primeng/panel';
 import { TextareaModule } from 'primeng/textarea';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { SelectModule } from 'primeng/select';
-import { FileUploadModule } from 'primeng/fileupload';
+import { FileUpload } from 'primeng/fileupload';
 import { Subject } from '../../shared/models/subject';
 import { Difficulty } from '../../shared/models/difficulty';
+
+interface UploadEvent {
+  files: File[];
+}
 
 @Component({
   selector: 'app-create-question',
   imports: [PanelModule, ButtonModule, TextareaModule, ReactiveFormsModule, IftaLabelModule,
-    SelectModule, FileUploadModule,
+    SelectModule, FileUpload
   ],
   templateUrl: './create-question.component.html',
   styleUrl: './create-question.component.css'
@@ -22,8 +26,10 @@ export class CreateQuestionComponent implements OnInit {
   readonly maxChars = 200;
   subjects: Subject[] = [];
   difficulties: Difficulty[] = [];
+  uploadedFiles: any[] = [];
 
   ngOnInit() {
+    // TODO - make an API call to search for the subjects
     this.subjects = [
       { id: 1, name: 'Matemática' },
       { id: 2, name: 'Português' },
@@ -31,6 +37,7 @@ export class CreateQuestionComponent implements OnInit {
       { id: 4, name: 'Direito Administrativo' },
     ];
 
+    // TODO - check if it's worth to make an API call right here
     this.difficulties = [
       { id: 1, name: 'Fácil' },
       { id: 2, name: 'Média' },
@@ -43,4 +50,20 @@ export class CreateQuestionComponent implements OnInit {
     subject: new FormControl(new Subject(''), Validators.required),
     difficulty: new FormControl(new Difficulty(''), Validators.required),
   });
+
+  /**
+   * React to an event triggered by a file upload event. This event comes
+   * from an user file input.
+   * 
+   * @param event a file upload event
+   */
+  onUpload(event: UploadEvent) {
+    if (this.uploadedFiles.length === 0) {
+      this.uploadedFiles.push(event.files[0]);
+    }
+    // for(let file of event.files) {
+    //   this.uploadedFiles.push(file);
+    // }
+    // this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
+}
 }
