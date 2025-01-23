@@ -1,0 +1,75 @@
+<div class="mb-4 p-8">
+  <p-panel header="Criar uma questão">
+
+    <!-- Subheading -->
+    <div class="mb-3">
+      <h2 class="text-base">Preencha os campos necessários para criar uma questão</h2>
+    </div>
+
+    <!-- Form for creating a question -->
+
+    <form [formGroup]="questionCreationForm" class="flex flex-col gap-4">
+      <label for="question-text">Texto da questão</label>
+      <!-- TODO - check how many characters the corresponding database column allows -->
+      <textarea id="question-text" rows="5" cols="30" pTextarea formControlName="questionText" [maxlength]="maxChars"
+        [required]="true">
+      </textarea>
+
+      <!-- Container for difficulty and subject select fields -->
+      <div class="flex gap-4 max-[768px]:flex-col">
+
+        <!-- Subject -->
+        <div class="flex flex-col gap-2 md:w-1/2">
+          <label for="subject-select" (click)="subjectSelect.show(true)">Assunto</label>
+          <p-select #subjectSelect id="subject-select" [options]="subjects" formControlName="subject" optionLabel="name"
+            [filter]="true" filterBy="name" [showClear]="true" placeholder="Selecione um assunto" class="w-full"
+            [required]="true">
+            <ng-template let-selectedOption>
+              <div>{{ selectedOption.name }}</div>
+            </ng-template>
+          </p-select>
+        </div>
+
+        <!-- Difficulty -->
+        <div class="flex flex-col gap-2 md:w-1/2">
+          <label for="difficulty-select" (click)="difficultySelect.show(true)">Dificuldade</label>
+          <p-select #difficultySelect id="difficulty-select" [options]="difficulties" formControlName="difficulty"
+            optionLabel="name" [filter]="true" filterBy="name" [showClear]="true"
+            placeholder="Selecione uma dificuldade" class="w-full">
+            <ng-template let-selectedOption>
+              <div>{{ selectedOption.name }}</div>
+            </ng-template>
+          </p-select>
+        </div>
+
+      </div>
+
+      <!-- Upload an image -->
+      <!-- TODO - Check if an URL is necessary -->
+      <p-fileupload name="questionImage" (onUpload)="onUpload($event)" accept="image/*"
+        maxFileSize="1000000" mode="advanced" [showUploadButton]="false">
+        <ng-template #empty>
+          <div>Drag and drop files to here to upload.</div>
+        </ng-template>
+        <ng-template #content>
+          @if (uploadedFiles.length) {
+            <ul>
+              <li>{{ uploadedFiles[0].name }} - {{ uploadedFiles[0].size }}</li>
+            </ul>
+          }
+        </ng-template>
+      </p-fileupload>
+
+      <!-- Add question's options -->
+      <app-option-select></app-option-select>
+
+      <!-- Submit form -->
+      <div class="flex gap-4 mt-1">
+        <p-button label="Criar" class="w-full" styleClass="w-full" />
+        <p-button label="Voltar" severity="secondary" class="w-full" [outlined]="true" styleClass="w-full" />
+      </div>
+
+    </form>
+
+  </p-panel>
+</div>
