@@ -61,7 +61,7 @@
       </p-fileupload>
 
       <!-- Add question's options -->
-      <app-option-select></app-option-select>
+      <app-option-select (selectedOptionEvent)="selectOption($event)"></app-option-select>
 
       <!-- Submit form -->
       <div class="flex gap-4 mt-1">
