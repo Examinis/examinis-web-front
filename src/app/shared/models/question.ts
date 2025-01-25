@@ -6,17 +6,16 @@ import { User } from "./user";
 export class Question {
   id: number | undefined;
   text: string;
-  image: string;
+  // image: string;
   subject: Subject;
   difficulty: Difficulty;
   user: User;
   options: Option[];
 
-  constructor(text: string, image: string, subject: Subject, difficulty: Difficulty, user: User,
+  constructor(text: string, subject: Subject, difficulty: Difficulty, user: User,
     options: Option[]
   ) {
     this.text = text;
-    this.image = image;
     this.subject = subject;
     this.difficulty = difficulty;
     this.user = user;
