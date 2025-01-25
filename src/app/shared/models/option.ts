@@ -1,12 +1,17 @@
-export class Option {
-	id: number | undefined;
-	description: string;
-	letter: string;
-	isCorrect: boolean;
+import { Question } from "./question";
 
-	constructor(description: string, letter: string, isCorrect: boolean) {
-		this.description = description;
-		this.letter = letter;
-		this.isCorrect = isCorrect;
-	}
+export class Option {
+  id: number;
+  question: Question;
+  description: string;
+  letter: string;
+  isCorrect: boolean;
+
+  constructor(id: number, question: Question, description: string, isCorrect: boolean, letter: string) {
+    this.id = id;
+    this.question = question;
+    this.description = description;
+    this.isCorrect = isCorrect;
+    this.letter = letter;
+  }
 }

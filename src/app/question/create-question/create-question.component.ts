@@ -28,6 +28,14 @@ export class CreateQuestionComponent implements OnInit {
   difficulties: Difficulty[] = [];
   uploadedFiles: any[] = [];
 
+  questionCreationForm = new FormGroup({
+    questionText: new FormControl('', Validators.required),
+    subject: new FormControl(new Subject(''), Validators.required),
+    difficulty: new FormControl(new Difficulty(''), Validators.required),
+  });
+
+  selectedOption: any;
+
   ngOnInit() {
     // TODO - make an API call to search for the subjects
     this.subjects = [
@@ -45,11 +53,10 @@ export class CreateQuestionComponent implements OnInit {
     ]
   }
 
-  questionCreationForm = new FormGroup({
-    questionText: new FormControl('', Validators.required),
-    subject: new FormControl(new Subject(''), Validators.required),
-    difficulty: new FormControl(new Difficulty(''), Validators.required),
-  });
+  selectOption(option: Object) {
+    console.log(option);
+    this.selectedOption = option;
+  }
 
   /**
    * Handles the file upload event triggered by a user interaction.
