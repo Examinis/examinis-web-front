@@ -14,7 +14,7 @@ export class QuestionApiService {
   constructor() { }
 
   getQuestions(): Observable<Question> {
-    return this.http.get<Question>(this.BASE_URL + '/questions');
+    return this.http.get<Question>(this.BASE_URL + '/question');
   }
 
 }
