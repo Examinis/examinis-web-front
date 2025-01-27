@@ -1,0 +1,13 @@
+.card-deck {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .card {
+    width: 18rem;
+    margin: 10px;
+  }
+  
+  .card-body {
+    padding: 15px;
+  }

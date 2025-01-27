@@ -1,0 +1,14 @@
+{
+    "questoes": [
+      { "id": 1, "pergunta": "Qual é a capital da França?", "categoria": "Geografia", "dificuldade": "Fácil" },
+      { "id": 2, "pergunta": "Quem escreveu 'Dom Casmurro'?", "categoria": "Literatura", "dificuldade": "Média" },
+      { "id": 3, "pergunta": "Qual é o resultado de 9 x 8?", "categoria": "Matemática", "dificuldade": "Fácil" },
+      { "id": 4, "pergunta": "Qual é o elemento químico de símbolo 'O'?", "categoria": "Química", "dificuldade": "Fácil" },
+      { "id": 5, "pergunta": "Em que ano o Brasil se tornou independente?", "categoria": "História", "dificuldade": "Média" },
+      { "id": 6, "pergunta": "O que é a fotossíntese?", "categoria": "Biologia", "dificuldade": "Média" },
+      { "id": 7, "pergunta": "Qual é o maior planeta do sistema solar?", "categoria": "Astronomia", "dificuldade": "Fácil" },
+      { "id": 8, "pergunta": "Quem pintou a Mona Lisa?", "categoria": "Artes", "dificuldade": "Média" },
+      { "id": 9, "pergunta": "Quem foi o primeiro presidente dos Estados Unidos?", "categoria": "História", "dificuldade": "Média" },
+      { "id": 10, "pergunta": "O que é a teoria da relatividade?", "categoria": "Física", "dificuldade": "Difícil" }
+    ]
+  }

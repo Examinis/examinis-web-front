@@ -1,0 +1,9 @@
+<div class="card-deck">
+    <div class="card" *ngFor="let question of questions">
+      <div class="card-body">
+        <h5 class="card-title">{{ question.pergunta }}</h5>
+        <p class="card-text"><strong>Categoria:</strong> {{ question.categoria }}</p>
+        <p class="card-text"><strong>Dificuldade:</strong> {{ question.dificuldade }}</p>
+      </div>
+    </div>
+  </div>
