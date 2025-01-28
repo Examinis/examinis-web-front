@@ -13,8 +13,23 @@ export class QuestionApiService {
 
   constructor() { }
 
+  /**
+   * Get all questions
+   * Makes an HTTP GET request to retrieve all questions from the API.
+   * @returns {Observable<Question[]>} An observable containing the list of questions.
+   */
   getQuestions(): Observable<Question> {
     return this.http.get<Question>(environment.apiUrl + '/question');
+  }
+
+  /**
+   * Create a new question
+   * Makes an HTTP POST request to create a new question.
+   * @param {Question} question - The question to create.
+   * @returns {Observable<Question>} An observable containing the created question.
+   */
+  createQuestion(question: Question): Observable<Question> {
+    return this.http.post<Question>(environment.apiUrl + '/question', question);
   }
 
 }

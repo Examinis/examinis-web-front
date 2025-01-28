@@ -10,6 +10,9 @@ import { Subject } from '../../shared/models/subject';
 import { Difficulty } from '../../shared/models/difficulty';
 import { OptionSelectComponent } from "./option-select/option-select.component";
 import { QuestionApiService } from '../../shared/services/question-api.service';
+import { Option } from '../../shared/interfaces/option';
+import { Question } from '../../shared/interfaces/question';
+import { SubjectApiService } from '../../shared/services/subject-api.service';
 
 interface UploadEvent {
   files: File[];
@@ -38,17 +41,18 @@ export class CreateQuestionComponent implements OnInit {
   selectedOption: any;
 
   private questionApi = inject(QuestionApiService);
+  private subjectApi = inject(SubjectApiService);
 
   constructor() { }
 
   ngOnInit() {
-    // TODO - make an API call to search for the subjects
-    this.subjects = [
-      { id: 1, name: 'Matemática' },
-      { id: 2, name: 'Português' },
-      { id: 3, name: 'Raciocínio Lógico' },
-      { id: 4, name: 'Direito Administrativo' },
-    ];
+
+    this.subjectApi.getSubjects().subscribe(
+      {
+        next: (subjects) => { this.subjects = subjects; },
+        error: (error) => { console.error('Error fetching subjects', error); }
+      }
+    );
 
     // TODO - check if it's worth to make an API call right here
     this.difficulties = [
@@ -58,7 +62,7 @@ export class CreateQuestionComponent implements OnInit {
     ]
   }
 
-  selectOption(option: Object) {
+  selectOption(option: Option) {
     console.log(option);
     this.selectedOption = option;
   }
@@ -83,17 +87,37 @@ export class CreateQuestionComponent implements OnInit {
     // this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
   }
 
-  /**
-   * Tests the API response by calling the getQuestions method from the questionApi service.
-   * This method logs the response to the console.
-   * 
-   * @example
-   * // Example of calling the method:
-   * testApiResponse();
-   */
-  testApiResponse() {
-    this.questionApi.getQuestions().subscribe((question) => {
-      console.log(question);
-    });
+  createQuestion(): void {
+    // Check if the form is valid
+    if (this.questionCreationForm.invalid) {
+      return;
+    }
+
+    // const question: Question = {
+    //   id: undefined,
+    //   text: this.questionCreationForm.get('questionText').value,
+    //   subject: this.questionCreationForm.get('subject').value,
+    //   difficulty: this.questionCreationForm.get('difficulty').value,
+    //   options: this.selectedOption
+    // };
+    const question: Question = {
+      id: undefined,
+      text: this.questionCreationForm.get('questionText')?.value || '',
+      subject: this.questionCreationForm.get('subject')?.value || { id: 0, name: '' },
+      difficulty: this.questionCreationForm.get('difficulty')?.value || { id: 0, name: '' },
+      options: this.selectedOption
+    };
+
+    this.questionApi.createQuestion(question).subscribe(
+      {
+        next: () => {
+          console.log('Question created successfully');
+        },
+        error: (error) => {
+          console.error('Error creating question', error);
+        }
+      }
+    );
   }
+
 }
