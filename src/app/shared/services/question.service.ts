@@ -7,7 +7,7 @@ import { Question } from '../models/question';
   providedIn: 'root'
 })
 export class QuestionService {
-  private apiUrl = 'http://localhost:3000/questoes';  // URL do JSON Server
+  private apiUrl = 'http://localhost:3000/questoes';  
 
   constructor(private http: HttpClient) {}
 
