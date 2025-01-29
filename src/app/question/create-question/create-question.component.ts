@@ -1,18 +1,18 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { PanelModule } from 'primeng/panel';
-import { TextareaModule } from 'primeng/textarea';
-import { IftaLabelModule } from 'primeng/iftalabel';
-import { SelectModule } from 'primeng/select';
 import { FileUpload } from 'primeng/fileupload';
-import { Subject } from '../../shared/models/subject';
+import { IftaLabelModule } from 'primeng/iftalabel';
+import { PanelModule } from 'primeng/panel';
+import { SelectModule } from 'primeng/select';
+import { TextareaModule } from 'primeng/textarea';
 import { Difficulty } from '../../shared/models/difficulty';
-import { OptionSelectComponent } from "./option-select/option-select.component";
+import { Option } from '../../shared/models/option';
+import { Question } from '../../shared/models/question';
+import { Subject } from '../../shared/models/subject';
 import { QuestionApiService } from '../../shared/services/question-api.service';
 import { SubjectApiService } from '../../shared/services/subject-api.service';
-import { Question } from '../../shared/models/question';
-import { Option } from '../../shared/models/option';
+import { OptionSelectComponent } from "./option-select/option-select.component";
 
 interface UploadEvent {
   files: File[];
