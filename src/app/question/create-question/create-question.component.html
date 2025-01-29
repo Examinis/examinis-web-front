@@ -8,10 +8,10 @@
 
     <!-- Form for creating a question -->
 
-    <form [formGroup]="questionCreationForm" class="flex flex-col gap-4">
+    <form [formGroup]="questionCreationForm" (ngSubmit)="createQuestion()" class="flex flex-col gap-4">
       <label for="question-text">Texto da questão</label>
       <!-- TODO - check how many characters the corresponding database column allows -->
-      <textarea id="question-text" rows="5" cols="30" pTextarea formControlName="questionText" [maxlength]="maxChars"
+      <textarea id="question-text" rows="5" cols="30" pTextarea formControlName="questionText"
         [required]="true">
       </textarea>
 
@@ -45,27 +45,27 @@
       </div>
 
       <!-- Upload an image -->
-      <!-- TODO - Check if an URL is necessary -->
-      <p-fileupload name="questionImage" (onUpload)="onUpload($event)" accept="image/*"
-        maxFileSize="1000000" mode="advanced" [showUploadButton]="false">
+      <p-fileupload name="questionImage" (onUpload)="onUpload($event)" accept="image/*" maxFileSize="1000000"
+        mode="advanced" [showUploadButton]="false">
         <ng-template #empty>
           <div>Drag and drop files to here to upload.</div>
         </ng-template>
         <ng-template #content>
           @if (uploadedFiles.length) {
-            <ul>
-              <li>{{ uploadedFiles[0].name }} - {{ uploadedFiles[0].size }}</li>
-            </ul>
+          <ul>
+            <li>{{ uploadedFiles[0].name }} - {{ uploadedFiles[0].size }}</li>
+          </ul>
           }
         </ng-template>
       </p-fileupload>
 
       <!-- Add question's options -->
-      <app-option-select (selectedOptionEvent)="selectOption($event)"></app-option-select>
+      <app-option-select (optionChangedEvent)="onOptionsChanged($event)"></app-option-select>
 
       <!-- Submit form -->
       <div class="flex gap-4 mt-1">
-        <p-button label="Criar" class="w-full" styleClass="w-full" />
+        <p-button type="submit" [disabled]="questionCreationForm.invalid" label="Criar" class="w-full"
+          styleClass="w-full" />
         <p-button label="Voltar" severity="secondary" class="w-full" [outlined]="true" styleClass="w-full" />
       </div>
 
