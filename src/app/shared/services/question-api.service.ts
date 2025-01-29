@@ -33,6 +33,12 @@ export class QuestionApiService {
     return this.http.post<Question>(environment.apiUrl + '/question', payload);
   }
 
+  /**
+   * Convert a question object to snake_case format
+   * Transforms a Question object to an object with snake_case keys, suitable for API requests.
+   * @param {Question} question - The question object to convert.
+   * @returns {Object} An object with snake_case keys representing the question.
+   */
   private convertToSnakeCase(question: Question): Object {
     return {
       text: question.text,
@@ -44,7 +50,6 @@ export class QuestionApiService {
         is_correct: option.isCorrect
       }))
     }
-
   }
 
 }
