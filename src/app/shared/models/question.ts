@@ -3,4 +3,5 @@ export interface Question {
     pergunta: string;
     categoria: string;
     dificuldade: string;
+    respostas: string[]; 
   }
