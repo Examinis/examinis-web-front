@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Question } from '../interfaces/question';
 import { environment } from '../../../environments/environment.development';
+import { Question } from '../models/question';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +29,22 @@ export class QuestionApiService {
    * @returns {Observable<Question>} An observable containing the created question.
    */
   createQuestion(question: Question): Observable<Question> {
-    return this.http.post<Question>(environment.apiUrl + '/question', question);
+    const payload = this.convertToSnakeCase(question);
+    return this.http.post<Question>(environment.apiUrl + '/question', payload);
+  }
+
+  private convertToSnakeCase(question: Question): Object {
+    return {
+      text: question.text,
+      subject_id: question.subjectId,
+      difficulty_id: question.difficultyId,
+      options: question.options.map(option => ({
+        description: option.description,
+        letter: option.letter,
+        is_correct: option.isCorrect
+      }))
+    }
+
   }
 
 }

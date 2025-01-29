@@ -10,9 +10,9 @@ import { Subject } from '../../shared/models/subject';
 import { Difficulty } from '../../shared/models/difficulty';
 import { OptionSelectComponent } from "./option-select/option-select.component";
 import { QuestionApiService } from '../../shared/services/question-api.service';
-import { Option } from '../../shared/interfaces/option';
-import { Question } from '../../shared/interfaces/question';
 import { SubjectApiService } from '../../shared/services/subject-api.service';
+import { Question } from '../../shared/models/question';
+import { Option } from '../../shared/models/option';
 
 interface UploadEvent {
   files: File[];
@@ -27,7 +27,8 @@ interface UploadEvent {
 })
 export class CreateQuestionComponent implements OnInit {
 
-  readonly maxChars = 200;
+  question: Question = new Question('', 0, 0, []);
+
   subjects: Subject[] = [];
   difficulties: Difficulty[] = [];
   uploadedFiles: any[] = [];
@@ -37,8 +38,6 @@ export class CreateQuestionComponent implements OnInit {
     subject: new FormControl(new Subject(''), Validators.required),
     difficulty: new FormControl(new Difficulty(''), Validators.required),
   });
-
-  selectedOption: any;
 
   private questionApi = inject(QuestionApiService);
   private subjectApi = inject(SubjectApiService);
@@ -62,9 +61,9 @@ export class CreateQuestionComponent implements OnInit {
     ]
   }
 
-  selectOption(option: Option) {
-    console.log(option);
-    this.selectedOption = option;
+  onOptionsChanged(options: Option[]) {
+    this.question.options = options;
+    console.log('Options changed', this.question);
   }
 
   /**
@@ -93,22 +92,11 @@ export class CreateQuestionComponent implements OnInit {
       return;
     }
 
-    // const question: Question = {
-    //   id: undefined,
-    //   text: this.questionCreationForm.get('questionText').value,
-    //   subject: this.questionCreationForm.get('subject').value,
-    //   difficulty: this.questionCreationForm.get('difficulty').value,
-    //   options: this.selectedOption
-    // };
-    const question: Question = {
-      id: undefined,
-      text: this.questionCreationForm.get('questionText')?.value || '',
-      subject: this.questionCreationForm.get('subject')?.value || { id: 0, name: '' },
-      difficulty: this.questionCreationForm.get('difficulty')?.value || { id: 0, name: '' },
-      options: this.selectedOption
-    };
+    this.question.text = this.questionCreationForm.get('questionText')?.value || '';
+    this.question.subjectId = this.questionCreationForm.get('subject')?.value?.id || 0;
+    this.question.difficultyId = this.questionCreationForm.get('difficulty')?.value?.id || 0;
 
-    this.questionApi.createQuestion(question).subscribe(
+    this.questionApi.createQuestion(this.question).subscribe(
       {
         next: () => {
           console.log('Question created successfully');
