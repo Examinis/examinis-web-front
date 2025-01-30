@@ -5,9 +5,10 @@
   @for (option of options; track $index; let index = $index){
   <div class="flex items-center gap-4 mb-3">
     <input type="radio" id="option-{{ index }}" [value]="index" name="correctOption" class="form-radio text-blue-500"
-      [(ngModel)]="selectedCorrectOption" (change)="chooseCorrectOption(index)" />
+      [(ngModel)]="selectedCorrectOption" (change)="chooseCorrectOption(index)" maxlength="500"/>
     <input type="text" id="option-text-{{ index }}" [(ngModel)]="option.description" placeholder="Digite a alternativa"
-      class="w-full p-2 border border-gray-300 rounded-md focus:outline-none" (keyup)="onOptionChange()" />
+      class="w-full p-2 border border-gray-300 rounded-md focus:outline-none" (keyup)="onOptionChange()"
+      maxlength="500"/>
 
     @if (options.length > 2) {
     <button type="button" (click)="removeOption(index)" class="text-red-500 hover:text-red-700">

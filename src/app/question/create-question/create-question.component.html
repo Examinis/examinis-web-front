@@ -12,7 +12,7 @@
       <label for="question-text">Texto da questão</label>
       <!-- TODO - check how many characters the corresponding database column allows -->
       <textarea id="question-text" rows="5" cols="30" pTextarea formControlName="questionText"
-        [required]="true">
+        [required]="true" maxlength="500">
       </textarea>
 
       <!-- Container for difficulty and subject select fields -->
