@@ -8,7 +8,7 @@ import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { Difficulty } from '../../shared/models/difficulty';
 import { Option } from '../../shared/models/option';
-import { Question } from '../../shared/models/question';
+import { QuestionSend } from '../../shared/interfaces/question-send';
 import { Subject } from '../../shared/models/subject';
 import { QuestionApiService } from '../../shared/services/question-api.service';
 import { SubjectApiService } from '../../shared/services/subject-api.service';
@@ -27,7 +27,12 @@ interface UploadEvent {
 })
 export class CreateQuestionComponent implements OnInit {
 
-  question: Question = new Question('', 0, 0, []);
+  question: QuestionSend = {
+    text: '',
+    subjectId: 0,
+    difficultyId: 0,
+    options: []
+  };
 
   subjects: Subject[] = [];
   difficulties: Difficulty[] = [];
