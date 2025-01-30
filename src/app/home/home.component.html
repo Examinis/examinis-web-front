@@ -1,0 +1,72 @@
+<div class="min-h-screen bg-white text-gray-900 font-sans">
+  <div class="absolute inset-0 bg-gradient-to-b from-gray-100 to-gray-300 opacity-75"></div>
+
+  <div class="relative z-10">
+    <p-toolbar class="py-5 px-10">
+      <div class="p-toolbar-group-left flex items-center gap-2">
+        <img src="/logo.png" alt="Logo" class="w-10 h-11">
+        <p class="text-gray-900 text-2xl font-semibold tracking-tight">Examinis</p>
+      </div>
+      <div class="p-toolbar-group-right flex items-center gap-8">
+        <a href="#funcionalidades" class="text-gray-700 hover:text-blue-600 transition-colors">Funcionalidades</a>
+        <a href="#depoimentos" class="text-gray-700 hover:text-blue-600 transition-colors">Depoimentos</a>
+        <a href="#beneficios" class="text-gray-700 hover:text-blue-600 transition-colors">Benefícios</a>
+        <a href="#contato" class="text-gray-700 hover:text-blue-600 transition-colors">Contato</a>
+        <p-button label="Cadastre-se" class="p-button-raised p-button-primary"></p-button>
+      </div>
+    </p-toolbar>
+
+    <header class="py-20 px-10 text-center">
+      <h1 class="text-5xl font-bold tracking-tight mb-4 text-gray-900">Plataforma Inteligente para Geração de Provas</h1>
+      <p class="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">Automatize e personalize avaliações com tecnologia de ponta. Descubra uma nova maneira de ensinar e aprender.</p>
+      <p-button label="Saiba Mais" class="p-button-lg p-button-primary"></p-button>
+    </header>
+
+    <section id="funcionalidades" class="py-20 bg-gray-50">
+      <div class="max-w-6xl mx-auto px-10 text-center">
+        <h2 class="text-4xl font-bold text-gray-900 mb-12">Funcionalidades</h2>
+        <p-card class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
+          <p-card *ngFor="let feature of features">
+            <ng-template pTemplate="header">
+              <i [class]="feature.icon" class="text-5xl text-blue-400"></i>
+            </ng-template>
+            <ng-template pTemplate="title">{{ feature.title }}</ng-template>
+            <ng-template pTemplate="content">{{ feature.description }}</ng-template>
+          </p-card>
+        </p-card>
+      </div>
+    </section>
+
+    <section id="depoimentos" class="py-20 bg-gray-100">
+      <div class="max-w-6xl mx-auto px-10 text-center">
+        <h2 class="text-4xl font-bold text-gray-900 mb-12">O que dizem nossos usuários</h2>
+        <p-carousel [value]="testimonials" [numVisible]="1" [numScroll]="1" class="w-full">
+          <ng-template let-testimonial pTemplate="item">
+            <p-card>
+              <ng-template pTemplate="content">
+                <div class="text-5xl text-blue-400 mb-4"> <i [class]="testimonial.icon"></i> </div>
+                <p class="text-gray-600 mb-4">"{{ testimonial.feedback }}"</p>
+                <p class="text-gray-900 font-semibold">{{ testimonial.name }}</p>
+              </ng-template>
+            </p-card>
+          </ng-template>
+        </p-carousel>
+      </div>
+    </section>
+
+    <section id="contato" class="py-20 bg-gray-100">
+      <div class="max-w-6xl mx-auto px-10 text-center">
+        <h2 class="text-4xl font-bold text-gray-900 mb-12">Entre em Contato</h2>
+        <p class="text-lg text-gray-600 mb-6">Tem alguma dúvida? Entre em contato com a gente e descubra como podemos ajudar!</p>
+        <div class="flex justify-center gap-6">
+          <p-button label="Fale Conosco" class="p-button-raised p-button-primary"></p-button>
+          <p-button label="FAQ" class="p-button-raised p-button-secondary"></p-button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="py-10 bg-gray-200 text-center text-gray-600">
+      <p>© 2025 Examinis. <a href="#" class="hover:text-blue-600 transition-colors">Política de Privacidade</a> | <a href="#" class="hover:text-blue-600 transition-colors">Termos de Uso</a></p>
+    </footer>
+  </div>
+</div>
