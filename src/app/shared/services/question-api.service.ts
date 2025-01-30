@@ -12,7 +12,7 @@ import { Page } from '../interfaces/page';
 export class QuestionApiService {
 
   private http: HttpClient = inject(HttpClient);
-  private readonly BASE_URL = environment.apiUrl + '/question';
+  private readonly BASE_URL = environment.apiUrl + '/questions';
 
   constructor() { }
 
