@@ -13,7 +13,7 @@ import { QuestionService } from './shared/services/question.service';
 @NgModule({
   declarations: [],
   imports: [
-    BrowserModule,  
+    BrowserModule,
     QuestionListComponent,
     FormsModule,
     AppComponent,
@@ -25,7 +25,7 @@ import { QuestionService } from './shared/services/question.service';
   ],
   providers: [
     QuestionService,
-    
+
   ]
 })
 export class AppModule { }

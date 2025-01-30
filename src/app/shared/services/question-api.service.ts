@@ -12,7 +12,7 @@ import { Page } from '../interfaces/page';
 export class QuestionApiService {
 
   private http: HttpClient = inject(HttpClient);
-  private readonly BASE_URL = environment.apiUrl + '/question';
+  private readonly BASE_URL = environment.apiUrl + '/questions';
 
   constructor() { }
 
@@ -53,6 +53,14 @@ export class QuestionApiService {
         is_correct: option.isCorrect
       }))
     }
+  }
+/**
+   * Delete question
+   * @param {number} questionId
+   * @returns {Observable<void>}
+   */
+  deleteQuestion(questionId: number): Observable<void> {
+    return this.http.delete<void>(`${this.BASE_URL}/${questionId}`);
   }
 
 }

@@ -64,34 +64,35 @@ export class QuestionListComponent {
       },
       error: error => console.error('Error in forkJoin', error)
     });
+
   }
 
-  // ngOnInit(): void {
-
-  //   this.subjectApiService.getSubjects().subscribe(
-  //     {
-  //       next: (subjects) => { this.categories = subjects; },
-  //       error: (error) => { console.error('Error fetching subjects', error); }
-  //     }
-  //   );
-
-  //   this.questionApiService.getQuestions().subscribe(
-  //     {
-  //       next: (questions) => {
-  //         this.questions = questions;
-  //         console.log(this.questions);
-  //       },
-  //       error: (error) => { console.error('Error fetching questions', error); }
-  //     }
-  //   );
-
-  //   //   this.questionService.getQuestions().subscribe((questions) => {
-  //   //     this.questions = questions;
-  //   //     // this.categories = [...new Set(data.map(q => q.categoria))];
-  //   //   });
-  //   //   // console.log(this.questions);
-  // }
-
+  deleteQuestion(questionId: number): void {
+    if (confirm('Você tem certeza que deseja deletar esta questão?')) {
+      this.questionApiService.deleteQuestion(questionId).pipe(
+        tap(() => {
+          // Recarrega as questões após a exclusão
+          this.loadQuestions();
+        }),
+        catchError(error => {
+          console.error('Erro ao deletar a questão', error);
+          return [];
+        })
+      ).subscribe();
+    }
+  }
+  
+  loadQuestions(): void {
+    this.questionApiService.getQuestions().pipe(
+      tap(questions => {
+        this.pageOfQuestions = questions;
+      }),
+      catchError(error => {
+        console.error('Erro ao carregar as questões', error);
+        return [];
+      })
+    ).subscribe();
+  }
   toggleDifficulty(difficulty: Difficulty): void {
 
     if (this.selectedDifficulty === difficulty) {
