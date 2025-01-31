@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { Question } from '../interfaces/question';
 import { QuestionSend } from '../interfaces/question-send';
 import { Page } from '../interfaces/page';
+import { QuestionReceive } from '../interfaces/api-receive/question-receive';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,8 @@ export class QuestionApiService {
    * @returns {Observable<Question>} An observable containing the question.
    */
   getQuestionById(id: number): Observable<Question> {
-    return this.http.get<Question>(`${this.BASE_URL}/${id}`);
+    return this.http.get<QuestionReceive>(`${this.BASE_URL}/${id}`).pipe(
+      map((question: QuestionReceive) => this.convertToCamelCase(question)));
   }
 
   /**
@@ -61,6 +63,31 @@ export class QuestionApiService {
         description: option.description,
         letter: option.letter,
         is_correct: option.isCorrect
+      }))
+    }
+  }
+
+  /**
+   * Converts a `QuestionReceive` object to a `Question` object with camelCase properties.
+   *
+   * @param {QuestionReceive} question - The question object received from the API.
+   * @returns {Question} The converted question object with camelCase properties.
+   */
+  private convertToCamelCase(question: QuestionReceive): Question {
+    return {
+      id: question.id,
+      text: question.text,
+      subject: question.subject,
+      difficulty: question.difficulty,
+      user: question.user && {
+        id: question.user?.id,
+        firstName: question.user?.first_name,
+        lastName: question.user?.last_name
+      },
+      options: question.options.map(option => ({
+        description: option.description,
+        letter: option.letter,
+        isCorrect: option.is_correct
       }))
     }
   }

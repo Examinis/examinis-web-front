@@ -1,16 +1,16 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
-import { Question } from '../../shared/interfaces/question';
-import { PanelModule } from 'primeng/panel';
-import { TagModule } from 'primeng/tag';
+import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
 import { ImageModule } from 'primeng/image';
 import { ListboxModule } from 'primeng/listbox';
-import { FormsModule } from '@angular/forms';
-import { Option } from '../../shared/interfaces/option';
-import { ButtonModule } from 'primeng/button';
-import { QuestionApiService } from '../../shared/services/question-api.service';
-import { ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { PanelModule } from 'primeng/panel';
 import { ProgressSpinner } from 'primeng/progressspinner';
+import { TagModule } from 'primeng/tag';
+import { Option } from '../../shared/interfaces/option';
+import { Question } from '../../shared/interfaces/question';
+import { QuestionApiService } from '../../shared/services/question-api.service';
 
 @Component({
   selector: 'app-question-details',
@@ -52,10 +52,10 @@ export class QuestionDetailsComponent implements OnInit {
     this.loading = true;
     this.questionApiService.getQuestionById(id).subscribe({
       next: (q) => {
-        console.log(q)
         this.question = q;
+        q.options.forEach(o => console.log(o))
         this.correctOption = q.options.find(o => o.isCorrect) || 
-          {description: '', letter: '', isCorrect: false };
+          {description: '', letter: '', isCorrect: true };
         this.loading = false;
       },
       error: (error) => {
