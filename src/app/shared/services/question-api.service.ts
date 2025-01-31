@@ -2,10 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
+import { QuestionReceive } from '../interfaces/api-receive/question-receive';
+import { Page } from '../interfaces/page';
 import { Question } from '../interfaces/question';
 import { QuestionSend } from '../interfaces/question-send';
-import { Page } from '../interfaces/page';
-import { QuestionReceive } from '../interfaces/api-receive/question-receive';
 
 @Injectable({
   providedIn: 'root'
@@ -18,9 +18,11 @@ export class QuestionApiService {
   constructor() { }
 
   /**
-   * Get all questions
-   * Makes an HTTP GET request to retrieve all questions from the API.
-   * @returns {Observable<Question[]>} An observable containing the list of questions.
+   * Get all questions with pagination
+   * Makes an HTTP GET request to retrieve a paginated list of questions from the API.
+   * @param {number} page - The page number to retrieve, defaults to 1.
+   * @param {number} size - The number of questions per page, defaults to 10.
+   * @returns {Observable<Page<Question>>} An observable containing the paginated list of questions.
    */
   getQuestions(page: number = 1, size: number = 10): Observable<Page<Question>> {
     return this.http.get<Page<Question>>(this.BASE_URL + `?page=${page}&size=${size}`);
@@ -49,6 +51,26 @@ export class QuestionApiService {
   }
 
   /**
+   * Update an existing question
+   * Makes an HTTP PUT request to update an existing question in the API.
+   * @param {QuestionSend} question - The question object to be updated.
+   * @returns {Observable<QuestionSend>} An observable containing the updated question.
+   */
+  updateQuestion(question: QuestionSend): Observable<QuestionSend> {
+    const payload = this.convertToSnakeCase(question);
+    return this.http.put<QuestionSend>(`${this.BASE_URL}/${question.id}`, payload);
+  }
+
+  /**
+   * Delete question
+   * @param {number} questionId
+   * @returns {Observable<void>}
+   */
+  deleteQuestion(questionId: number): Observable<void> {
+    return this.http.delete<void>(`${this.BASE_URL}/${questionId}`);
+  }
+
+  /**
    * Convert a question object to snake_case format
    * Transforms a Question object to an object with snake_case keys, suitable for API requests.
    * @param {Question} question - The question object to convert.
@@ -56,6 +78,7 @@ export class QuestionApiService {
    */
   private convertToSnakeCase(question: QuestionSend): Object {
     return {
+      id: question.id,
       text: question.text,
       subject_id: question.subjectId,
       difficulty_id: question.difficultyId,
@@ -67,15 +90,6 @@ export class QuestionApiService {
     }
   }
 
-  /**
-   * Delete question
-   * @param {number} questionId
-   * @returns {Observable<void>}
-   */
-deleteQuestion(questionId: number): Observable<void> {
-  return this.http.delete<void>(`${this.BASE_URL}/${questionId}`);
-}
-  
   /**
    * Converts a `QuestionReceive` object to a `Question` object with camelCase properties.
    *

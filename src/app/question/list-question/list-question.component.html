@@ -47,36 +47,38 @@
 
   <!-- Lista de questões -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div *ngFor="let question of filteredQuestions"
-      class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 transform hover:shadow-lg">
-      <div class="p-4">
-        <div class="flex items-center justify-between">
-          <h3 class="text-lg font-semibold text-gray-900">{{ question.text }}</h3>
-          <div class="flex gap-2">
-            <button pButton type="button" class="p-button-text p-button-sm text-blue-600"
-                    (click)="viewQuestion(question)" pTooltip="Visualizar" tooltipPosition="top">
-              <i class="fa-solid fa-eye"></i>
-            </button>
-            <button pButton type="button" class="p-button-text p-button-sm text-yellow-600"
-                    (click)="editQuestion(question)" pTooltip="Editar" tooltipPosition="top">
-              <i class="fa-solid fa-pen-to-square"></i>
-            </button>
-            <button pButton type="button" class="p-button-text p-button-sm text-red-600"
-                    (click)="question.id && deleteQuestion(question.id)" pTooltip="Excluir" tooltipPosition="top">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
+    @for (question of filteredQuestions; track question.id) {
+      <div
+        class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 transform hover:shadow-lg">
+        <div class="p-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-gray-900">{{ question.text }}</h3>
+            <div class="flex gap-2">
+              <button pButton type="button" class="p-button-text p-button-sm text-blue-600"
+                      (click)="viewQuestion(question)" pTooltip="Visualizar" tooltipPosition="top">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+              <button pButton type="button" class="p-button-text p-button-sm text-yellow-600"
+                      (click)="editQuestion(question.id)" pTooltip="Editar" tooltipPosition="top">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+              <button pButton type="button" class="p-button-text p-button-sm text-red-600"
+                      (click)="question.id && deleteQuestion(question.id)" pTooltip="Excluir" tooltipPosition="top">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
           </div>
-        </div>
-        <div class="mt-2 text-sm text-gray-600">
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-book"></i> <span>Disciplina:</span> {{ question.subject?.name }}
-          </div>
-          <div class="flex items-center gap-2 mt-1">
-            <i class="fa-solid fa-signal"></i> <span>Dificuldade:</span> {{ question.difficulty?.name }}
+          <div class="mt-2 text-sm text-gray-600">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-book"></i> <span>Disciplina:</span> {{ question.subject?.name }}
+            </div>
+            <div class="flex items-center gap-2 mt-1">
+              <i class="fa-solid fa-signal"></i> <span>Dificuldade:</span> {{ question.difficulty?.name }}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    }
   </div>
 
   <!-- Paginador -->

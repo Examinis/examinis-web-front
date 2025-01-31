@@ -6,13 +6,16 @@ import { IftaLabelModule } from 'primeng/iftalabel';
 import { PanelModule } from 'primeng/panel';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-import { Difficulty } from '../../shared/models/difficulty';
-import { Option } from '../../shared/models/option';
+import { Difficulty } from '../../shared/interfaces/difficulty';
+import { Option } from '../../shared/interfaces/option';
 import { QuestionSend } from '../../shared/interfaces/question-send';
 import { Subject } from '../../shared/interfaces/subject';
 import { QuestionApiService } from '../../shared/services/question-api.service';
 import { SubjectApiService } from '../../shared/services/subject-api.service';
 import { OptionSelectComponent } from "./option-select/option-select.component";
+import { ActivatedRoute } from '@angular/router';
+import { Question } from '../../shared/interfaces/question';
+import { DifficultyApiService } from '../../shared/services/difficulty-api.service';
 
 interface UploadEvent {
   files: File[];
@@ -27,10 +30,10 @@ interface UploadEvent {
 })
 export class CreateQuestionComponent implements OnInit {
 
-  question: QuestionSend = {
+  question: Question = {
     text: '',
-    subjectId: 0,
-    difficultyId: 0,
+    subject: { name: '' },
+    difficulty: { name: '' },
     options: []
   };
 
@@ -43,16 +46,44 @@ export class CreateQuestionComponent implements OnInit {
     subject: new FormControl({
       id: 0,
       name: ''
-    }, Validators.required),
-    difficulty: new FormControl(new Difficulty(''), Validators.required),
+    } as Subject, Validators.required),
+    difficulty: new FormControl({
+      id: 0,
+      name: ''
+    } as Difficulty, Validators.required),
   });
+  variableLabels = {
+    button: 'Salvar',
+    heading: 'Criar questão',
+  }
 
   private questionApi = inject(QuestionApiService);
   private subjectApi = inject(SubjectApiService);
+  private difficultyApi = inject(DifficultyApiService);
+  private route: ActivatedRoute = inject(ActivatedRoute);
 
   constructor() { }
 
   ngOnInit() {
+
+    this.route.paramMap.subscribe(params => {
+      const questionId = params.get('id');
+      if (questionId) {
+
+        this.variableLabels.button = 'Atualizar';
+        this.variableLabels.heading = 'Atualizar questão';
+        
+        this.questionApi.getQuestionById(+questionId).subscribe({
+          next: (q) => {
+            this.question = q;
+            this.fillForm(q);
+          },
+          error: (error) => {
+            console.error('Error fetching question', error);
+          }
+        });
+      }
+    });
 
     this.subjectApi.getSubjects().subscribe(
       {
@@ -61,12 +92,12 @@ export class CreateQuestionComponent implements OnInit {
       }
     );
 
-    // TODO - check if it's worth to make an API call right here
-    this.difficulties = [
-      { id: 1, name: 'Fácil' },
-      { id: 2, name: 'Média' },
-      { id: 3, name: 'Difícil' },
-    ]
+    this.difficultyApi.getDifficulties().subscribe(
+      {
+        next: (difficulties) => { this.difficulties = difficulties; },
+        error: (error) => { console.error('Error fetching difficulties', error); }
+      }
+    );
   }
 
   onOptionsChanged(options: Option[]) {
@@ -93,17 +124,29 @@ export class CreateQuestionComponent implements OnInit {
     // this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
   }
 
-  createQuestion(): void {
+  createOrUpdateQuestion() {
     // Check if the form is valid
-    if (this.questionCreationForm.invalid) {
-      return;
+    if (this.questionCreationForm.invalid) { return; }
+
+    const questionToSend: QuestionSend = {
+      id: this.question.id, // If the question has an ID, it's an update
+      text: this.questionCreationForm.get('questionText')?.value || '',
+      subjectId: this.questionCreationForm.get('subject')?.value?.id || 0,
+      difficultyId: this.questionCreationForm.get('difficulty')?.value?.id || 0,
+      options: this.question.options
+    };
+
+    if (questionToSend.id) {
+      this.updateQuestion(questionToSend);
+    } else {
+      this.createQuestion(questionToSend);
     }
 
-    this.question.text = this.questionCreationForm.get('questionText')?.value || '';
-    this.question.subjectId = this.questionCreationForm.get('subject')?.value?.id || 0;
-    this.question.difficultyId = this.questionCreationForm.get('difficulty')?.value?.id || 0;
+  }
 
-    this.questionApi.createQuestion(this.question).subscribe(
+
+  private createQuestion(question: QuestionSend) {
+    this.questionApi.createQuestion(question).subscribe(
       {
         next: () => {
           console.log('Question created successfully');
@@ -111,8 +154,30 @@ export class CreateQuestionComponent implements OnInit {
         error: (error) => {
           console.error('Error creating question', error);
         }
-      }
-    );
+      });
+  }
+
+  private updateQuestion(question: QuestionSend) {
+    this.questionApi.updateQuestion(question).subscribe(
+      {
+        next: () => {
+          console.log('Question updated successfully');
+        },
+        error: (error) => {
+          console.error('Error updating question', error);
+        }
+      });
+  }
+
+  private fillForm(question: Question) {
+    // this.questionCreationForm.get('questionText')?.setValue(question.text);
+    // this.questionCreationForm.get('subject')?.setValue(question.subject);
+    // this.questionCreationForm.get('difficulty')?.setValue(question.difficulty);
+    this.questionCreationForm.patchValue({
+      questionText: question.text,
+      subject: question.subject,
+      difficulty: question.difficulty
+    });
   }
 
 }
