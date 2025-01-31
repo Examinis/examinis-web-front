@@ -1,82 +1,27 @@
-<div class="w-full h-screen flex flex-col items-center justify-start bg-gradient-to-r from-white to-blue-50 p-4">
-  <!-- Menu Temporário -->
-  <nav class="bg-blue-900 text-white p-4 w-full text-center font-bold mb-6 shadow-lg">
-    <p>"hamburguer" 🚧 Menu Temporário 🚧 "nome do usuário"</p>
-  </nav>
-
-  <!-- Layout Principal -->
-  <div class="flex w-full h-full mt-4">
-
-    <!-- Barra Lateral Direita (diminuída) -->
-    <aside class="w-1/4 p-6 bg-white rounded-lg shadow-md border border-blue-200">
-      <h3 class="text-lg font-bold text-blue-900 mb-4">Informações</h3>
-      <ul class="space-y-4">
-        <li class="p-4 bg-blue-50 text-blue-900 rounded-md shadow hover:bg-blue-100 transition duration-300">Lorem ipsum
-          dolor sit amet.</li>
-        <li class="p-4 bg-blue-50 text-blue-900 rounded-md shadow hover:bg-blue-100 transition duration-300">Consectetur
-          adipiscing elit.</li>
-        <li class="p-4 bg-blue-50 text-blue-900 rounded-md shadow hover:bg-blue-100 transition duration-300">Sed do
-          eiusmod tempor.</li>
-        <li class="p-4 bg-blue-50 text-blue-900 rounded-md shadow hover:bg-blue-100 transition duration-300">Incididunt
-          ut labore et dolore.</li>
-      </ul>
-    </aside>
-
-    <!-- Listagem de Perguntas com maior margem à direita -->
-    <main class="w-3/4 pl-6 pr-12 h-full overflow-auto">
-      <!-- Filtros -->
-      <div class="flex mb-6 space-x-6">
-        <!-- Filtro por Categoria -->
-        <div class="w-1/2">
-          <label for="categoria" class="block text-blue-900 font-bold mb-2">Filtrar por Categoria:</label>
-          <select id="categoria" [(ngModel)]="selectedSubject"
-            class="w-full p-3 border border-blue-300 rounded-md bg-white text-blue-900 focus:ring-2 focus:ring-blue-500">
-            <option value="" class="text-gray-500">Todas</option>
-            <option *ngFor="let category of categories" [value]="category" class="text-blue-900">
-              {{ category.name }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Filtro por Dificuldade -->
-        <div class="w-1/2">
-          <label class="block text-blue-900 font-bold mb-2">Filtrar por Dificuldade:</label>
-          <div class="flex space-x-2">
-            <button *ngFor="let difficulty of difficulties"
-              [class.bg-blue-600]="selectedDifficulty === difficulty" [class.bg-gray-300]="selectedDifficulty !== difficulty"
-              (click)="toggleDifficulty(difficulty)"
-              class="w-full p-3 text-white rounded-md hover:bg-blue-700 focus:outline-none transition duration-300">
-              {{ difficulty.name }}
-            </button>
+<div class="bg-gray-50 p-4">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div *ngFor="let question of questions.results" class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 transform hover:shadow-lg">
+          <div class="p-4">
+              <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-semibold text-gray-900">{{ question.text }}</h3>
+                  <div class="flex gap-2">
+                      <button pButton type="button" class="p-button-text p-button-sm text-blue-600" icon="fa-solid fa-eye" (click)="viewQuestion(question)" pTooltip="Visualizar" tooltipPosition="top"></button>
+                      <button pButton type="button" class="p-button-text p-button-sm text-yellow-600" icon="fa-solid fa-pen-to-square" (click)="editQuestion(question)" pTooltip="Editar" tooltipPosition="top"></button>
+                      <button pButton type="button" class="p-button-text p-button-sm text-red-600" icon="fa-solid fa-trash-can" (click)="deleteQuestion(question)" pTooltip="Excluir" tooltipPosition="top"></button>
+                  </div>
+              </div>
+              <div class="mt-2 text-sm text-gray-600">
+                  <div class="flex items-center gap-2">
+                      <i class="fa-solid fa-book"></i><span>Disciplina:</span> {{ question.subject?.name }}
+                  </div>
+                  <div class="flex items-center gap-2 mt-1">
+                      <i class="fa-solid fa-signal"></i> <span>Dificuldade:</span> {{ question.difficulty?.name }}
+                  </div>
+              </div>
           </div>
-        </div>
       </div>
-
-      <!-- Lista de Perguntas -->
-      <div class="mt-6 space-y-6">
-        <div class="flex items-start w-full"
-          *ngFor="let question of pageOfQuestions.results | filterCategory:selectedSubject | filterDifficulty:selectedDifficulty">
-          <!-- Card da Pergunta -->
-          <div class="bg-white p-6 rounded-lg shadow-md border border-blue-200 w-2/3 mr-8">
-            <h5 class="text-lg font-bold text-blue-900">{{ question.text }}</h5>
-            <p class="text-sm text-blue-700"><strong>Disciplina:</strong> {{ question.subject.name }}</p>
-            <p class="text-sm text-blue-700"><strong>Dificuldade:</strong> {{ question.difficulty.name }}</p>
-
-            <!-- Lista de Respostas -->
-            <ul class="mt-4 space-y-2">
-              <li *ngFor="let option of question.options"
-                class="p-3 bg-blue-100 text-blue-900 rounded-md border border-blue-200 hover:bg-blue-200 transition duration-300">
-                {{ option.description }}
-              </li>
-            </ul>
-          </div>
-
-          <!-- Imagem à direita -->
-          <div class="w-1/3">
-            <img src="/IA.jpg" alt="Imagem relacionada" class="w-full h-auto rounded-lg shadow-md">
-          </div>
-        </div>
-      </div>
-    </main>
+  </div>
+  <div class="mt-4 flex justify-center">
+      <p-paginator [rows]="questions.size" [totalRecords]="questions.total" (onPageChange)="onPageChange($event)" [rowsPerPageOptions]="[5, 10, 20]"></p-paginator>
   </div>
 </div>

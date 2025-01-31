@@ -10,19 +10,26 @@ import { Difficulty } from '../../shared/interfaces/difficulty';
 import { SubjectApiService } from '../../shared/services/subject-api.service';
 import { catchError, forkJoin, tap } from 'rxjs';
 import { Page } from '../../shared/interfaces/page';
+import { TableModule } from 'primeng/table';
+import { PaginatorModule } from 'primeng/paginator';
+import { CardModule } from 'primeng/card';
 
 @Component({
   selector: 'app-question-list',
   templateUrl: './list-question.component.html',
-  imports: [CommonModule, FormsModule, FilterCategoryPipe, FilterDifficultyPipe],
+  imports: [CommonModule, FormsModule,
+    CardModule,
+    TableModule,
+    PaginatorModule,
+    FilterCategoryPipe, FilterDifficultyPipe],
   styleUrls: ['./list-question.component.css']
 })
-export class QuestionListComponent {
+export class QuestionListComponent implements OnInit {
 
-  pageOfQuestions: Page<Question> = {
+  questions: Page<Question> = {
     total: 0,
-    page: 0,
-    size: 0,
+    page: 1,
+    size: 10,
     results: []
   };
   categories: Subject[] = [
@@ -41,17 +48,18 @@ export class QuestionListComponent {
   constructor(private questionService: QuestionApiService) { }
 
   ngOnInit(): void {
+    this.loadData(1, this.questions.size);
+  }
 
+  loadData(page: number, size: number): void {
     forkJoin({
       subjects: this.subjectApiService.getSubjects().pipe(
-        tap(subjects => console.log('Subjects loaded:', subjects)),
         catchError(error => {
           console.error('Error fetching subjects', error);
           return [];
         })
       ),
-      questions: this.questionApiService.getQuestions().pipe(
-        tap(questions => console.log('Questions loaded:', questions)),
+      questions: this.questionApiService.getQuestions(page, size).pipe(
         catchError(error => {
           console.error('Error fetching questions', error);
           return [];
@@ -60,37 +68,30 @@ export class QuestionListComponent {
     }).subscribe({
       next: ({ subjects, questions }) => {
         this.categories = subjects;
-        this.pageOfQuestions = questions;
+        this.questions = questions;
       },
       error: error => console.error('Error in forkJoin', error)
     });
   }
 
-  // ngOnInit(): void {
+  onPageChange(event: any): void {
+    this.loadData(event.page, event.rows);
+  }
 
-  //   this.subjectApiService.getSubjects().subscribe(
-  //     {
-  //       next: (subjects) => { this.categories = subjects; },
-  //       error: (error) => { console.error('Error fetching subjects', error); }
-  //     }
-  //   );
-
-  //   this.questionApiService.getQuestions().subscribe(
-  //     {
-  //       next: (questions) => {
-  //         this.questions = questions;
-  //         console.log(this.questions);
-  //       },
-  //       error: (error) => { console.error('Error fetching questions', error); }
-  //     }
-  //   );
-
-  //   //   this.questionService.getQuestions().subscribe((questions) => {
-  //   //     this.questions = questions;
-  //   //     // this.categories = [...new Set(data.map(q => q.categoria))];
-  //   //   });
-  //   //   // console.log(this.questions);
-  // }
+  viewQuestion(question: Question): void {
+    console.log('Visualizando questão:', question);
+    // Adicione a lógica para exibir os detalhes da questão
+  }
+  
+  editQuestion(question: Question): void {
+    console.log('Editando questão:', question);
+    // Adicione a lógica para edição
+  }
+  
+  deleteQuestion(question: Question): void {
+    console.log('Excluindo questão:', question);
+    // Adicione a lógica para excluir a questão
+  }
 
   toggleDifficulty(difficulty: Difficulty): void {
 
