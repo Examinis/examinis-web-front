@@ -1,3 +1,5 @@
+<app-sidebar-drawer></app-sidebar-drawer>
+
 <div *ngIf="!loading" class="p-8">
   <p-panel>
     <ng-template #header>
@@ -82,7 +84,9 @@
     </ng-template>
 
     <ng-template #footer>
-      <p-button label="Voltar" icon="pi pi-arrow-left" severity="secondary"></p-button>
+      <p-button 
+      (click)="goTo('list-question')"
+      label="Voltar" icon="pi pi-arrow-left" severity="secondary"></p-button>
     </ng-template>
   </p-panel>
 </div>
