@@ -98,7 +98,6 @@ sidebarVisible: any;
     this.applyFilters();
   }
 
-
   applyFilters(): void {
     this.filteredQuestions = this.questions.results.filter((question) => {
       const subjectMatch = !this.selectedSubject || this.selectedSubject.id === null || (question.subject && question.subject.id === this.selectedSubject.id);

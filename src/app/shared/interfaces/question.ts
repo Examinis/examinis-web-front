@@ -8,5 +8,7 @@ export interface Question {
   text: string;
   subject: Subject;
   difficulty: Difficulty;
+  createdAt?: Date;
+  user?: User;
   options: Option[];
 }
