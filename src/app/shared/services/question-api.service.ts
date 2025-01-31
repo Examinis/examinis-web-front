@@ -22,8 +22,8 @@ export class QuestionApiService {
    * Makes an HTTP GET request to retrieve all questions from the API.
    * @returns {Observable<Question[]>} An observable containing the list of questions.
    */
-  getQuestions(): Observable<Page<Question>> {
-    return this.http.get<Page<Question>>(this.BASE_URL);
+  getQuestions(page: number = 1, size: number = 10): Observable<Page<Question>> {
+    return this.http.get<Page<Question>>(this.BASE_URL + `?page=${page}&size=${size}`);
   }
 
   /**
@@ -67,6 +67,15 @@ export class QuestionApiService {
     }
   }
 
+  /**
+   * Delete question
+   * @param {number} questionId
+   * @returns {Observable<void>}
+   */
+deleteQuestion(questionId: number): Observable<void> {
+  return this.http.delete<void>(`${this.BASE_URL}/${questionId}`);
+}
+  
   /**
    * Converts a `QuestionReceive` object to a `Question` object with camelCase properties.
    *

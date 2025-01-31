@@ -9,11 +9,16 @@ import { AppComponent } from './app.component';
 import { CreateQuestionComponent } from './question/create-question/create-question.component';
 import { FilterCategoryPipe } from './shared/pipes/filter-category.pipe';
 import { QuestionService } from './shared/services/question.service';
+import { CardModule } from 'primeng/card';
+import { CommonModule } from '@angular/common';
+import { Sidebar, SidebarModule } from 'primeng/sidebar';
 
 @NgModule({
   declarations: [],
   imports: [
-    BrowserModule,  
+    CardModule,
+    CommonModule,
+    BrowserModule,
     QuestionListComponent,
     FormsModule,
     AppComponent,
@@ -22,10 +27,12 @@ import { QuestionService } from './shared/services/question.service';
     ButtonModule,
     PanelModule,
     CreateQuestionComponent,
+    Sidebar,
+    SidebarModule
   ],
   providers: [
     QuestionService,
-    
+
   ]
 })
 export class AppModule { }
