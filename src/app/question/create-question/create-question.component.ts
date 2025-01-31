@@ -9,7 +9,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { Difficulty } from '../../shared/models/difficulty';
 import { Option } from '../../shared/models/option';
 import { QuestionSend } from '../../shared/interfaces/question-send';
-import { Subject } from '../../shared/models/subject';
+import { Subject } from '../../shared/interfaces/subject';
 import { QuestionApiService } from '../../shared/services/question-api.service';
 import { SubjectApiService } from '../../shared/services/subject-api.service';
 import { OptionSelectComponent } from "./option-select/option-select.component";
@@ -40,7 +40,10 @@ export class CreateQuestionComponent implements OnInit {
 
   questionCreationForm = new FormGroup({
     questionText: new FormControl('', Validators.required),
-    subject: new FormControl(new Subject(''), Validators.required),
+    subject: new FormControl({
+      id: 0,
+      name: ''
+    }, Validators.required),
     difficulty: new FormControl(new Difficulty(''), Validators.required),
   });
 

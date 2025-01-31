@@ -26,6 +26,16 @@ export class QuestionApiService {
   }
 
   /**
+   * Get a question by ID
+   * Makes an HTTP GET request to retrieve a specific question by its ID.
+   * @param {number} id - The ID of the question to retrieve.
+   * @returns {Observable<Question>} An observable containing the question.
+   */
+  getQuestionById(id: number): Observable<Question> {
+    return this.http.get<Question>(`${this.BASE_URL}/${id}`);
+  }
+
+  /**
    * Create a new question
    * Makes an HTTP POST request to create a new question.
    * @param {QuestionSend} question - The question to create.
