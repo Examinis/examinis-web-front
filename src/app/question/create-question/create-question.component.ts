@@ -16,6 +16,8 @@ import { OptionSelectComponent } from "./option-select/option-select.component";
 import { ActivatedRoute } from '@angular/router';
 import { Question } from '../../shared/interfaces/question';
 import { DifficultyApiService } from '../../shared/services/difficulty-api.service';
+import { Toast } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 interface UploadEvent {
   files: File[];
@@ -24,9 +26,10 @@ interface UploadEvent {
 @Component({
   selector: 'app-create-question',
   imports: [PanelModule, ButtonModule, TextareaModule, ReactiveFormsModule, IftaLabelModule,
-    SelectModule, FileUpload, OptionSelectComponent],
+    SelectModule, FileUpload, OptionSelectComponent, Toast],
   templateUrl: './create-question.component.html',
-  styleUrl: './create-question.component.css'
+  styleUrl: './create-question.component.css',
+  providers: [MessageService]
 })
 export class CreateQuestionComponent implements OnInit {
 
@@ -55,12 +58,15 @@ export class CreateQuestionComponent implements OnInit {
   variableLabels = {
     button: 'Salvar',
     heading: 'Criar questão',
+    messageSuccess: 'Questão criada com sucesso!',
+    messageError: 'Ocorreu um erro ao criar a questão.'
   }
 
   private questionApi = inject(QuestionApiService);
   private subjectApi = inject(SubjectApiService);
   private difficultyApi = inject(DifficultyApiService);
   private route: ActivatedRoute = inject(ActivatedRoute);
+  private messageService = inject(MessageService);
 
   constructor() { }
 
@@ -72,7 +78,9 @@ export class CreateQuestionComponent implements OnInit {
 
         this.variableLabels.button = 'Atualizar';
         this.variableLabels.heading = 'Atualizar questão';
-        
+        this.variableLabels.messageSuccess = 'Questão atualizada com sucesso!';
+        this.variableLabels.messageError = 'Ocorreu um erro ao atualizar a questão.';
+
         this.questionApi.getQuestionById(+questionId).subscribe({
           next: (q) => {
             this.question = q;
@@ -150,9 +158,11 @@ export class CreateQuestionComponent implements OnInit {
       {
         next: () => {
           console.log('Question created successfully');
+          this.messageService.add({ severity: 'success', summary: 'Cadastro', detail: this.variableLabels.messageSuccess, life: 3000 });
         },
         error: (error) => {
           console.error('Error creating question', error);
+          this.messageService.add({ severity: 'error', summary: 'Cadastro', detail: this.variableLabels.messageError, life: 3000 });
         }
       });
   }
@@ -162,9 +172,11 @@ export class CreateQuestionComponent implements OnInit {
       {
         next: () => {
           console.log('Question updated successfully');
+          this.messageService.add({ severity: 'success', summary: 'Atualização', detail: this.variableLabels.messageSuccess, life: 3000 });
         },
         error: (error) => {
           console.error('Error updating question', error);
+          this.messageService.add({ severity: 'error', summary: 'Atualização', detail: this.variableLabels.messageError, life: 3000 });
         }
       });
   }
