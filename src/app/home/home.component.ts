@@ -6,7 +6,7 @@ import { CarouselModule } from 'primeng/carousel';
 import { Testimonial } from '../shared/interfaces/testimonial';
 import { CommonModule } from '@angular/common';
 import { Feature } from '../shared/interfaces/feature';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-home',
   imports: [ToolbarModule, ButtonModule, CardModule, CarouselModule, CommonModule],
@@ -14,34 +14,27 @@ import { Feature } from '../shared/interfaces/feature';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  testimonials: Testimonial[] = [
+  router: Router;
+  showMenu = false; // Para controle do menu mobile
+
+  testimonials = [
     {
-      icon: 'pi pi-star',
-      feedback: 'This is a great site!',
-      name: 'John Doe'
+      icon: 'pi pi-user',
+      feedback: 'A plataforma é excelente, economiza muito tempo na criação de provas!',
+      name: 'Maria Silva',
     },
     {
-      icon: 'pi pi-star',
-      feedback: 'I love this site!',
-      name: 'Jane Doe'
-    }
+      icon: 'pi pi-user',
+      feedback: 'Adorei a facilidade de uso e a variedade de recursos.',
+      name: 'João Pereira',
+    },
   ];
 
-  features: Feature[] = [
-    {
-      icon: 'pi pi-check',
-      title: 'Feature 1',
-      description: 'This is feature 1'
-    },
-    {
-      icon: 'pi pi-check',
-      title: 'Feature 2',
-      description: 'This is feature 2'
-    },
-    {
-      icon: 'pi pi-check',
-      title: 'Feature 3',
-      description: 'This is feature 3'
-    }
-  ];
+  constructor (router: Router) {
+    this.router = router;
+  }
+
+  toListPage = () => {
+    this.router.navigate(['/list-question']);
+  }
 }

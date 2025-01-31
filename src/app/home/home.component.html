@@ -1,74 +1,91 @@
-<div class="min-h-screen bg-white text-gray-900 font-sans">
-  <div class="absolute inset-0 bg-gradient-to-b from-gray-100 to-gray-300 opacity-75"></div>
-
-  <div class="relative z-10">
-    <p-toolbar class="py-5 px-10">
-      <div class="p-toolbar-group-left flex items-center gap-2">
-        <img src="/logo.png" alt="Logo" class="w-10 h-11">
-        <p class="text-gray-900 text-2xl font-semibold tracking-tight">Examinis</p>
+<div class="min-h-screen bg-gray-100 text-gray-900 font-sans flex flex-col justify-between">
+  <!-- Navbar -->
+  <p-toolbar class="">
+      <div class="p-toolbar-group-left flex items-center">
+          <img src="/logo.png" alt="Logo" class="w-12 h-12 mr-3">
+          <span class="text-2xl font-bold tracking-tight">Examinis</span>
       </div>
-      <div class="p-toolbar-group-right flex items-center gap-8">
-        <a href="#funcionalidades" class="text-gray-700 hover:text-blue-600 transition-colors">Funcionalidades</a>
-        <a href="#depoimentos" class="text-gray-700 hover:text-blue-600 transition-colors">Depoimentos</a>
-        <a href="#beneficios" class="text-gray-700 hover:text-blue-600 transition-colors">Benefícios</a>
-        <a href="#contato" class="text-gray-700 hover:text-blue-600 transition-colors">Contato</a>
-        <p-button label="Cadastre-se" class="p-button-raised p-button-primary"></p-button>
+      <div class="p-toolbar-group-right hidden md:flex items-center gap-8">
+          <a href="#funcionalidades" class="text-gray-700 hover:text-blue-600 transition">Explore nossas funcionalidades</a>
+          <a href="#depoimentos" class="text-gray-700 hover:text-blue-600 transition">Veja o que dizem sobre nós</a>
+          <a href="#beneficios" class="text-gray-700 hover:text-blue-600 transition">Descubra os benefícios</a>
+          <a href="#contato" class="text-gray-700 hover:text-blue-600 transition">Fale conosco</a>
+          <p-button label="Acessar" class="p-button-primary p-button-rounded" (click)="toListPage()"></p-button>
       </div>
-    </p-toolbar>
-
-    <header class="py-20 px-10 text-center">
-      <h1 class="text-5xl font-bold tracking-tight mb-4 text-gray-900">Plataforma Inteligente para Geração de Provas</h1>
-      <p class="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">Automatize e personalize avaliações com tecnologia de ponta. Descubra uma nova maneira de ensinar e aprender.</p>
-      <p-button label="Saiba Mais" class="p-button-lg p-button-primary"></p-button>
-    </header>
-
-    <section id="funcionalidades" class="py-20 bg-gray-50">
-      <div class="max-w-6xl mx-auto px-10 text-center">
-        <h2 class="text-4xl font-bold text-gray-900 mb-12">Funcionalidades</h2>
-        <p-card class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
-          @for (feature of features; track $index) {
-            <p-card>
-              <ng-template pTemplate="header">
-                <i [class]="feature.icon" class="text-5xl text-blue-400"></i>
-              </ng-template>
-              <ng-template pTemplate="title">{{ feature.title }}</ng-template>
-              <ng-template pTemplate="content">{{ feature.description }}</ng-template>
-            </p-card>
-          }
-        </p-card>
+      <div class="p-toolbar-group-right md:hidden">
+          <p-button icon="pi pi-bars" styleClass="p-button-text" (click)="showMenu = !showMenu"></p-button>
       </div>
-    </section>
+  </p-toolbar>
 
-    <section id="depoimentos" class="py-20 bg-gray-100">
-      <div class="max-w-6xl mx-auto px-10 text-center">
-        <h2 class="text-4xl font-bold text-gray-900 mb-12">O que dizem nossos usuários</h2>
-        <p-carousel [value]="testimonials" [numVisible]="1" [numScroll]="1" class="w-full">
-          <ng-template let-testimonial pTemplate="item">
-            <p-card>
-              <ng-template pTemplate="content">
-                <div class="text-5xl text-blue-400 mb-4"> <i [class]="testimonial.icon"></i> </div>
-                <p class="text-gray-600 mb-4">"{{ testimonial.feedback }}"</p>
-                <p class="text-gray-900 font-semibold">{{ testimonial.name }}</p>
-              </ng-template>
-            </p-card>
-          </ng-template>
-        </p-carousel>
+  <!-- Mobile Menu -->
+  <div *ngIf="showMenu" class="md:hidden absolute top-full left-0 w-full bg-white shadow-lg z-20">
+      <div class="flex flex-col p-5 gap-4">
+          <a href="#funcionalidades" class="text-gray-700 hover:text-blue-600 transition">Explore nossas funcionalidades</a>
+          <a href="#depoimentos" class="text-gray-700 hover:text-blue-600 transition">Veja o que dizem sobre nós</a>
+          <a href="#beneficios" class="text-gray-700 hover:text-blue-600 transition">Descubra os benefícios</a>
+          <a href="#contato" class="text-gray-700 hover:text-blue-600 transition">Fale conosco</a>
+          <p-button label="Acessar" class="p-button-primary p-button-rounded"></p-button>
       </div>
-    </section>
-
-    <section id="contato" class="py-20 bg-gray-100">
-      <div class="max-w-6xl mx-auto px-10 text-center">
-        <h2 class="text-4xl font-bold text-gray-900 mb-12">Entre em Contato</h2>
-        <p class="text-lg text-gray-600 mb-6">Tem alguma dúvida? Entre em contato com a gente e descubra como podemos ajudar!</p>
-        <div class="flex justify-center gap-6">
-          <p-button label="Fale Conosco" class="p-button-raised p-button-primary"></p-button>
-          <p-button label="FAQ" class="p-button-raised p-button-secondary"></p-button>
-        </div>
-      </div>
-    </section>
-
-    <footer class="py-10 bg-gray-200 text-center text-gray-600">
-      <p>© 2025 Examinis. <a href="#" class="hover:text-blue-600 transition-colors">Política de Privacidade</a> | <a href="#" class="hover:text-blue-600 transition-colors">Termos de Uso</a></p>
-    </footer>
   </div>
+
+  <!-- Hero Section -->
+  <header class="py-60 px-6 md:px-12 bg-gradient-to-b from-gray-100 to-white text-center">
+      <div class="max-w-4xl mx-auto">
+          <h1 class="text-5xl font-extrabold text-gray-800 leading-tight">
+              A solução definitiva para criação de provas
+          </h1>
+          <p class="text-lg text-gray-600 mt-6">
+              Automatize e personalize suas avaliações de maneira prática e inteligente.
+          </p>
+      </div>
+  </header>
+
+  <!-- Funcionalidades -->
+  <section id="funcionalidades" class="py-20 px-6 md:px-12">
+      <div class="max-w-6xl mx-auto text-center">
+          <h2 class="text-4xl font-bold text-gray-800">Principais Funcionalidades</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+              <div class="p-6 bg-white rounded-xl shadow-lg flex flex-col items-center">
+                  <i class="fas fa-cogs text-6xl text-blue-500"></i>
+                  <h3 class="text-xl font-semibold mt-4">Personalização avançada</h3>
+                  <p class="text-gray-600 mt-2">Crie avaliações sob medida para suas necessidades.</p>
+              </div>
+              <div class="p-6 bg-white rounded-xl shadow-lg flex flex-col items-center">
+                  <i class="fas fa-database text-6xl text-blue-500"></i>
+                  <h3 class="text-xl font-semibold mt-4">Banco de questões</h3>
+                  <p class="text-gray-600 mt-2">Tenha acesso a um banco de questões de diversas disciplinas ao seu alcance.</p>
+              </div>
+              <div class="p-6 bg-white rounded-xl shadow-lg flex flex-col items-center">
+                  <i class="fas fa-shield-alt text-6xl text-blue-500"></i>
+                  <h3 class="text-xl font-semibold mt-4">Máxima segurança</h3>
+                  <p class="text-gray-600 mt-2">Proteja seus dados com tecnologia de ponta.</p>
+              </div>
+          </div>
+      </div>
+  </section>
+
+  <!-- Contato -->
+  <section id="contato" class="py-20 px-6 md:px-12 bg-gray-100">
+      <div class="max-w-4xl mx-auto text-center">
+          <h2 class="text-4xl font-bold text-gray-800">Entre em contato conosco</h2>
+          <p class="text-lg text-gray-700 mt-6">
+              Precisa de ajuda ou tem dúvidas? Nossa equipe está pronta para te atender!
+          </p>
+          <div class="flex justify-center gap-6 mt-8">
+              <p-button label="Falar com a equipe" class="p-button-primary p-button-rounded"></p-button>
+              <p-button label="Perguntas frequentes" class="p-button-secondary p-button-rounded"></p-button>
+          </div>
+      </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-8 px-6 md:px-12 bg-gray-100 text-center text-gray-600">
+      <p>© 2025 Examinis. 
+          <a href="#" class="hover:text-blue-500 transition">Política de Privacidade</a> |
+          <a href="#" class="hover:text-blue-500 transition">Termos de Uso</a>
+      </p>
+  </footer>
 </div>
+
+<!-- Importando FontAwesome -->
+<script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous"></script>
