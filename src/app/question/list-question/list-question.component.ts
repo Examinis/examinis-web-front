@@ -11,6 +11,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { Sidebar, SidebarModule } from 'primeng/sidebar';
 
 import { QuestionApiService } from '../../shared/services/question-api.service';
 import { SubjectApiService } from '../../shared/services/subject-api.service';
@@ -24,6 +25,7 @@ import { FilterCategoryPipe } from '../../shared/pipes/filter-category.pipe';
 import { FilterDifficultyPipe } from '../../shared/pipes/filter-difficulty.pipe';
 
 import { RouterModule } from '@angular/router';
+
 
 @Component({
   selector: 'app-question-list',
@@ -43,7 +45,8 @@ import { RouterModule } from '@angular/router';
     ToastModule,
     FilterCategoryPipe,
     FilterDifficultyPipe,
-    RouterModule
+    RouterModule,
+    SidebarModule
   ],
 })
 export class QuestionListComponent implements OnInit {
@@ -62,6 +65,7 @@ export class QuestionListComponent implements OnInit {
     { id: 3, name: 'Difícil' },
   ];
   selectedDifficulty?: Difficulty;
+sidebarVisible: any;
 
   constructor(
     private confirmationService: ConfirmationService,
@@ -155,7 +159,10 @@ export class QuestionListComponent implements OnInit {
       },
     });
   }
-
+  
+  toggleSidebar() {
+    this.sidebarVisible = !this.sidebarVisible; // Alterna a visibilidade do Sidebar
+  }
   toggleDifficulty(difficulty: Difficulty): void {
     this.selectedDifficulty = this.selectedDifficulty === difficulty ? undefined : difficulty;
   }

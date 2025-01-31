@@ -1,15 +1,40 @@
-<p-toast />
-<p-confirmdialog />
+<p-toast></p-toast>
+<p-confirmdialog></p-confirmdialog>
 
-<div>
-
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-
-    <button pButton type="button" class="p-button-xs p-button-primary ml-4 col-span-1 md:col-span-1 w-full md:w-auto"
-            [routerLink]="['/create-question']" pTooltip="Criar uma nova questão" tooltipPosition="top">
-      Criar Questão
+<!-- Sidebar -->
+ <!-- Sidebar Estático -->
+ <div class="w-64 bg-gray-800 text-white h-screen fixed top-0 left-0">
+  <div class="p-4">
+    <!-- Ícone de Menu (Alterna entre abrir e fechar) -->
+    <button (click)="toggleSidebar()" class="text-white mb-4">
+      <i class="fa-solid fa-bars"></i> Menu
     </button>
+  </div>
 
+  <!-- Links de Navegação -->
+  <ul class="space-y-4">
+    <li>
+      <a routerLink="/home" routerLinkActive="text-gray-300" class="block px-4 py-2 hover:bg-gray-700">
+        <i class="fa-solid fa-house mr-2"></i> Home
+      </a>
+    </li>
+    <li>
+      <a routerLink="/create-question" routerLinkActive="text-gray-300" class="block px-4 py-2 hover:bg-gray-700">
+        <i class="fa-solid fa-plus mr-2"></i> Criar Questão
+      </a>
+    </li>
+    <li>
+      <a routerLink="/list-question" routerLinkActive="text-gray-300" class="block px-4 py-2 hover:bg-gray-700">
+        <i class="fa-solid fa-list mr-2"></i> Listar Questões
+      </a>
+    </li>
+  </ul>
+</div>
+
+<!-- Conteúdo Principal com Padding e Centralização utilizando Tailwind -->
+<div class="p-4 pl-[270px] pr-4 max-w-screen-xl mx-auto transition-all">
+  <!-- Filtros -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
     <div class="col-span-1 md:col-span-1">
       <p-dropdown [options]="categories" [(ngModel)]="selectedSubject" optionLabel="name"
                   placeholder="Selecione a Disciplina" (onChange)="onFilterChange()"></p-dropdown>
@@ -20,6 +45,7 @@
     </div>
   </div>
 
+  <!-- Lista de questões -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div *ngFor="let question of filteredQuestions"
       class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 transform hover:shadow-lg">
@@ -52,8 +78,8 @@
       </div>
     </div>
   </div>
-</div>
 
+  <!-- Paginador -->
   <div class="card flex justify-center items-center">
     <p-paginator
       (onPageChange)="onPageChange($event)"
@@ -62,4 +88,4 @@
       [totalRecords]="questions.total"
       [rowsPerPageOptions]="[5, 10, 15]"/>
   </div>
-
+</div>
