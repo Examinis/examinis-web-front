@@ -79,6 +79,7 @@ export class QuestionApiService {
       text: question.text,
       subject: question.subject,
       difficulty: question.difficulty,
+      createdAt: question.created_at,
       user: question.user && {
         id: question.user?.id,
         firstName: question.user?.first_name,

@@ -53,7 +53,6 @@ export class QuestionDetailsComponent implements OnInit {
     this.questionApiService.getQuestionById(id).subscribe({
       next: (q) => {
         this.question = q;
-        q.options.forEach(o => console.log(o))
         this.correctOption = q.options.find(o => o.isCorrect) || 
           {description: '', letter: '', isCorrect: true };
         this.loading = false;

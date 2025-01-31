@@ -9,6 +9,7 @@ export interface QuestionReceive {
   text: string;
   subject: Subject;
   difficulty: Difficulty;
+  created_at?: Date;
   user?: UserReceive;
   options: OptionReceive[];
 }
