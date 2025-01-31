@@ -66,32 +66,6 @@ export class QuestionListComponent {
     });
   }
 
-  // ngOnInit(): void {
-
-  //   this.subjectApiService.getSubjects().subscribe(
-  //     {
-  //       next: (subjects) => { this.categories = subjects; },
-  //       error: (error) => { console.error('Error fetching subjects', error); }
-  //     }
-  //   );
-
-  //   this.questionApiService.getQuestions().subscribe(
-  //     {
-  //       next: (questions) => {
-  //         this.questions = questions;
-  //         console.log(this.questions);
-  //       },
-  //       error: (error) => { console.error('Error fetching questions', error); }
-  //     }
-  //   );
-
-  //   //   this.questionService.getQuestions().subscribe((questions) => {
-  //   //     this.questions = questions;
-  //   //     // this.categories = [...new Set(data.map(q => q.categoria))];
-  //   //   });
-  //   //   // console.log(this.questions);
-  // }
-
   toggleDifficulty(difficulty: Difficulty): void {
 
     if (this.selectedDifficulty === difficulty) {

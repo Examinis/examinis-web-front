@@ -1,5 +1,5 @@
 export interface Option {
-  id: number | undefined;
+  id?: number;
   description: string;
   letter: string;
   isCorrect: boolean;

@@ -1,4 +1,4 @@
 export interface Subject {
-	id: number | undefined;
+	id?: number;
 	name: string;
 }
