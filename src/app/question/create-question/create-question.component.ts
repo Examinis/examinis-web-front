@@ -71,7 +71,6 @@ export class CreateQuestionComponent implements OnInit {
 
   onOptionsChanged(options: Option[]) {
     this.question.options = options;
-    console.log('Options changed', this.question);
   }
 
   /**
