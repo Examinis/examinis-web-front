@@ -1,0 +1,74 @@
+{
+  "questoes": [
+      { 
+          "id": 1, 
+          "pergunta": "Qual é a capital da França?", 
+          "categoria": "Geografia", 
+          "dificuldade": "Fácil",
+          "respostas": ["Paris", "Londres", "Berlim", "Madri", "Roma"]
+      },
+      { 
+          "id": 2, 
+          "pergunta": "Quem escreveu 'Dom Casmurro'?", 
+          "categoria": "Literatura", 
+          "dificuldade": "Média",
+          "respostas": ["Machado de Assis", "José de Alencar", "Monteiro Lobato", "Carlos Drummond de Andrade", "Clarice Lispector"]
+      },
+      { 
+          "id": 3, 
+          "pergunta": "Qual é o resultado de 9 x 8?", 
+          "categoria": "Matemática", 
+          "dificuldade": "Fácil",
+          "respostas": ["72", "81", "64", "90", "70"]
+      },
+      { 
+          "id": 4, 
+          "pergunta": "Qual é o elemento químico de símbolo 'O'?", 
+          "categoria": "Química", 
+          "dificuldade": "Fácil",
+          "respostas": ["Oxigênio", "Ouro", "Osmium", "Ósmio", "Óxido"]
+      },
+      { 
+          "id": 5, 
+          "pergunta": "Em que ano o Brasil se tornou independente?", 
+          "categoria": "História", 
+          "dificuldade": "Média",
+          "respostas": ["1822", "1808", "1889", "1500", "1831"]
+      },
+      { 
+          "id": 6, 
+          "pergunta": "O que é a fotossíntese?", 
+          "categoria": "Biologia", 
+          "dificuldade": "Média",
+          "respostas": ["Processo de produção de energia pelas plantas", "Respiração das plantas", "Absorção de minerais pelo solo", "Processo químico da chuva ácida", "Ciclo do carbono"]
+      },
+      { 
+          "id": 7, 
+          "pergunta": "Qual é o maior planeta do sistema solar?", 
+          "categoria": "Astronomia", 
+          "dificuldade": "Fácil",
+          "respostas": ["Júpiter", "Saturno", "Terra", "Netuno", "Marte"]
+      },
+      { 
+          "id": 8, 
+          "pergunta": "Quem pintou a Mona Lisa?", 
+          "categoria": "Artes", 
+          "dificuldade": "Média",
+          "respostas": ["Leonardo da Vinci", "Michelangelo", "Pablo Picasso", "Van Gogh", "Rafael"]
+      },
+      { 
+          "id": 9, 
+          "pergunta": "Quem foi o primeiro presidente dos Estados Unidos?", 
+          "categoria": "História", 
+          "dificuldade": "Média",
+          "respostas": ["George Washington", "Abraham Lincoln", "Thomas Jefferson", "John Adams", "Benjamin Franklin"]
+      },
+      { 
+          "id": 10, 
+          "pergunta": "O que é a teoria da relatividade?", 
+          "categoria": "Física", 
+          "dificuldade": "Difícil",
+          "respostas": ["Uma teoria sobre o espaço e o tempo", "Uma teoria sobre a gravidade", "Uma equação matemática sobre átomos", "Uma explicação da força nuclear", "Uma teoria sobre buracos negros"]
+      }
+  ]
+}
