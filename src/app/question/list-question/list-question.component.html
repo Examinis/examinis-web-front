@@ -55,7 +55,7 @@
             <h3 class="text-lg font-semibold text-gray-900">{{ question.text }}</h3>
             <div class="flex gap-2">
               <button pButton type="button" class="p-button-text p-button-sm text-blue-600"
-                      (click)="viewQuestion(question)" pTooltip="Visualizar" tooltipPosition="top">
+                      (click)="viewQuestion(question.id)" pTooltip="Visualizar" tooltipPosition="top">
                 <i class="fa-solid fa-eye"></i>
               </button>
               <button pButton type="button" class="p-button-text p-button-sm text-yellow-600"

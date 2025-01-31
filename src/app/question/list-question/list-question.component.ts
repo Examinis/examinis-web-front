@@ -107,8 +107,9 @@ export class QuestionListComponent implements OnInit {
     this.loadData(event.page + 1, event.rows);
   }
 
-  viewQuestion(question: Question): void {
-    console.log('Visualizando questão:', question);
+  viewQuestion(id?: number): void {
+    if (!id) { return; }
+    this.router.navigate(['questions', id]);
   }
 
   editQuestion(id?: number): void {
