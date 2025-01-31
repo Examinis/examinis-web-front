@@ -26,13 +26,15 @@
       <div class="max-w-6xl mx-auto px-10 text-center">
         <h2 class="text-4xl font-bold text-gray-900 mb-12">Funcionalidades</h2>
         <p-card class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
-          <p-card *ngFor="let feature of features">
-            <ng-template pTemplate="header">
-              <i [class]="feature.icon" class="text-5xl text-blue-400"></i>
-            </ng-template>
-            <ng-template pTemplate="title">{{ feature.title }}</ng-template>
-            <ng-template pTemplate="content">{{ feature.description }}</ng-template>
-          </p-card>
+          @for (feature of features; track $index) {
+            <p-card>
+              <ng-template pTemplate="header">
+                <i [class]="feature.icon" class="text-5xl text-blue-400"></i>
+              </ng-template>
+              <ng-template pTemplate="title">{{ feature.title }}</ng-template>
+              <ng-template pTemplate="content">{{ feature.description }}</ng-template>
+            </p-card>
+          }
         </p-card>
       </div>
     </section>
