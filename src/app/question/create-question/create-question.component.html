@@ -1,80 +1,52 @@
-<div class="mb-4 p-8">
-
+<app-sidebar-drawer></app-sidebar-drawer>
+<p-toast></p-toast>
+<p-confirmdialog></p-confirmdialog>
+<div class="p-4 pl-[270px] pr-4 max-w-screen-xl mx-auto transition-all">
   <p-toast />
-
   <p-panel [header]="variableLabels.heading">
-
-    <!-- Subheading -->
-    <div class="mb-3">
-      <h2 class="text-base">Preencha os campos necessários para criar uma questão</h2>
-    </div>
-
-    <!-- Form for creating a question -->
-
-    <form [formGroup]="questionCreationForm" (ngSubmit)="createOrUpdateQuestion()" class="flex flex-col gap-4">
-      <label for="question-text">Texto da questão</label>
-      <textarea id="question-text" rows="5" cols="30" pTextarea formControlName="questionText" [required]="true"
-        maxlength="500">
-      </textarea>
-
-      <!-- Container for difficulty and subject select fields -->
-      <div class="flex gap-4 max-[768px]:flex-col">
-
-        <!-- Subject -->
-        <div class="flex flex-col gap-2 md:w-1/2">
-          <label for="subject-select" (click)="subjectSelect.show(true)">Assunto</label>
-          <p-select #subjectSelect id="subject-select" [options]="subjects" formControlName="subject" optionLabel="name"
-            [filter]="true" filterBy="name" [showClear]="true" placeholder="Selecione um assunto" class="w-full"
-            [required]="true">
-            <ng-template let-selectedOption>
-              <div>{{ selectedOption.name }}</div>
-            </ng-template>
-          </p-select>
-        </div>
-
-        <!-- Difficulty -->
-        <div class="flex flex-col gap-2 md:w-1/2">
-          <label for="difficulty-select" (click)="difficultySelect.show(true)">Dificuldade</label>
-          <p-select #difficultySelect id="difficulty-select" [options]="difficulties"
-            formControlName="difficulty"
-            optionLabel="name" [filter]="true" filterBy="name" [showClear]="true"
-            placeholder="Selecione uma dificuldade" class="w-full" [required]="true">
-            <ng-template let-selectedOption>
-              <div>{{ selectedOption.name }}</div>
-            </ng-template>
-          </p-select>
-        </div>
-
+      <div class="mb-3">
+          <h2 class="text-base">Preencha os campos necessários para criar uma questão</h2>
       </div>
-
-      <!-- Upload an image -->
-      <p-fileupload name="questionImage" (onUpload)="onUpload($event)" accept="image/*" maxFileSize="1000000"
-        mode="advanced" [showUploadButton]="false">
-        <ng-template #empty>
-          <div>Drag and drop files to here to upload.</div>
-        </ng-template>
-        <ng-template #content>
-          @if (uploadedFiles.length) {
-          <ul>
-            <li>{{ uploadedFiles[0].name }} - {{ uploadedFiles[0].size }}</li>
-          </ul>
-          }
-        </ng-template>
-      </p-fileupload>
-
-      <!-- Add question's options -->
-      <app-option-select (optionChangedEvent)="onOptionsChanged($event)"></app-option-select>
-
-      <!-- Submit form -->
-      <div class="flex gap-4 mt-1">
-        <p-button type="submit" [disabled]="questionCreationForm.invalid"
-          [label]="variableLabels.button"
-          class="w-full"
-          styleClass="w-full" />
-        <p-button label="Voltar" severity="secondary" class="w-full" [outlined]="true" styleClass="w-full" />
-      </div>
-
-    </form>
-
+      <form [formGroup]="questionCreationForm" (ngSubmit)="createOrUpdateQuestion()" class="flex flex-col gap-4">
+          <label for="question-text">Texto da questão</label>
+          <textarea id="question-text" rows="5" cols="30" pTextarea formControlName="questionText" [required]="true" maxlength="500"></textarea>
+          <div class="flex gap-4 max-[768px]:flex-col">
+              <div class="flex flex-col gap-2 md:w-1/2">
+                  <label for="subject-select" (click)="subjectSelect.show(true)">Assunto</label>
+                  <p-select #subjectSelect id="subject-select" [options]="subjects" formControlName="subject" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Selecione um assunto" class="w-full" [required]="true">
+                      <ng-template let-selectedOption>
+                          <div>{{ selectedOption.name }}</div>
+                      </ng-template>
+                  </p-select>
+              </div>
+              <div class="flex flex-col gap-2 md:w-1/2">
+                  <label for="difficulty-select" (click)="difficultySelect.show(true)">Dificuldade</label>
+                  <p-select #difficultySelect id="difficulty-select" [options]="difficulties" formControlName="difficulty" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Selecione uma dificuldade" class="w-full" [required]="true">
+                      <ng-template let-selectedOption>
+                          <div>{{ selectedOption.name }}</div>
+                      </ng-template>
+                  </p-select>
+              </div>
+          </div>
+          <p-fileupload name="questionImage" (onUpload)="onUpload($event)" accept="image/*" maxFileSize="1000000" mode="advanced" [showUploadButton]="false">
+              <ng-template #empty>
+                  <div>Drag and drop files to here to upload.</div>
+              </ng-template>
+              <ng-template #content>
+                  @if (uploadedFiles.length) {
+                  <ul>
+                      <li>{{ uploadedFiles[0].name }} - {{ uploadedFiles[0].size }}</li>
+                  </ul>
+                  }
+              </ng-template>
+          </p-fileupload>
+          <app-option-select (optionChangedEvent)="onOptionsChanged($event)"></app-option-select>
+          <div class="flex gap-4 mt-1">
+              <p-button type="submit" [disabled]="questionCreationForm.invalid" [label]="variableLabels.button" class="w-full" styleClass="w-full" />
+              <p-button 
+              (click)="goTo('list-question')"
+              label="Voltar" severity="secondary" class="w-full" [outlined]="true" styleClass="w-full" />
+          </div>
+      </form>
   </p-panel>
 </div>
