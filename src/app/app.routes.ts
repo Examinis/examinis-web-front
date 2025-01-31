@@ -11,6 +11,11 @@ export const routes: Routes = [
     title: 'Create a question',
   },
   {
+    path: 'edit-question/:id',
+    component: CreateQuestionComponent,
+    title: 'Edit a question',
+  },
+  {
     path: 'list-question',
     component: QuestionListComponent,
     title: 'List questions',

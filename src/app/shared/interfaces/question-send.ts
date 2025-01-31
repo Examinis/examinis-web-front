@@ -1,4 +1,4 @@
-import { Option } from "../models/option";
+import { Option } from "../interfaces/option";
 
 export interface QuestionSend {
 

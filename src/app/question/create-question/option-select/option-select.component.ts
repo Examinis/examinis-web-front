@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { Option } from '../../../shared/models/option';
+import { Option } from '../../../shared/interfaces/option';
 
 @Component({
   selector: 'app-option-select',
@@ -20,25 +20,21 @@ export class OptionSelectComponent implements OnInit {
 
     this.options = [
       {
-        id: null,
         description: '',
         letter: 'A',
         isCorrect: false
       },
       {
-        id: null,
         description: '',
         letter: 'B',
         isCorrect: false
       },
       {
-        id: null,
         description: '',
         letter: 'C',
         isCorrect: false
       },
       {
-        id: null,
         description: '',
         letter: 'D',
         isCorrect: false
@@ -52,7 +48,6 @@ export class OptionSelectComponent implements OnInit {
   addOption(): void {
     if (this.options.length < 5) {
       this.options.push({
-        id: null,
         description: 'Descrição da opção',
         // get the next letter in the alphabet using ASCII code (A, B, C, ...)
         letter: String.fromCharCode(65 + this.options.length),

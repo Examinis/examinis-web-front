@@ -1,30 +1,28 @@
-import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { catchError, forkJoin, of, tap } from 'rxjs';
 
-import { TableModule } from 'primeng/table';
-import { PaginatorModule } from 'primeng/paginator';
-import { CardModule } from 'primeng/card';
-import { DropdownModule } from 'primeng/dropdown';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ToastModule } from 'primeng/toast';
-import { ButtonModule } from 'primeng/button';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { Sidebar, SidebarModule } from 'primeng/sidebar';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DropdownModule } from 'primeng/dropdown';
+import { PaginatorModule } from 'primeng/paginator';
+import { SidebarModule } from 'primeng/sidebar';
+import { TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
 
 import { QuestionApiService } from '../../shared/services/question-api.service';
 import { SubjectApiService } from '../../shared/services/subject-api.service';
 
-import { Question } from '../../shared/interfaces/question';
-import { Subject } from '../../shared/interfaces/subject';
 import { Difficulty } from '../../shared/interfaces/difficulty';
 import { Page } from '../../shared/interfaces/page';
+import { Question } from '../../shared/interfaces/question';
+import { Subject } from '../../shared/interfaces/subject';
 
-import { FilterCategoryPipe } from '../../shared/pipes/filter-category.pipe';
-import { FilterDifficultyPipe } from '../../shared/pipes/filter-difficulty.pipe';
 
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 
 @Component({
@@ -43,8 +41,6 @@ import { RouterModule } from '@angular/router';
     ConfirmDialogModule,
     ButtonModule,
     ToastModule,
-    FilterCategoryPipe,
-    FilterDifficultyPipe,
     RouterModule,
     SidebarModule
   ],
@@ -65,11 +61,12 @@ export class QuestionListComponent implements OnInit {
     { id: 3, name: 'Difícil' },
   ];
   selectedDifficulty?: Difficulty;
-sidebarVisible: any;
+  sidebarVisible: any;
 
   constructor(
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -110,12 +107,14 @@ sidebarVisible: any;
     this.loadData(event.page + 1, event.rows);
   }
 
-  viewQuestion(question: Question): void {
-    console.log('Visualizando questão:', question);
+  viewQuestion(id?: number): void {
+    if (!id) { return; }
+    this.router.navigate(['questions', id]);
   }
 
-  editQuestion(question: Question): void {
-    console.log('Editando questão:', question);
+  editQuestion(id?: number): void {
+    if (!id) { return; }
+    this.router.navigate(['edit-question', id]);
   }
 
   deleteQuestion(questionId: number): void {
@@ -158,7 +157,7 @@ sidebarVisible: any;
       },
     });
   }
-  
+
   toggleSidebar() {
     this.sidebarVisible = !this.sidebarVisible; // Alterna a visibilidade do Sidebar
   }
