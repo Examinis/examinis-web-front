@@ -154,6 +154,16 @@ export class CreateQuestionComponent implements OnInit {
 
 
   private createQuestion(question: QuestionSend) {
+    if (question.options.map(o => o.isCorrect).filter(c => c).length === 0) {
+      this.messageService.add({ severity: 'error', summary: 'Cadastro', detail: 'A questão deve ter pelo menos uma resposta correta.', life: 3000 });
+      return;
+    }
+
+    if (question.options.map(o => o.description).filter(t => t === '').length > 0) {
+      this.messageService.add({ severity: 'error', summary: 'Cadastro', detail: 'Todas as opções devem ter texto.', life: 3000 });
+      return;
+    }
+    
     this.questionApi.createQuestion(question).subscribe(
       {
         next: () => {
