@@ -73,6 +73,10 @@ export class QuestionListComponent implements OnInit {
     this.loadData();
   }
 
+  trackByQuestionId(index: number, item: any): number {
+    return item.id;
+}
+
   loadData(page: number = 1, size: number = this.questions.size): void {
     forkJoin({
       subjects: this.subjectApiService.getSubjects().pipe(
