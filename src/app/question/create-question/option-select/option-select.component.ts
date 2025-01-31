@@ -22,7 +22,7 @@ export class OptionSelectComponent implements OnInit {
       {
         description: '',
         letter: 'A',
-        isCorrect: false
+        isCorrect: true
       },
       {
         description: '',
@@ -38,18 +38,22 @@ export class OptionSelectComponent implements OnInit {
         description: '',
         letter: 'D',
         isCorrect: false
+      },
+      {
+        description: '',
+        letter: 'E',
+        isCorrect: false
       }
     ];
 
-    // Initialize the component with default options
     this.optionChangedEvent.emit(this.options);
+    this.chooseCorrectOption(0);
   }
 
   addOption(): void {
     if (this.options.length < 5) {
       this.options.push({
-        description: 'Descrição da opção',
-        // get the next letter in the alphabet using ASCII code (A, B, C, ...)
+        description: '',
         letter: String.fromCharCode(65 + this.options.length),
         isCorrect: false
       });
@@ -65,7 +69,6 @@ export class OptionSelectComponent implements OnInit {
   chooseCorrectOption(index: number): void {
     this.selectedCorrectOption = index;
   
-    // Define todas as opções como false e apenas a opção escolhida como true
     this.options.forEach((option, i) => {
       option.isCorrect = i === index;
     });
@@ -75,15 +78,13 @@ export class OptionSelectComponent implements OnInit {
   
 
   removeOption(index: number): void {
-    // Ensure that there are always at least two options
     if (this.options.length < 2) {
       return;
     }
 
-    this.options.splice(index, 1);  // Remove the option at the given index
+    this.options.splice(index, 1);
     this.onOptionChange();
 
-    // Adjust the correct alternative if it has been removed
     if (index === this.selectedCorrectOption) {
       this.selectedCorrectOption = null;
     } else if (this.selectedCorrectOption !== null && this.selectedCorrectOption > index) {
