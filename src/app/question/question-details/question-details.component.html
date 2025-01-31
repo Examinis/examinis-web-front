@@ -1,9 +1,8 @@
-
 <div *ngIf="!loading" class="p-8">
   <p-panel>
     <ng-template #header>
       <h1 class="text-lg font-bold flex items-center gap-2">
-        <i class="fas fa-question-circle text-blue-500"></i> Detalhes da Questão
+        <i class="pi pi-question-circle text-blue-500"></i> Detalhes da Questão
       </h1>
     </ng-template>
 
@@ -11,7 +10,7 @@
       <!-- Description and image -->
       <div class="mb-6 p-4 border rounded-lg shadow-md bg-gray-50">
         <p class="text-gray-700 text-lg font-semibold flex items-center gap-2">
-          <i class="fas fa-pencil-alt text-green-500"></i> {{ question.text }}
+          {{ question.text }}
         </p>
 
         <div class="mt-4 flex justify-center">
@@ -22,19 +21,20 @@
       <!-- Options -->
       <div class="mt-4">
         <p class="font-semibold flex items-center gap-2">
-          <i class="fas fa-list-ul text-purple-500"></i> Alternativas:
+          <i class="pi pi-list text-purple-500"></i> Alternativas:
         </p>
 
         <div class="mt-2 flex flex-col gap-2">
           @for (option of question.options; track $index) {
-          <div class="p-2 border rounded flex items-center gap-2 transition duration-300 w-full" [ngClass]="{
-                     'bg-green-100 border-green-500 text-green-700 font-semibold': option.isCorrect,
-                     'bg-white border-gray-300 hover:bg-gray-100': !option.isCorrect
-                   }">
+            <div class="p-2 border rounded flex items-center gap-2 transition duration-300 w-full" [ngClass]="{
+              'bg-green-100 border-green-500 text-green-700 font-semibold': option.isCorrect,
+              'bg-white border-gray-300 hover:bg-gray-100 text-black': !option.isCorrect
+            }">
+   
             @if (option.isCorrect) {
-            <i class="fas fa-check-circle text-green-600"></i>
+            <i class="pi pi-check-circle text-green-600"></i>
             } @else {
-            <i class="fas fa-circle-notch text-gray-500"></i>
+            <i class="pi pi-circle-off text-gray-500"></i>
             }
             <span class="font-medium">{{ option.letter }}.</span> {{ option.description }}
           </div>
@@ -42,40 +42,40 @@
         </div>
       </div>
 
-      <!-- Aditional details -->
+      <!-- Additional details -->
       <div class="mt-6 grid grid-cols-2 gap-4">
         <div class="flex items-center gap-2">
-          <i class="fas fa-user text-indigo-500"></i>
+          <i class="pi pi-user text-indigo-500"></i>
           <p>
-            <strong>Autor:</strong>{{ question.user?.firstName + ' ' + question.user?.lastName }}
+            <strong>Autor: </strong>{{ question.user?.firstName + ' ' + question.user?.lastName }}
           </p>
         </div>
 
         <div class="flex items-center gap-2">
-          <i class="fas fa-book text-red-500"></i>
+          <i class="pi pi-book text-red-500"></i>
           <p><strong>Matéria:</strong> {{ question.subject.name }}</p>
         </div>
 
         <div class="flex items-center gap-2">
-          <i class="fas fa-chart-line text-yellow-500"></i>
-          <p><strong>Dificuldade </strong>
+          <i class="pi pi-chart-line text-yellow-500"></i>
+          <p><strong>Dificuldade: </strong>
             <p-tag [value]="question.difficulty.name" [severity]="getDifficultyClass(question.difficulty.name)">
             </p-tag>
           </p>
         </div>
 
         <div class="flex items-center gap-2">
-          <i class="fas fa-calendar-alt text-gray-500"></i>
-          <p><strong>Data de criação:</strong> {{ question.createdAt | date:'dd/MM/yyyy' }}</p>
+          <i class="pi pi-calendar text-gray-500"></i>
+          <p><strong>Data de criação: </strong> {{ question.createdAt | date:'dd/MM/yyyy' }}</p>
         </div>
 
         <div class="flex items-center gap-2">
-          <i class="fas fa-check-circle text-green-500"></i>
+          <i class="pi pi-check text-green-500"></i>
           <p><strong>Resposta correta:</strong> Letra {{ correctOption.letter }}</p>
         </div>
 
         <div class="flex items-center gap-2">
-          <i class="fas fa-file-alt text-orange-500"></i>
+          <i class="pi pi-file text-orange-500"></i>
           <p><strong>Qtd. de provas contendo esta questão:</strong> 0</p>
         </div>
       </div>

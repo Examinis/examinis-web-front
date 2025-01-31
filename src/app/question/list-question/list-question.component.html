@@ -24,23 +24,25 @@
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-gray-900">{{ question.text }}</h3>
           <div class="flex gap-2">
-            <button pButton type="button" class="p-button-text p-button-sm text-blue-600"
+            <button pButton type="button" class="p-button-text p-button-sm"
               (click)="viewQuestion(question.id)" pTooltip="Visualizar" tooltipPosition="top">
-              <i class="fa-solid fa-eye"></i>
+              <i class="pi pi-eye text-blue-600"></i>
             </button>
-            <button pButton type="button" class="p-button-text p-button-sm text-yellow-600"
+
+            <button pButton type="button" class="p-button-text p-button-sm"
               (click)="editQuestion(question.id)" pTooltip="Editar" tooltipPosition="top">
-              <i class="fa-solid fa-pen-to-square"></i>
+              <i class="pi pi-pencil text-yellow-600"></i>
             </button>
-            <button pButton type="button" class="p-button-text p-button-sm text-red-600"
+
+            <button pButton type="button" class="p-button-text p-button-sm"
               (click)="question.id && deleteQuestion(question.id)" pTooltip="Excluir" tooltipPosition="top">
-              <i class="fa-solid fa-trash-can"></i>
+              <i class="pi pi-trash text-red-600"></i>
             </button>
           </div>
         </div>
         <div class="mt-2 text-sm text-gray-600">
           <div class="flex items-center gap-2">
-            <i class="fa-solid fa-book"></i> <span>Disciplina:</span> {{ question.subject?.name }}
+            <i class="pi pi-book"></i> <span>Disciplina:</span> {{ question.subject?.name }}
           </div>
           <div class="flex items-center gap-2 mt-1">
             <i class="fa-solid fa-signal"></i> <span>Dificuldade:</span> {{ question.difficulty?.name }}

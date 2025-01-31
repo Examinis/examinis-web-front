@@ -1,17 +1,12 @@
 <p-drawer #drawerRef [(visible)]="visible">
     <ng-template #headless>
-        <div class="flex flex-col h-full">
+        <div class="flex flex-col h-full ">
             <div class="flex items-center justify-between px-6 pt-4 shrink-0">
                 <span class="inline-flex items-center gap-2">
-                    <svg width="31" height="33" viewBox="0 0 31 33" fill="none" xmlns="http://www.w3.org/2000/svg" class="block mx-auto">
-                        <path d="..." />
-                    </svg>
-                    <div class="p-toolbar-group-left flex items-end">
-                        <img src="/logo.png" alt="Logo" class="w-12 h-12 mr-3">
+                    <div class="p-toolbar-group-left">
                         <span class="text-2xl font-bold tracking-tight">Examinis</span>
                     </div>
                 </span>
-
             </div>
             <hr class="mt-12 mb-4 mx-4 border-t border-0 border-surface" />
             <div class="overflow-y-auto">
@@ -45,4 +40,6 @@
         </div>
     </ng-template>
 </p-drawer>
-<p-button (click)="visible = true" icon="pi pi-bars" />
+<div class="p-1">
+    <p-button (click)="visible = true" icon="pi pi-bars"/>
+</div>
