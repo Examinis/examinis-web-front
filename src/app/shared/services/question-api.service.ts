@@ -23,7 +23,7 @@ export class QuestionApiService {
    */
   getQuestions(page: number = 1, size: number = 10): Observable<Page<Question>> {
     return this.http.get<Page<Question>>(this.BASE_URL + `?page=${page}&size=${size}`);
-  }  
+  }
 
   /**
    * Create a new question
@@ -55,4 +55,12 @@ export class QuestionApiService {
     }
   }
 
+  /**
+   * Delete question
+   * @param {number} questionId
+   * @returns {Observable<void>}
+   */
+deleteQuestion(questionId: number): Observable<void> {
+  return this.http.delete<void>(`${this.BASE_URL}/${questionId}`);
+}
 }

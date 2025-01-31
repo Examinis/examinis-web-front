@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { catchError, forkJoin, of } from 'rxjs';
+import { catchError, forkJoin, of, tap } from 'rxjs';
 
 import { TableModule } from 'primeng/table';
 import { PaginatorModule } from 'primeng/paginator';
@@ -23,6 +23,7 @@ import { Page } from '../../shared/interfaces/page';
 import { FilterCategoryPipe } from '../../shared/pipes/filter-category.pipe';
 import { FilterDifficultyPipe } from '../../shared/pipes/filter-difficulty.pipe';
 
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-question-list',
@@ -41,7 +42,8 @@ import { FilterDifficultyPipe } from '../../shared/pipes/filter-difficulty.pipe'
     ButtonModule,
     ToastModule,
     FilterCategoryPipe,
-    FilterDifficultyPipe
+    FilterDifficultyPipe,
+    RouterModule
   ],
 })
 export class QuestionListComponent implements OnInit {
@@ -95,8 +97,8 @@ export class QuestionListComponent implements OnInit {
 
   applyFilters(): void {
     this.filteredQuestions = this.questions.results.filter((question) => {
-      const subjectMatch = !this.selectedSubject || (question.subject && question.subject.id === this.selectedSubject.id);
-      const difficultyMatch = !this.selectedDifficulty || (question.difficulty && question.difficulty.id === this.selectedDifficulty.id);
+      const subjectMatch = !this.selectedSubject || this.selectedSubject.id === null || (question.subject && question.subject.id === this.selectedSubject.id);
+      const difficultyMatch = !this.selectedDifficulty || this.selectedDifficulty.id === null || (question.difficulty && question.difficulty.id === this.selectedDifficulty.id);
       return subjectMatch && difficultyMatch;
     });
   }
@@ -113,26 +115,43 @@ export class QuestionListComponent implements OnInit {
     console.log('Editando questão:', question);
   }
 
-  deleteQuestion(event: Event): void {
+  deleteQuestion(questionId: number): void {
     this.confirmationService.confirm({
-      target: event.target as EventTarget,
       message: 'Tem certeza de que deseja excluir esta questão?',
       header: 'Atenção!',
+      acceptLabel: 'Excluir',
       rejectLabel: 'Cancelar',
-      rejectButtonProps: {
-        label: 'Cancelar',
-        severity: 'secondary',
-        outlined: true,
-      },
-      acceptButtonProps: {
-        label: 'Excluir',
-        severity: 'danger',
-      },
       accept: () => {
-        this.messageService.add({ severity: 'success', summary: 'Excluído', detail: 'Questão excluída' });
+        // Chama o serviço para excluir a questão
+        this.questionApiService.deleteQuestion(questionId).pipe(
+          tap(() => {
+            // Recarrega as questões após a exclusão
+            this.loadData();
+            // Exibe a mensagem de sucesso
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Excluído',
+              detail: 'Questão excluída com sucesso.',
+            });
+          }),
+          catchError((error) => {
+            console.error('Erro ao deletar a questão', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: 'Ocorreu um erro ao excluir a questão.',
+            });
+            return of([]);
+          })
+        ).subscribe();
       },
       reject: () => {
-        this.messageService.add({ severity: 'info', summary: 'Cancelado', detail: 'Exclusão cancelada' });
+        // Mensagem de cancelamento
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Cancelado',
+          detail: 'Exclusão cancelada.',
+        });
       },
     });
   }
