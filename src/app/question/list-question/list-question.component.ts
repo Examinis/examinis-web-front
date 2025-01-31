@@ -8,28 +8,31 @@ import { FilterDifficultyPipe } from '../../shared/pipes/filter-difficulty.pipe'
 import { Subject } from '../../shared/interfaces/subject';
 import { Difficulty } from '../../shared/interfaces/difficulty';
 import { SubjectApiService } from '../../shared/services/subject-api.service';
-import { catchError, forkJoin, of, tap } from 'rxjs';
+import { catchError, forkJoin, of } from 'rxjs';
 import { Page } from '../../shared/interfaces/page';
 import { TableModule } from 'primeng/table';
 import { PaginatorModule } from 'primeng/paginator';
 import { CardModule } from 'primeng/card';
 import { DropdownModule } from 'primeng/dropdown';
-
-interface PageEvent {
-  first: number;
-  rows: number;
-  page: number;
-  pageCount: number;
-}
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-question-list',
   templateUrl: './list-question.component.html',
-  imports: [CommonModule, FormsModule,
+  providers: [ConfirmationService, MessageService],
+  imports: [
+    CommonModule,
+    FormsModule,
     CardModule,
     TableModule,
     PaginatorModule,
     DropdownModule,
+    ConfirmDialog,
+    ButtonModule,
+    ToastModule,
     FilterCategoryPipe, FilterDifficultyPipe],
   styleUrls: ['./list-question.component.css']
 })
@@ -54,6 +57,9 @@ export class QuestionListComponent implements OnInit {
 
   private questionApiService: QuestionApiService = inject(QuestionApiService);
   private subjectApiService: SubjectApiService = inject(SubjectApiService);
+
+  constructor(private confirmationService: ConfirmationService,
+    private messageService: MessageService) { }
 
   ngOnInit(): void {
     this.loadData(1, this.questions.size);
@@ -97,7 +103,7 @@ export class QuestionListComponent implements OnInit {
     this.questions.size = event.rows;
     this.loadData(this.questions.page, this.questions.size);
   }
-  
+
 
   viewQuestion(question: Question): void {
     console.log('Visualizando questão:', question);
@@ -107,12 +113,39 @@ export class QuestionListComponent implements OnInit {
     console.log('Editando questão:', question);
   }
 
-  deleteQuestion(question: Question): void {
-    console.log('Excluindo questão:', question);
+  deleteQuestion(event: Event) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Tem certeza de que deseja excluir esta questão?',
+      header: 'Atenção!',
+      rejectLabel: 'Cancelar',
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Excluir',
+        severity: 'danger',
+      },
+      accept: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Exclusão bem-sucedida',
+          detail: 'A questão foi excluída com sucesso.'
+        });
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Exclusão cancelada',
+          detail: 'A operação de exclusão foi cancelada, a questão permanece no sistema.'
+        });
+      },
+    });
   }
 
   toggleDifficulty(difficulty: Difficulty): void {
-
     if (this.selectedDifficulty === difficulty) {
       this.selectedDifficulty = undefined;
     } else {
