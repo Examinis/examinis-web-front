@@ -11,11 +11,14 @@ import { TagModule } from 'primeng/tag';
 import { Option } from '../../shared/interfaces/option';
 import { Question } from '../../shared/interfaces/question';
 import { QuestionApiService } from '../../shared/services/question-api.service';
-
+import { SidebarDrawerComponent } from '../../shared/components/sidebar-drawer/sidebar-drawer.component';
+import {
+ Router
+} from '@angular/router';
 @Component({
   selector: 'app-question-details',
   imports: [PanelModule, TagModule, ImageModule, ListboxModule, FormsModule, ButtonModule,
-    CommonModule, ProgressSpinner
+    CommonModule, ProgressSpinner, SidebarDrawerComponent
   ],
   templateUrl: './question-details.component.html',
   styleUrl: './question-details.component.css'
@@ -37,6 +40,12 @@ export class QuestionDetailsComponent implements OnInit {
 
   private questionApiService: QuestionApiService = inject(QuestionApiService);
   private route: ActivatedRoute = inject(ActivatedRoute);
+
+  constructor(private router: Router) { }
+
+  goTo(page: string): void {
+    this.router.navigate(['/' + page]);
+  }
 
   ngOnInit(): void {
     // Get the question ID from the URL and load the question details

@@ -15,22 +15,25 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent {
   router: Router;
-  showMenu = false; // Para controle do menu mobile
+  showMenu = false;
 
   testimonials = [
     {
+      nome: "Fulano de Tal",
+      cargo: "Professor",
+      texto: "Plataforma incrível! Facilitou muito a criação das minhas provas.",
       icon: 'pi pi-user',
-      feedback: 'A plataforma é excelente, economiza muito tempo na criação de provas!',
-      name: 'Maria Silva',
     },
     {
+      nome: "Ciclana Silva",
+      cargo: "Coordenadora Pedagógica",
+      texto: "Recomendo a todos! Muito prática e segura.",
       icon: 'pi pi-user',
-      feedback: 'Adorei a facilidade de uso e a variedade de recursos.',
-      name: 'João Pereira',
     },
+
   ];
 
-  constructor (router: Router) {
+  constructor(router: Router) {
     this.router = router;
   }
 

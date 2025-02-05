@@ -9,9 +9,9 @@ import { CardModule } from 'primeng/card';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { PaginatorModule } from 'primeng/paginator';
-import { SidebarModule } from 'primeng/sidebar';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
+import { SidebarDrawerComponent } from '../../shared/components/sidebar-drawer/sidebar-drawer.component';
 
 import { QuestionApiService } from '../../shared/services/question-api.service';
 import { SubjectApiService } from '../../shared/services/subject-api.service';
@@ -42,7 +42,7 @@ import { Router, RouterModule } from '@angular/router';
     ButtonModule,
     ToastModule,
     RouterModule,
-    SidebarModule
+    SidebarDrawerComponent
   ],
 })
 export class QuestionListComponent implements OnInit {
@@ -72,6 +72,10 @@ export class QuestionListComponent implements OnInit {
   ngOnInit(): void {
     this.loadData();
   }
+
+  trackByQuestionId(index: number, item: any): number {
+    return item.id;
+}
 
   loadData(page: number = 1, size: number = this.questions.size): void {
     forkJoin({
