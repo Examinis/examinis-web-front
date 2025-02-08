@@ -14,7 +14,7 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      @for (exam of exams; track exam.id) {
+      @for (exam of exams.results; track exam.id) {
         <div
         class="surface-card p-4 border-round shadow-2 hover:shadow-4 transition-all duration-300 border border-gray-500 rounded-md">
         <div class="flex items-center justify-between mb-2">
@@ -47,9 +47,9 @@
     </div>
 
     <div class="flex justify-center items-center mt-8">
-      <p-paginator [rows]="10" [totalRecords]="totalRecords" (onPageChange)="onPageChange($event)"></p-paginator>
 
-      <p-paginator (onPageChange)="onPageChange($event)" [first]="" />
+      <p-paginator (onPageChange)="onPageChange($event)" [first]="(exams.page - 1) * exams.size"
+        [rows]="exams.size" [totalRecords]="exams.total" [rowsPerPageOptions]="[5, 10, 15]" />
 
       <!-- <p-paginator (onPageChange)="onPageChange($event)" [first]="(questions.page - 1) * questions.size"
         [rows]="questions.size" [totalRecords]="questions.total" [rowsPerPageOptions]="[5, 10, 15]" /> -->
