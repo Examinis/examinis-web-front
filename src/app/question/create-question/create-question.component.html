@@ -33,10 +33,10 @@
           </p-select>
         </div>
       </div>
-      <p-fileupload name="questionImage" (onUpload)="onUpload($event)" accept="image/*" maxFileSize="1000000"
-        mode="advanced" [showUploadButton]="false">
+      <p-fileupload name="questionImage" (onUpload)="onUpload($event)" accept="image/*" maxFileSize="5000000"
+        mode="advanced" [showUploadButton]="false" chooseLabel="Escolher" cancelLabel="Cancelar">
         <ng-template #empty>
-          <div>Drag and drop files to here to upload.</div>
+          <div>Arraste e solte arquivos aqui para fazer upload.</div>
         </ng-template>
         <ng-template #content>
           @if (uploadedFiles.length) {

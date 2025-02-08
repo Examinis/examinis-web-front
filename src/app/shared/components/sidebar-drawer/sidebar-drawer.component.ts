@@ -1,15 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
-import { DrawerModule } from 'primeng/drawer';
-import { ButtonModule } from 'primeng/button';
-import { Ripple } from 'primeng/ripple';
-import { AvatarModule } from 'primeng/avatar';
-import { StyleClass } from 'primeng/styleclass';
-import { Drawer } from 'primeng/drawer';
 import { Router } from '@angular/router';
+import { AvatarModule } from 'primeng/avatar';
+import { ButtonModule } from 'primeng/button';
+import { Drawer, DrawerModule } from 'primeng/drawer';
+import { Ripple } from 'primeng/ripple';
 
 @Component({
   selector: 'app-sidebar-drawer',
-  imports: [DrawerModule, ButtonModule, Ripple, AvatarModule, StyleClass],
+  imports: [DrawerModule, ButtonModule, Ripple, AvatarModule],
   templateUrl: './sidebar-drawer.component.html',
   styleUrl: './sidebar-drawer.component.css'
 })
