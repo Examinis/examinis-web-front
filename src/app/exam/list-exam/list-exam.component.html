@@ -1,0 +1,59 @@
+<p-toast></p-toast>
+<p-confirmdialog [header]="'Confirmar'" [icon]="'pi pi-exclamation-triangle'"></p-confirmdialog>
+
+<app-sidebar-drawer></app-sidebar-drawer>
+
+<div class="p-4 pl-[270px] surface-ground transition-all">
+  <div class="max-w-screen-xl mx-auto">
+
+    <div class="flex items-center justify-between mb-4 w-full">
+      <h2 class="text-2xl font-semibold text-900">Provas</h2>
+      <div class="flex items-end gap-2">
+        <button pButton type="button" label="Criar Prova" routerLink="/exams/create" class="w-full md:w-auto"></button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      @for (exam of exams; track exam.id) {
+        <div
+        class="surface-card p-4 border-round shadow-2 hover:shadow-4 transition-all duration-300 border border-gray-500 rounded-md">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-xl font-semibold text-900">{{ exam.title }}</h3>
+          <div class="flex gap-2">
+            <button pButton type="button" icon="pi pi-eye" class="p-button-rounded p-button-text p-button-sm"
+              (click)="viewExam(exam.id)" pTooltip="Visualizar" tooltipPosition="top"></button>
+
+            <button pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm"
+              (click)="editExam(exam.id)" pTooltip="Editar" tooltipPosition="top"></button>
+
+            <!-- <button pButton type="button" icon="pi pi-trash"
+                class="p-button-rounded p-button-text p-button-sm p-button-danger"
+                (click)="confirmDeleteExam(exam.id)" pTooltip="Excluir" tooltipPosition="top"></button> -->
+            <button pButton type="button" icon="pi pi-trash"
+              class="p-button-rounded p-button-text p-button-sm p-button-danger" pTooltip="Excluir"
+              tooltipPosition="top"></button>
+          </div>
+        </div>
+        <div class="text-sm text-600">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-calendar"></i> <span>Criado em:</span> {{ exam.createdAt | date:'dd/MM/yyyy HH:mm' }}
+          </div>
+          <div class="flex items-center gap-2 mt-1">
+            <i class="pi pi-calendar"></i> <span>Atualizado em:</span> {{ exam.updatedAt | date:'dd/MM/yyyy HH:mm' }}
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+
+    <div class="flex justify-center items-center mt-8">
+      <p-paginator [rows]="10" [totalRecords]="totalRecords" (onPageChange)="onPageChange($event)"></p-paginator>
+
+      <p-paginator (onPageChange)="onPageChange($event)" [first]="" />
+
+      <!-- <p-paginator (onPageChange)="onPageChange($event)" [first]="(questions.page - 1) * questions.size"
+        [rows]="questions.size" [totalRecords]="questions.total" [rowsPerPageOptions]="[5, 10, 15]" /> -->
+    </div>
+
+  </div>
+</div>

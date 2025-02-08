@@ -3,6 +3,7 @@ import { CreateQuestionComponent } from './question/create-question/create-quest
 import { QuestionListComponent } from './question/list-question/list-question.component';
 import { HomeComponent } from './home/home.component';
 import { QuestionDetailsComponent } from './question/question-details/question-details.component';
+import { ListExamComponent } from './exam/list-exam/list-exam.component';
 
 export const routes: Routes = [
   {
@@ -24,6 +25,11 @@ export const routes: Routes = [
     path: 'questions/:id',
     component: QuestionDetailsComponent,
     title: 'List questions',
+  },
+  {
+    path: 'exams',
+    component: ListExamComponent,
+    title: 'List exams',
   },
   {
     path: '**',

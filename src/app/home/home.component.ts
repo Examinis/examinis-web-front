@@ -1,12 +1,10 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ToolbarModule } from 'primeng/toolbar';
+import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { CarouselModule } from 'primeng/carousel';
-import { Testimonial } from '../shared/interfaces/testimonial';
-import { CommonModule } from '@angular/common';
-import { Feature } from '../shared/interfaces/feature';
-import { Router } from '@angular/router';
+import { ToolbarModule } from 'primeng/toolbar';
 @Component({
   selector: 'app-home',
   imports: [ToolbarModule, ButtonModule, CardModule, CarouselModule, CommonModule],
