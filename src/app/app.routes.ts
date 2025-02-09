@@ -4,6 +4,7 @@ import { QuestionListComponent } from './question/list-question/list-question.co
 import { HomeComponent } from './home/home.component';
 import { QuestionDetailsComponent } from './question/question-details/question-details.component';
 import { ListExamComponent } from './exam/list-exam/list-exam.component';
+import { CreateExamDialogComponent } from './exam/create-exam-dialog/create-exam-dialog.component';
 
 export const routes: Routes = [
   {
@@ -32,9 +33,13 @@ export const routes: Routes = [
     title: 'List exams',
   },
   {
+    path: 'test-dialog',
+    component: CreateExamDialogComponent,
+    title: 'Test dialog',
+  },
+  {
     path: '**',
     component: HomeComponent,
     title: 'Home',
   },
-
 ];
