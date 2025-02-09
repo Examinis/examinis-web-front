@@ -7,7 +7,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { PaginatorModule } from 'primeng/paginator';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
@@ -37,7 +37,7 @@ import { Router, RouterModule } from '@angular/router';
     CardModule,
     TableModule,
     PaginatorModule,
-    DropdownModule,
+    SelectModule,
     ConfirmDialogModule,
     ButtonModule,
     ToastModule,
@@ -75,7 +75,7 @@ export class QuestionListComponent implements OnInit {
 
   trackByQuestionId(index: number, item: any): number {
     return item.id;
-}
+  }
 
   loadData(page: number = 1, size: number = this.questions.size): void {
     forkJoin({

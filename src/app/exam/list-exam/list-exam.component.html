@@ -3,28 +3,49 @@
 
 <app-sidebar-drawer></app-sidebar-drawer>
 
-<div class="p-4 pl-[270px] surface-ground transition-all">
+<div class="p-4 surface-ground transition-all">
   <div class="max-w-screen-xl mx-auto">
 
     <div class="flex items-center justify-between mb-4 w-full">
       <h2 class="text-2xl font-semibold text-900">Provas</h2>
-      <div class="flex items-end gap-2">
+      <div class="flex items-end gap-4">
+        <div class="col-span-1 md:col-span-1">
+          <p-select [options]="subjects" [(ngModel)]="selectedSubject" optionLabel="name" placeholder="Disciplina"
+            (onChange)="onFilterChange()" class="w-full md:w-auto" />
+        </div>
+        <div class="col-span-1 md:col-span-1">
+          <p-select [options]="difficulties" [(ngModel)]="selectedDifficulty" optionLabel="name"
+            placeholder="Dificuldade" (onChange)="onFilterChange()" class="w-full md:w-auto" />
+        </div>
+        <div class="col-span-1 md:col-span-1">
+          <span>Até</span>
+          <p-inputnumber [(ngModel)]="maxNumOfQuestions" [showButtons]="true"
+            inputId="minmax-buttons" [min]="5" [max]="20" class="mx-2">
+            <ng-template #incrementbuttonicon>
+              <span class="pi pi-plus"></span>
+            </ng-template>
+            <ng-template #decrementbuttonicon>
+              <span class="pi pi-minus"></span>
+            </ng-template>
+          </p-inputnumber>
+          <span>questões</span>
+        </div>
         <button pButton type="button" label="Criar Prova" routerLink="/exams/create" class="w-full md:w-auto"></button>
       </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       @for (exam of exams.results; track exam.id) {
-        <div
+      <div
         class="surface-card p-4 border-round shadow-2 hover:shadow-4 transition-all duration-300 border border-gray-500 rounded-md">
         <div class="flex items-center justify-between mb-2">
-          <h3 class="text-xl font-semibold text-900">{{ exam.title }}</h3>
+          <div>
+            <h3 class="text-xl font-semibold text-900">{{ exam.title }}</h3>
+            <h4 class="text-lg text-600">10 questões</h4>
+          </div>
           <div class="flex gap-2">
             <button pButton type="button" icon="pi pi-eye" class="p-button-rounded p-button-text p-button-sm"
               (click)="viewExam(exam.id)" pTooltip="Visualizar" tooltipPosition="top"></button>
-
-            <button pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm"
-              (click)="editExam(exam.id)" pTooltip="Editar" tooltipPosition="top"></button>
 
             <!-- <button pButton type="button" icon="pi pi-trash"
                 class="p-button-rounded p-button-text p-button-sm p-button-danger"
@@ -36,10 +57,11 @@
         </div>
         <div class="text-sm text-600">
           <div class="flex items-center gap-2">
-            <i class="pi pi-calendar"></i> <span>Criado em:</span> {{ exam.createdAt | date:'dd/MM/yyyy HH:mm' }}
+            <i class="pi pi-calendar-plus"></i> <span>Criado em</span> {{ exam.createdAt | date:'dd/MM/yyyy HH:mm' }}
           </div>
           <div class="flex items-center gap-2 mt-1">
-            <i class="pi pi-calendar"></i> <span>Atualizado em:</span> {{ exam.updatedAt | date:'dd/MM/yyyy HH:mm' }}
+            <i class="pi pi-calendar-clock"></i> <span>Atualizado em</span> {{ exam.updatedAt | date:'dd/MM/yyyy HH:mm'
+            }}
           </div>
         </div>
       </div>
@@ -47,12 +69,8 @@
     </div>
 
     <div class="flex justify-center items-center mt-8">
-
-      <p-paginator (onPageChange)="onPageChange($event)" [first]="(exams.page - 1) * exams.size"
-        [rows]="exams.size" [totalRecords]="exams.total" [rowsPerPageOptions]="[5, 10, 15]" />
-
-      <!-- <p-paginator (onPageChange)="onPageChange($event)" [first]="(questions.page - 1) * questions.size"
-        [rows]="questions.size" [totalRecords]="questions.total" [rowsPerPageOptions]="[5, 10, 15]" /> -->
+      <p-paginator (onPageChange)="onPageChange($event)" [first]="(exams.page - 1) * exams.size" [rows]="exams.size"
+        [totalRecords]="exams.total" [rowsPerPageOptions]="[8, 12, 16]" />
     </div>
 
   </div>
