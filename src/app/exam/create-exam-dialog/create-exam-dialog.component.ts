@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { DialogModule } from 'primeng/dialog';
+import { booleanAttribute, Component, EventEmitter, Input, Output } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-create-exam-dialog',
@@ -9,9 +9,11 @@ import { ButtonModule } from 'primeng/button';
   styleUrl: './create-exam-dialog.component.css'
 })
 export class CreateExamDialogComponent {
-  visible: boolean = false;
 
-  showDialog() {
-    this.visible = true;
+  @Input({ required: true, transform: booleanAttribute }) visible: boolean = false;
+  @Output() dialogClosed: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  onDialogClose() {
+    this.dialogClosed.emit(true);
   }
 }

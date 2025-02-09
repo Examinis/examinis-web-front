@@ -14,12 +14,13 @@ import { Subject } from '../../shared/interfaces/subject';
 import { Difficulty } from '../../shared/interfaces/difficulty';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { CreateExamDialogComponent } from '../create-exam-dialog/create-exam-dialog.component';
 
 @Component({
   selector: 'app-list-exam',
   imports: [SidebarDrawerComponent, ConfirmDialogModule, ToastModule,
     PaginatorModule, CommonModule, SelectModule, FormsModule, ButtonModule,
-    InputNumberModule
+    InputNumberModule, CreateExamDialogComponent,
   ],
   templateUrl: './list-exam.component.html',
   styleUrl: './list-exam.component.css',
@@ -36,6 +37,8 @@ export class ListExamComponent {
   difficulties: Difficulty[] = []
   selectedDifficulty?: Difficulty;
   maxNumOfQuestions: number = 10;
+
+  createExamDialogVisible: boolean = false;
 
   // constructor(private confirmationService: ConfirmationService) {}
   constructor() {}
@@ -80,6 +83,14 @@ export class ListExamComponent {
     // Lógica para paginação, ajuste conforme necessário
     console.log(event);
     // Atualize a lista de exames com base nos parâmetros de paginação
+  }
+
+  showCreateExamDialog() {
+    this.createExamDialogVisible = true;
+  }
+
+  closeCreateExamDialog() {
+    this.createExamDialogVisible = false;
   }
 
   private mockExams(): Page<Exam> {

@@ -1,6 +1,6 @@
 <div class="card flex justify-center">
-  <p-button (click)="showDialog()" label="Show" />
-  <p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '25rem' }">
+  <p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '25rem' }"
+    (onHide)="onDialogClose()">
     <ng-template #header>
       <div class="inline-flex items-center justify-center gap-2">
         <i class="pi pi-plus"></i>
