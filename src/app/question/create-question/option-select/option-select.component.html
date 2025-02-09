@@ -6,19 +6,21 @@
   <div class="flex items-center gap-4 mb-3">
     <input type="radio" id="option-{{ index }}" [value]="index" name="correctOption" class="form-radio text-blue-500"
       [(ngModel)]="selectedCorrectOption" (change)="chooseCorrectOption(index)" maxlength="500"/>
-    <input type="text" id="option-text-{{ index }}" [(ngModel)]="option.description" placeholder="Digite a alternativa"
+    <input type="text" id="option-text-{{ index }}" [(ngModel)]="option.description"
+      placeholder="Digite o texto da alternativa"
       class="w-full p-2 border border-gray-300 rounded-md focus:outline-none" (keyup)="onOptionChange()"
       maxlength="500"/>
 
     @if (options.length > 2) {
     <button type="button" (click)="removeOption(index)" class="text-red-500 hover:text-red-700">
-      Remover
+      <i class="pi pi-times"></i>
     </button>
     }
   </div>
   }
 
   <p-button type="button" (click)="addOption()">
-    Adicionar Alternativa
+    <i class="pi pi-plus"></i>
+    Adicionar
   </p-button>
 </div>
