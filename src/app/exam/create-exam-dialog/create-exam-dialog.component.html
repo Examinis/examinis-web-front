@@ -1,4 +1,4 @@
-<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '30rem' }" (onHide)="onDialogClose()">
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '27rem' }" (onHide)="onDialogClose()">
 
   <ng-template #header>
     <div class="inline-flex items-center justify-center gap-2">
@@ -14,7 +14,8 @@
   <!-- Exam's title -->
   <div class="flex flex-col items-start gap-2 mb-2">
     <label for="exam-title" class="font-normal">Título da prova</label>
-    <input type="text" pInputText [(ngModel)]="examCreateInfo.title" placeholder="Título da prova" [required]="true"/>
+    <input type="text" pInputText [(ngModel)]="examCreateInfo.title" placeholder="Título da prova"
+      [required]="true" class="w-96"/>
   </div>
 
   <!-- Exam's initial instructions -->
@@ -26,7 +27,7 @@
   -->
   <div class="flex flex-col items-start gap-2 mb-2">
     <label for="exam-instructions" class="font-normal">Instruções iniciais</label>
-    <textarea pTextarea [(ngModel)]="examCreateInfo.instructions" rows="2" cols="35"
+    <textarea pTextarea [(ngModel)]="examCreateInfo.instructions" rows="2" class="w-96"
       placeholder="O que você gostaria que os alunos soubessem antes de começar a prova?">
     </textarea>
   </div>
@@ -36,7 +37,7 @@
     <label for="subject-select" (click)="subjectSelect.show(true)">Matéria</label>
     <p-select #subjectSelect id="subject-select" [options]="subjects" optionLabel="name" [filter]="true" filterBy="name"
       [showClear]="true" placeholder="Selecione uma matéria" [required]="true" name="subject"
-      [(ngModel)]="examCreateInfo.subject_id">
+      [(ngModel)]="examCreateInfo.subject_id" [appendTo]="'body'" class="w-96">
       <ng-template let-selectedOption>
         <div>{{ selectedOption.name }}</div>
       </ng-template>
@@ -46,8 +47,8 @@
   <!-- Number of questions -->
   <div class="flex flex-col items-start gap-2 mb-2">
     <label for="question-num" class="font-normal">Quantidade de questões</label>
-    <p-inputnumber [(ngModel)]="numberOfQuestions" [showButtons]="true" inputId="question-num" size="small" [min]="5"
-      [max]="20" [required]="true" name="number-of-questions">
+    <p-inputnumber [(ngModel)]="numberOfQuestions" [showButtons]="true" inputId="question-num" [min]="5"
+      [max]="20" [required]="true" name="number-of-questions" class="w-96">
       <ng-template #incrementbuttonicon>
         <span class="pi pi-plus"></span>
       </ng-template>
