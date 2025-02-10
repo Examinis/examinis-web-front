@@ -4,6 +4,7 @@
 <app-sidebar-drawer></app-sidebar-drawer>
 
 <app-create-exam-dialog [visible]="createExamDialogVisible"
+  [subjects]="subjects"
   (dialogClosed)="closeCreateExamDialog()"></app-create-exam-dialog>
 
 <div class="p-4 surface-ground transition-all">

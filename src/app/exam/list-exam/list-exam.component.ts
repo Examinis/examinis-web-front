@@ -15,6 +15,9 @@ import { Difficulty } from '../../shared/interfaces/difficulty';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { CreateExamDialogComponent } from '../create-exam-dialog/create-exam-dialog.component';
+import { SubjectApiService } from '../../shared/services/subject-api.service';
+import { catchError, forkJoin, of } from 'rxjs';
+import { DifficultyApiService } from '../../shared/services/difficulty-api.service';
 
 @Component({
   selector: 'app-list-exam',
@@ -27,7 +30,6 @@ import { CreateExamDialogComponent } from '../create-exam-dialog/create-exam-dia
   providers: [MessageService, ConfirmationService]
 })
 export class ListExamComponent {
-  private router: Router = inject(Router);
 
   exams: Page<Exam> = { total: 0, page: 1, size: 8, results: [] };
   filteredExams: Exam[] = [];
@@ -40,10 +42,29 @@ export class ListExamComponent {
 
   createExamDialogVisible: boolean = false;
 
+  private router: Router = inject(Router);
+  private subjectApiService: SubjectApiService = inject(SubjectApiService);
+  private difficultyApiService: DifficultyApiService = inject(DifficultyApiService);
+
   // constructor(private confirmationService: ConfirmationService) {}
-  constructor() {}
+  constructor() { }
 
   ngOnInit() {
+    // Fetch subjects and difficulties
+    forkJoin({
+      subjects: this.subjectApiService.getSubjects().pipe(
+        catchError(() => of([]))
+      ),
+      difficulties: this.difficultyApiService.getDifficulties().pipe(
+        catchError(() => of([]))
+      )
+    }).subscribe({
+      next: ({ subjects, difficulties }) => {
+        this.subjects = subjects;
+        this.difficulties = difficulties;
+      },
+      error: (error) => console.error('Error in forkJoin', error),
+    });
     // Carregue os dados das provas aqui, por exemplo, de um serviço
     // this.examService.getExams().subscribe(exams => this.exams = exams);
     this.exams = this.mockExams();

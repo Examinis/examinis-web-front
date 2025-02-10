@@ -15,7 +15,7 @@
   <div class="flex flex-col items-start gap-2 mb-2">
     <label for="exam-title" class="font-normal">Título da prova</label>
     <input type="text" pInputText [(ngModel)]="examCreateInfo.title" placeholder="Título da prova"
-      [required]="true" class="w-96"/>
+      name="title" [required]="true" class="w-96"/>
   </div>
 
   <!-- Exam's initial instructions -->
@@ -28,7 +28,8 @@
   <div class="flex flex-col items-start gap-2 mb-2">
     <label for="exam-instructions" class="font-normal">Instruções iniciais</label>
     <textarea pTextarea [(ngModel)]="examCreateInfo.instructions" rows="2" class="w-96"
-      placeholder="O que você gostaria que os alunos soubessem antes de começar a prova?">
+      placeholder="O que você gostaria que os alunos soubessem antes de começar a prova?"
+      name="instructions" maxlength="500">
     </textarea>
   </div>
 
