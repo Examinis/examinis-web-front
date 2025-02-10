@@ -1,24 +1,66 @@
-<div class="card flex justify-center">
-  <p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '25rem' }"
-    (onHide)="onDialogClose()">
-    <ng-template #header>
-      <div class="inline-flex items-center justify-center gap-2">
-        <i class="pi pi-plus"></i>
-        <span class="font-bold whitespace-nowrap">Gerar nova prova</span>
-      </div>
-    </ng-template>
-    <span class="text-surface-500 dark:text-surface-400 block mb-8">Update your information.</span>
-    <div class="flex items-center gap-4 mb-4">
-      <label for="username" class="font-semibold w-24">Username</label>
-      <input pInputText id="username" class="flex-auto" autocomplete="off" />
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '30rem' }" (onHide)="onDialogClose()">
+
+  <ng-template #header>
+    <div class="inline-flex items-center justify-center gap-2">
+      <i class="pi pi-plus"></i>
+      <span class="font-bold whitespace-nowrap">Gerar nova prova</span>
     </div>
-    <div class="flex items-center gap-4 mb-2">
-      <label for="email" class="font-semibold w-24">Email</label>
-      <input pInputText id="email" class="flex-auto" autocomplete="off" />
-    </div>
-    <ng-template #footer>
-      <p-button label="Cancel" [outlined]="true" severity="danger" (click)="visible = false" />
-      <p-button label="Save" severity="success" (click)="visible = false" />
-    </ng-template>
-  </p-dialog>
-</div>
+  </ng-template>
+
+  <span class="text-surface-500 dark:text-surface-400 block mb-4">
+    Informe como você quer que sua prova seja gerada.
+  </span>
+
+  <!-- Exam's title -->
+  <div class="flex flex-col items-start gap-2 mb-2">
+    <label for="exam-title" class="font-normal">Título da prova</label>
+    <input type="text" pInputText [(ngModel)]="examCreateInfo.title" placeholder="Título da prova" [required]="true"/>
+  </div>
+
+  <!-- Exam's initial instructions -->
+
+  <!--
+    Example:
+    This test consists of 10 questions. Each question has 4 options, but only one is correct.
+    Choose the correct option and click on the "Next" button to go to the next question.
+  -->
+  <div class="flex flex-col items-start gap-2 mb-2">
+    <label for="exam-instructions" class="font-normal">Instruções iniciais</label>
+    <textarea pTextarea [(ngModel)]="examCreateInfo.instructions" rows="2" cols="35"
+      placeholder="O que você gostaria que os alunos soubessem antes de começar a prova?">
+    </textarea>
+  </div>
+
+  <!-- Exam's subject -->
+  <div class="flex flex-col items-start gap-2 mb-2">
+    <label for="subject-select" (click)="subjectSelect.show(true)">Matéria</label>
+    <p-select #subjectSelect id="subject-select" [options]="subjects" optionLabel="name" [filter]="true" filterBy="name"
+      [showClear]="true" placeholder="Selecione uma matéria" [required]="true" name="subject"
+      [(ngModel)]="examCreateInfo.subject_id">
+      <ng-template let-selectedOption>
+        <div>{{ selectedOption.name }}</div>
+      </ng-template>
+    </p-select>
+  </div>
+
+  <!-- Number of questions -->
+  <div class="flex flex-col items-start gap-2 mb-2">
+    <label for="question-num" class="font-normal">Quantidade de questões</label>
+    <p-inputnumber [(ngModel)]="numberOfQuestions" [showButtons]="true" inputId="question-num" size="small" [min]="5"
+      [max]="20" [required]="true" name="number-of-questions">
+      <ng-template #incrementbuttonicon>
+        <span class="pi pi-plus"></span>
+      </ng-template>
+      <ng-template #decrementbuttonicon>
+        <span class="pi pi-minus"></span>
+      </ng-template>
+    </p-inputnumber>
+  </div>
+
+  <!-- Actions -->
+  <ng-template #footer>
+    <p-button label="Cancel" [outlined]="true" severity="danger" (click)="visible = false" />
+    <p-button label="Save" severity="success" (click)="visible = false" />
+  </ng-template>
+
+</p-dialog>
