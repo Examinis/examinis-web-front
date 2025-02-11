@@ -103,13 +103,13 @@
         </p-message> 
       }
     </div>
+    
+    <!-- Actions -->
+    <div class="flex justify-end gap-4 mt-4">
+      <p-button label="Cancelar" [outlined]="true" severity="danger" (click)="visible = false" />
+      <p-button type="submit" label="Criar" severity="success" />
+    </div>
   
   </form>
-
-  <!-- Actions -->
-  <ng-template #footer>
-    <p-button label="Cancelar" [outlined]="true" severity="danger" (click)="visible = false" />
-    <p-button label="Criar" severity="success" (click)="visible = false" />
-  </ng-template>
 
 </p-dialog>
