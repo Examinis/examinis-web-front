@@ -1,18 +1,21 @@
 import { booleanAttribute, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NgClass } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { FormsModule } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
+import { SelectModule } from 'primeng/select';
+import { TextareaModule } from 'primeng/textarea';
 import { ExamCreate } from '../../shared/interfaces/exam/exam-create';
 import { Subject } from '../../shared/interfaces/subject';
-import { SelectModule } from 'primeng/select';
-import { InputTextModule } from 'primeng/inputtext';
-import { TextareaModule } from 'primeng/textarea';
 
 @Component({
   selector: 'app-create-exam-dialog',
   imports: [DialogModule, ButtonModule, InputNumberModule, FormsModule,
-    SelectModule, InputTextModule, TextareaModule,],
+    SelectModule, InputTextModule, TextareaModule, MessageModule,
+    ReactiveFormsModule, NgClass],
   templateUrl: './create-exam-dialog.component.html',
   styleUrl: './create-exam-dialog.component.css'
 })
@@ -22,11 +25,28 @@ export class CreateExamDialogComponent implements OnInit {
   @Input({ required: true }) subjects: Subject[] = [];
   @Output() dialogClosed: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  examCreateInfo: ExamCreate = { title: '', instructions: '', subject_id: 0, amount: 0 };
-  
   selectedSubject?: Subject;
 
-  numberOfQuestions: number = 10;
+  examCreateInfo: ExamCreate = { title: '', instructions: '', subject_id: 0, amount: 0 };
+  examCreationForm = new FormGroup({
+    title: new FormControl('', Validators.required),
+    instructions: new FormControl(''),
+    subject: new FormControl({
+      id: 0,
+      name: ''
+    } as Subject, Validators.required),
+    amount: new FormControl(5, Validators.required)
+  });
+  
+  // numberOfQuestions: number = 10;
+
+  get title() { return this.examCreationForm.get('title'); }
+  
+  get instructions() { return this.examCreationForm.get('instructions'); }
+  
+  get subject() { return this.examCreationForm.get('subject'); }
+  
+  get amount() { return this.examCreationForm.get('amount'); }
 
   ngOnInit(): void {
     
@@ -34,5 +54,17 @@ export class CreateExamDialogComponent implements OnInit {
 
   onDialogClose() {
     this.dialogClosed.emit(true);
+  }
+
+  createExam() {
+    // Check if the form is valid
+    if (this.examCreationForm.invalid) { return; }
+
+    const examCreationInfoToSend: ExamCreate = {
+      title: this.examCreationForm.value.title || '',
+      instructions: this.examCreationForm.value.instructions || '',
+      subject_id: this.examCreationForm.value.subject?.id || 0,
+      amount: this.examCreationForm.value.amount || 0
+    };
   }
 }
