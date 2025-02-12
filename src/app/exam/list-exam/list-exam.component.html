@@ -3,6 +3,10 @@
 
 <app-sidebar-drawer></app-sidebar-drawer>
 
+<app-create-exam-dialog [visible]="createExamDialogVisible"
+  [subjects]="subjects"
+  (dialogClosed)="closeCreateExamDialog()"></app-create-exam-dialog>
+
 <div class="p-4 surface-ground transition-all">
   <div class="max-w-screen-xl mx-auto">
 
@@ -30,7 +34,8 @@
           </p-inputnumber>
           <span>questões</span>
         </div>
-        <button pButton type="button" label="Criar Prova" routerLink="/exams/create" class="w-full md:w-auto"></button>
+        <p-button type="button" label="Criar prova" class="w-full md:w-auto"
+          (click)="showCreateExamDialog()" />
       </div>
     </div>
 
