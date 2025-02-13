@@ -90,9 +90,26 @@ export class ListExamComponent {
 
   // Retorna o número de questões de um exame
   getNumQuestions(exam: Exam): number {
-    return exam.questions?.length || 0;
+    return exam.total_question;
   }
 
+  formatDate(dateString: string): string {
+    // Converte a string "dd/MM/yyyy HH:mm:ss" para um objeto Date
+    const [datePart, timePart] = dateString.split(' ');
+    const [day, month, year] = datePart.split('/');
+    const [hour, minute, second] = timePart.split(':');
+    const date = new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}`);
+
+    // Formata a data usando o pipe date do Angular
+    return date.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+  }
   // Navega para a página de visualização de um exame
   viewExam(examId: number) {
     this.router.navigate(['/exams', examId]);
@@ -136,9 +153,8 @@ export class ListExamComponent {
 
     this.filteredExams = this.exams.results.filter(exam => {
       const subjectMatch = this.selectedSubject ? exam.subject.id === this.selectedSubject.id : true;
-      const difficultyMatch = this.selectedDifficulty ? exam.difficultyId === this.selectedDifficulty.id : true;
-      const numQuestionsMatch = this.maxNumOfQuestions ? (exam.questions?.length || 0) <= this.maxNumOfQuestions : true;
-      return subjectMatch && difficultyMatch && numQuestionsMatch;
+      const numQuestionsMatch = this.maxNumOfQuestions ? (exam.total_question || 0) <= this.maxNumOfQuestions : true;
+      return subjectMatch && numQuestionsMatch;
     });
   }
 

@@ -1,10 +1,7 @@
 export interface Exam {
-  difficultyId: number | undefined;
   id: number;
   title: string;
-  instructions: string; // Enunciado da prova
   created_at: string; // Data de criação (string)
-  updated_at: string; // Data de atualização (string)
   user: { // Professor criador
     id: number;
     first_name: string;
@@ -14,13 +11,5 @@ export interface Exam {
     id: number;
     name: string;
   };
-  questions: { // Lista de questões
-    id: number;
-    text: string;
-    options: {
-      id: number;
-      description: string;
-      letter: string;
-    }[];
-  }[];
+  total_question: number; // Quantidade de questões
 }

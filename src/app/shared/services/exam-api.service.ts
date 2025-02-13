@@ -79,13 +79,10 @@ export class ExamApiService {
     return {
       id: exam.id,
       title: exam.title,
-      instructions: exam.instructions,
-      difficultyId: exam.difficultyId,
       created_at: exam.created_at,
-      updated_at: exam.updated_at,
       user: exam.user || { id: 0, first_name: 'Não informado', last_name: '' },
       subject: exam.subject || { id: 0, name: 'Não informado' },
-      questions: exam.questions || [] // Garante que questions seja um array vazio se não estiver definido
+      total_question: exam.total_question
     };
   }
 }
