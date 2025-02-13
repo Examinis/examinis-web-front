@@ -24,14 +24,8 @@ export class ExamApiService {
    * @returns {Observable<Page<Exam>>} An observable containing the paginated list of exams.
    */
   getExams(page: number = 1, size: number = 10): Observable<Page<Exam>> {
-    return this.http.get<Page<Exam>>(`${this.BASE_URL}?page=${page}&size=${size}`).pipe(
-      map((pageData: Page<any>) => ({
-        ...pageData,
-        results: pageData.results.map(exam => this.convertToCamelCase(exam))
-      }))
-    );
+    return this.http.get<Page<Exam>>(`${this.BASE_URL}?page=${page}&size=${size}`);
   }
-
 
   /**
    * Get an exam by ID
@@ -91,16 +85,6 @@ export class ExamApiService {
       numQuestions: exam.num_questions || exam.numQuestions || 0,
       subject: exam.subject || { id: 0, name: 'Não informado' }
     };
-  }
-  private convertToDate(dateString: string | Date): Date | null {
-    if (!dateString) return null; // Handle null or undefined
-
-    if (typeof dateString === 'string') {
-      const date = new Date(dateString);
-      return isNaN(date.getTime()) ? null : date; // Validate date
-    }
-
-    return dateString; // If already a Date object, return as is
   }
 
 }

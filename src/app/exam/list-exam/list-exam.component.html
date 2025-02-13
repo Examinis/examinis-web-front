@@ -40,38 +40,37 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <ng-container *ngIf="exams.results && exams.results.length > 0; else noData">
-        <div *ngFor="let exam of exams.results; trackBy: trackById"
-  class="surface-card p-4 border-round shadow-2 hover:shadow-4 transition-all duration-300 border border-gray-500 rounded-md">
-  <div class="flex items-center justify-between mb-2">
-    <div>
-      <h3 class="text-xl font-semibold text-900">{{ exam.title }}</h3>
-      <h4 class="text-lg text-600">{{ exam.numQuestions }} questões</h4>
-      <h5 class="text-md text-700">Disciplina: {{ exam.subject.name }}</h5>
-    </div>
-    <div class="flex gap-2">
-      <button pButton type="button" icon="pi pi-eye" class="p-button-rounded p-button-text p-button-sm"
-        (click)="viewExam(exam.id)" pTooltip="Visualizar" tooltipPosition="top"></button>
+      @for (exam of exams.results; track exam.id) {
+      <div
+        class="surface-card p-4 border-round shadow-2 hover:shadow-4 transition-all duration-300 border border-gray-500 rounded-md">
+        <div class="flex items-center justify-between mb-2">
+          <div>
+            <h3 class="text-xl font-semibold text-900">{{ exam.title }}</h3>
+            <h4 class="text-lg text-600">10 questões</h4>
+          </div>
+          <div class="flex gap-2">
+            <button pButton type="button" icon="pi pi-eye" class="p-button-rounded p-button-text p-button-sm"
+              (click)="viewExam(exam.id)" pTooltip="Visualizar" tooltipPosition="top"></button>
 
-      <button pButton type="button" icon="pi pi-trash"
-        class="p-button-rounded p-button-text p-button-sm p-button-danger"
-        (click)="confirmDeleteExam(exam.id)" pTooltip="Excluir" tooltipPosition="top"></button>
-    </div>
-  </div>
-  <div class="text-sm text-600">
-    <div class="flex items-center gap-2">
-      <i class="pi pi-calendar-plus"></i> <span>Criado em</span> {{ exam.createdAt | date:'dd/MM/yyyy HH:mm' }}
-    </div>
-    <div class="flex items-center gap-2 mt-1">
-      <i class="pi pi-calendar-clock"></i> <span>Atualizado em</span> {{ exam.updatedAt | date:'dd/MM/yyyy HH:mm' }}
-    </div>
-  </div>
-</div>
-      </ng-container>
-
-      <ng-template #noData>
-        <p class="text-center text-gray-500">Nenhuma prova encontrada.</p>
-      </ng-template>
+            <!-- <button pButton type="button" icon="pi pi-trash"
+                class="p-button-rounded p-button-text p-button-sm p-button-danger"
+                (click)="confirmDeleteExam(exam.id)" pTooltip="Excluir" tooltipPosition="top"></button> -->
+            <button pButton type="button" icon="pi pi-trash"
+              class="p-button-rounded p-button-text p-button-sm p-button-danger" pTooltip="Excluir"
+              tooltipPosition="top"></button>
+          </div>
+        </div>
+        <div class="text-sm text-600">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-calendar-plus"></i> <span>Criado em</span> {{ exam.createdAt | date:'dd/MM/yyyy HH:mm' }}
+          </div>
+          <div class="flex items-center gap-2 mt-1">
+            <i class="pi pi-calendar-clock"></i> <span>Atualizado em</span> {{ exam.updatedAt | date:'dd/MM/yyyy HH:mm'
+            }}
+          </div>
+        </div>
+      </div>
+      }
     </div>
 
     <div class="flex justify-center items-center mt-8">

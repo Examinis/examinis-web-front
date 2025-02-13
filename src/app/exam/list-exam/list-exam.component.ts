@@ -47,7 +47,7 @@ export class ListExamComponent {
   private subjectApiService: SubjectApiService = inject(SubjectApiService);
   private difficultyApiService: DifficultyApiService = inject(DifficultyApiService);
   private examApiService: ExamApiService = inject(ExamApiService);
-  private confirmationService: ConfirmationService = inject(ConfirmationService);
+
   constructor() { }
 
   ngOnInit() {
@@ -98,35 +98,14 @@ export class ListExamComponent {
 
   closeCreateExamDialog() {
     this.createExamDialogVisible = false;
-
-    // Recarrega os exames para incluir o novo
-    this.examApiService.getExams(this.exams.page, this.exams.size).subscribe(exams => {
-      this.exams = exams;
-    });
   }
+onFilterChange() {
+  console.log("Filtro alterado", this.selectedSubject, this.selectedDifficulty, this.maxNumOfQuestions);
 
-  onFilterChange() {
-    console.log("Filtro alterado", this.selectedSubject, this.selectedDifficulty, this.maxNumOfQuestions);
-
-    this.filteredExams = this.exams.results.filter(exam => {
-      const subjectMatch = this.selectedSubject ? exam.subjectId === this.selectedSubject.id : true;
-      const difficultyMatch = this.selectedDifficulty ? exam.difficultyId === this.selectedDifficulty.id : true;
-      return subjectMatch && difficultyMatch;
-    });
-  }
-
-  trackById(index: number, exam: Exam): number {
-    return exam.id;
-  }
-
-confirmDeleteExam(examId: number) {
-  this.confirmationService.confirm({
-    message: 'Tem certeza de que deseja excluir esta prova?',
-    header: 'Confirmação',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => {
-      this.deleteExam(examId);
-    }
+  this.filteredExams = this.exams.results.filter(exam => {
+    const subjectMatch = this.selectedSubject ? exam.subjectId === this.selectedSubject.id : true;
+    const difficultyMatch = this.selectedDifficulty ? exam.difficultyId === this.selectedDifficulty.id : true;
+    return subjectMatch && difficultyMatch;
   });
 }
 

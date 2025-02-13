@@ -6,7 +6,7 @@ export interface Exam {
   userId: number;
   subjectId?: number;
   difficultyId?: number;
-  numQuestions?: number;
+  numQuestions: number; // Número de questões
   subject: { id: number; name: string }; // Matéria (Disciplina)
 }
 
