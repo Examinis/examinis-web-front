@@ -24,8 +24,14 @@ export class ExamApiService {
    * @returns {Observable<Page<Exam>>} An observable containing the paginated list of exams.
    */
   getExams(page: number = 1, size: number = 10): Observable<Page<Exam>> {
-    return this.http.get<Page<Exam>>(`${this.BASE_URL}?page=${page}&size=${size}`);
+    return this.http.get<Page<Exam>>(`${this.BASE_URL}?page=${page}&size=${size}`).pipe(
+      map((pageData: Page<any>) => ({
+        ...pageData,
+        results: pageData.results.map(exam => this.convertToCamelCase(exam))
+      }))
+    );
   }
+
 
   /**
    * Get an exam by ID
@@ -69,17 +75,32 @@ export class ExamApiService {
   }
 
   /**
-   * Converts an `Exam` object to a format with camelCase properties.
-   * @param {Exam} exam - The exam object received from the API.
-   * @returns {Exam} The converted exam object with camelCase properties.
-   */
-  private convertToCamelCase(exam: Exam): Exam {
+ * Converts an `Exam` object to a format with camelCase properties.
+ * @param {Exam} exam - The exam object received from the API.
+ * @returns {Exam} The converted exam object with camelCase properties.
+ */
+  private convertToCamelCase(exam: any): Exam {
     return {
       id: exam.id,
       title: exam.title,
-      createdAt: exam.createdAt,
-      updatedAt: exam.updatedAt,
-      userId: exam.userId
+      createdAt: exam.created_at || exam.createdAt,
+      updatedAt: exam.updated_at || exam.updatedAt,
+      userId: exam.user_id || exam.userId,
+      subjectId: exam.subject_id || exam.subjectId,
+      difficultyId: exam.difficulty_id || exam.difficultyId,
+      numQuestions: exam.num_questions || exam.numQuestions || 0,
+      subject: exam.subject || { id: 0, name: 'Não informado' }
     };
   }
+  private convertToDate(dateString: string | Date): Date | null {
+    if (!dateString) return null; // Handle null or undefined
+
+    if (typeof dateString === 'string') {
+      const date = new Date(dateString);
+      return isNaN(date.getTime()) ? null : date; // Validate date
+    }
+
+    return dateString; // If already a Date object, return as is
+  }
+
 }

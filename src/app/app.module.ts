@@ -11,6 +11,7 @@ import { FilterCategoryPipe } from './shared/pipes/filter-category.pipe';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 import { Sidebar, SidebarModule } from 'primeng/sidebar';
+import { DateStringToDatePipe } from './shared/pipes/date-to-string.pipe';
 
 @NgModule({
   declarations: [],
@@ -27,10 +28,11 @@ import { Sidebar, SidebarModule } from 'primeng/sidebar';
     PanelModule,
     CreateQuestionComponent,
     Sidebar,
-    SidebarModule
+    SidebarModule,
+    DateStringToDatePipe
   ],
   providers: [
-    
+
 
   ]
 })
