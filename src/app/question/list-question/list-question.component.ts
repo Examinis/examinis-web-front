@@ -199,6 +199,19 @@ export class QuestionListComponent implements OnInit {
     this.applyFilters();
   }
 
+  toggleQuestionSelection(questionId?: number) {
+    if (!this.isSelectingQuestions || !questionId) { return; }
+    
+    if (this.examToBeCreated.questions.includes(questionId)) {
+      this.examToBeCreated.questions = this.examToBeCreated.questions.filter(
+        (id) => id !== questionId);
+    } else {
+      this.examToBeCreated.questions.push(questionId);
+    }
+
+    console.log('Questions selected:', this.examToBeCreated.questions);
+  }
+
   toggleSidebar() {
     this.sidebarVisible = !this.sidebarVisible; // Alterna a visibilidade do Sidebar
   }

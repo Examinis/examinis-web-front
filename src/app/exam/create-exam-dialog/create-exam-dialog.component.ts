@@ -44,10 +44,7 @@ export class CreateExamDialogComponent {
   examCreationForm = new FormGroup({
     title: new FormControl('', Validators.required),
     instructions: new FormControl(''),
-    subject: new FormControl({
-      id: 0,
-      name: ''
-    } as Subject, Validators.required),
+    subject: new FormControl<Subject | null>(null, Validators.required),
     amount: new FormControl(5, [Validators.required, Validators.min(5), Validators.max(20)])
   });
 
