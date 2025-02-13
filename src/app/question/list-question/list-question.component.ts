@@ -24,6 +24,8 @@ import { Subject } from '../../shared/interfaces/subject';
 
 
 import { Router, RouterModule } from '@angular/router';
+import { ExamAutomaticCreate, ExamCreate, ExamManualCreate } from '../../shared/interfaces/exam/exam-create';
+import { ExamApiService } from '../../shared/services/exam-api.service';
 
 
 @Component({
@@ -51,11 +53,13 @@ export class QuestionListComponent implements OnInit {
   
   private questionApiService = inject(QuestionApiService);
   private subjectApiService = inject(SubjectApiService);
+  private examApiService: ExamApiService = inject(ExamApiService);
   private confirmationService: ConfirmationService = inject(ConfirmationService);
   private messageService: MessageService = inject(MessageService);
   private router: Router = inject(Router);
 
   questions: Page<Question> = { total: 0, page: 1, size: 10, results: [] };
+  examToBeCreated?: ExamManualCreate;
   filteredQuestions: Question[] = [];
 
   subjects: Subject[] = [];
@@ -172,6 +176,11 @@ export class QuestionListComponent implements OnInit {
         });
       },
     });
+  }
+
+  handleDialogSubmitted(examData: ExamAutomaticCreate | ExamManualCreate): void {
+    this.examToBeCreated = examData as ExamManualCreate;
+
   }
 
   toggleSidebar() {

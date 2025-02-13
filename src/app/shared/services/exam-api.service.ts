@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
-import { ExamCreate } from '../interfaces/exam/exam-create';
+import { ExamAutomaticCreate } from '../interfaces/exam/exam-create';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -15,11 +15,11 @@ export class ExamApiService {
   /**
    * Sends an exam to be automatically created by sending a POST request to the server.
    *
-   * @param {ExamCreate} exam - The exam data to be created.
-   * @returns {Observable<ExamCreate>} An observable containing the created exam data.
+   * @param {ExamAutomaticCreate} exam - The exam data to be created.
+   * @returns {Observable<ExamAutomaticCreate>} An observable containing the created exam data.
    */
-  createExamAutomatically(exam: ExamCreate): Observable<ExamCreate> {
-    return this.http.post<ExamCreate>(`${this.BASE_URL}/automatic`, exam);
+  createExamAutomatically(exam: ExamAutomaticCreate): Observable<ExamAutomaticCreate> {
+    return this.http.post<ExamAutomaticCreate>(`${this.BASE_URL}/automatic`, exam);
   }
 
   constructor() { }

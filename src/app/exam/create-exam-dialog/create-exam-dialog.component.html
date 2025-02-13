@@ -11,11 +11,14 @@
     Informe como você quer que sua prova seja gerada.
   </span>
 
-  <form [formGroup]="examCreationForm" (ngSubmit)="createExam()">
+  <form [formGroup]="examCreationForm" (ngSubmit)="onCreateDialogSubmit()">
    
     <!-- Exam's title -->
     <div class="flex flex-col items-start gap-2 mb-2">
-      <label for="exam-title" class="font-normal">Título da prova</label>
+      <div>
+        <label for="exam-title" class="font-normal">Título da prova</label>
+        <span [style]="{ color: 'red' }"> *</span>
+      </div>
       <input type="text"
         pInputText
         formControlName="title"
@@ -52,7 +55,10 @@
   
     <!-- Exam's subject -->
     <div class="flex flex-col items-start gap-2 mb-2">
-      <label for="subject-select" (click)="subjectSelect.show(true)">Matéria</label>
+      <div>
+        <label for="subject-select" (click)="subjectSelect.show(true)">Matéria</label>
+        <span [style]="{ color: 'red' }"> *</span>
+      </div>
       <p-select #subjectSelect
         id="subject-select"
         [options]="subjects"
@@ -109,7 +115,11 @@
     <!-- Actions -->
     <div class="flex justify-end gap-4 mt-4">
       <p-button label="Cancelar" [outlined]="true" severity="danger" (click)="visible = false" />
-      <p-button type="submit" label="Criar" severity="success" />
+      @if (isAutomaticGeneration) {
+        <p-button type="submit" label="Criar" severity="success" />
+      } @else {
+        <p-button type="submit" label="Escolher questões" severity="success" />
+      }
     </div>
   
   </form>

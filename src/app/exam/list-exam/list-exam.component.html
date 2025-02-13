@@ -6,6 +6,7 @@
 <app-create-exam-dialog [visible]="createExamDialogVisible"
   [subjects]="subjects"
   [isAutomaticGeneration]="true"
+  (examSubmitted)="handleDialogSubmitted($event)"
   (dialogClosed)="closeCreateExamDialog()"></app-create-exam-dialog>
 
 <div class="p-4 surface-ground transition-all">
