@@ -19,13 +19,22 @@ import { Subject } from '../../shared/interfaces/subject';
   templateUrl: './create-exam-dialog.component.html',
   styleUrl: './create-exam-dialog.component.css'
 })
-export class CreateExamDialogComponent implements OnInit {
+export class CreateExamDialogComponent {
 
   @Input({ required: true, transform: booleanAttribute }) visible: boolean = false;
   @Input({ required: true, transform: booleanAttribute }) isAutomaticGeneration: boolean = false;
   @Input({ required: true }) subjects: Subject[] = [];
   @Output() dialogClosed: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() examSubmitted: EventEmitter<ExamAutomaticCreate | ExamManualCreate> = new EventEmitter<ExamAutomaticCreate | ExamManualCreate>();
+  // This emitter means an automatic exam creation (no need to select questions manually)
+  @Output() examSubmitted: EventEmitter<ExamAutomaticCreate | ExamManualCreate> =
+    new EventEmitter<ExamAutomaticCreate | ExamManualCreate>();
+  // This emitter means a basic info submitted (title, instructions and subject) for a manual
+  // exam creation. You need to choose the questions manually
+  @Output() basicInfoSubmitted: EventEmitter<ExamManualCreate> = new EventEmitter<
+    ExamManualCreate>();
+  // This event is emmitted when the user clicks on the "Choose questions" button in the dialog
+  // to select the questions for the exam
+  @Output() chooseQuestionsPressed: EventEmitter<Subject> = new EventEmitter<Subject>();
 
   selectedSubject?: Subject;
 
@@ -47,46 +56,54 @@ export class CreateExamDialogComponent implements OnInit {
   get subject() { return this.examCreationForm.get('subject'); }
   get amount() { return this.examCreationForm.get('amount'); }
 
-  ngOnInit(): void {
-
-  }
-
   onDialogClose() {
     this.dialogClosed.emit(true);
   }
 
   // TODO - validate createExam and createExamAutomatically methods
-  onCreateDialogSubmit() {
-
+  /**
+   * Handles the submission of the exam creation dialog.
+   * 
+   * This method performs the following actions:
+   * 1. Marks all fields in the exam creation form as touched to display any validation error messages.
+   * 2. Checks if the form is valid. If the form is invalid, the method returns early.
+   * 3. Depending on the value of `isAutomaticGeneration`, it either emits an automatic exam creation event or a manual exam creation event.
+   * 4. Closes the dialog.
+   * 
+   * @returns {void}
+   */
+  onCreateDialogSubmit(): void {
     // Mark all fields as touched to show the error messages if the form is invalid
     this.examCreationForm.markAllAsTouched();
-
     // Check if the form is valid
     if (this.examCreationForm.invalid) { return; }
 
-
-    let examCreationInfoToSend: ExamAutomaticCreate | ExamManualCreate;
-
     if (this.isAutomaticGeneration) {
-      examCreationInfoToSend = {
-        title: this.examCreationForm.value.title || '',
-        instructions: this.examCreationForm.value.instructions || '',
-        subject_id: this.examCreationForm.value.subject?.id || 0,
-        amount: this.examCreationForm.value.amount || 0
-      };
+      this.emitAutomaticExamCreation();
     } else {
-      examCreationInfoToSend = {
-        title: this.examCreationForm.value.title || '',
-        instructions: this.examCreationForm.value.instructions || '',
-        subject_id: this.examCreationForm.value.subject?.id || 0,
-        amount: this.examCreationForm.value.amount || 0,
-        questions: []
-      };
+      this.emitManualExamCreation();
+      this.chooseQuestionsPressed.emit(
+        this.examCreationForm.value.subject || {id: 0, name: ''});
     }
 
-
-    this.examSubmitted.emit(examCreationInfoToSend);
     this.onDialogClose();
   }
 
+  private emitAutomaticExamCreation() {
+    this.examSubmitted.emit({
+      title: this.examCreationForm.value.title || '',
+      instructions: this.examCreationForm.value.instructions || '',
+      subject_id: this.examCreationForm.value.subject?.id || 0,
+      amount: this.examCreationForm.value.amount || 0
+    } as ExamAutomaticCreate);
+  }
+
+  private emitManualExamCreation() {
+    this.basicInfoSubmitted.emit({
+      title: this.examCreationForm.value.title || '',
+      instructions: this.examCreationForm.value.instructions || '',
+      subject_id: this.examCreationForm.value.subject?.id || 0,
+      questions: []
+    } as ExamManualCreate);
+  }
 }

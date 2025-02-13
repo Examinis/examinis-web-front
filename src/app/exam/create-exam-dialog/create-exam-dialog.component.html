@@ -56,11 +56,11 @@
     <!-- Exam's subject -->
     <div class="flex flex-col items-start gap-2 mb-2">
       <div>
-        <label for="subject-select" (click)="subjectSelect.show(true)">Matéria</label>
+        <label for="dialog-subject-select" (click)="dialogSubjectSelect.show(true)">Matéria</label>
         <span [style]="{ color: 'red' }"> *</span>
       </div>
-      <p-select #subjectSelect
-        id="subject-select"
+      <p-select #dialogSubjectSelect
+        id="dialog-subject-select"
         [options]="subjects"
         [filter]="true" filterBy="name"
         [showClear]="true"

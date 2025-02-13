@@ -183,6 +183,11 @@ export class QuestionListComponent implements OnInit {
 
   }
 
+  handleChooseQuestionsPressed(selectedSubject: Subject) {
+    this.selectedSubject = selectedSubject;
+    this.applyFilters();
+  }
+
   toggleSidebar() {
     this.sidebarVisible = !this.sidebarVisible; // Alterna a visibilidade do Sidebar
   }

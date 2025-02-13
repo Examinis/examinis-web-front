@@ -7,6 +7,7 @@
   [subjects]="subjects"
   [isAutomaticGeneration]="false"
   (examSubmitted)="handleDialogSubmitted($event)"
+  (chooseQuestionsPressed)="handleChooseQuestionsPressed($event)"
   (dialogClosed)="closeCreateExamDialog()"></app-create-exam-dialog>
 
 <div class="p-4 surface-ground transition-all">
@@ -16,12 +17,23 @@
       <h2 class="text-2xl font-semibold text-900">Questões</h2>
       <div class="flex items-end gap-4">
         <div class="col-span-1 md:col-span-1">
-          <p-select [options]="subjects" [(ngModel)]="selectedSubject" optionLabel="name" placeholder="Disciplina"
-            (onChange)="onFilterChange()" class="w-full md:w-auto" />
+          <p-select [options]="subjects"
+            [filter]="true" filterBy="name"
+            [showClear]="true"
+            [(ngModel)]="selectedSubject"
+            optionLabel="name"
+            placeholder="Filtre por disciplina"
+            (onChange)="onFilterChange()"
+            class="w-full md:w-auto" />
         </div>
         <div class="col-span-1 md:col-span-1">
-          <p-select [options]="difficulties" [(ngModel)]="selectedDifficulty" optionLabel="name"
-            placeholder="Dificuldade" (onChange)="onFilterChange()" class="w-full md:w-auto" />
+          <p-select [options]="difficulties"
+            [showClear]="true"
+            [(ngModel)]="selectedDifficulty"
+            optionLabel="name"
+            placeholder="Filtre por dificuldade"
+            (onChange)="onFilterChange()"
+            class="w-full md:w-auto" />
         </div>
       </div>
       <p-button type="button" label="Criar prova" class="w-full md:w-auto"
