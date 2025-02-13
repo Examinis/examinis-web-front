@@ -8,7 +8,6 @@ import { QuestionListComponent } from '../app/question/list-question/list-questi
 import { AppComponent } from './app.component';
 import { CreateQuestionComponent } from './question/create-question/create-question.component';
 import { FilterCategoryPipe } from './shared/pipes/filter-category.pipe';
-import { QuestionService } from './shared/services/question.service';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 import { Sidebar, SidebarModule } from 'primeng/sidebar';
@@ -31,7 +30,7 @@ import { Sidebar, SidebarModule } from 'primeng/sidebar';
     SidebarModule
   ],
   providers: [
-    QuestionService,
+    
 
   ]
 })
