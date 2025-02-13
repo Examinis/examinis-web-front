@@ -72,9 +72,17 @@ export class ListExamComponent {
         this.subjects = subjects;
         this.difficulties = difficulties;
 
-        // Atribui os exames recebidos da API
-        this.exams = exams;
-        this.onFilterChange(); // Aplica os filtros iniciais
+        // Verifique os dados recebidos
+        console.log('Exams:', exams);
+
+        // Garante que exams.results seja um array
+        this.exams = {
+          ...exams,
+          results: exams.results || []
+        };
+
+        // Aplica os filtros iniciais
+        this.onFilterChange();
       },
       error: (error) => console.error('Error in forkJoin', error),
     });
@@ -123,12 +131,14 @@ export class ListExamComponent {
     });
   }
 
-  // Aplica os filtros de disciplina, dificuldade e número de questões
   onFilterChange() {
+    console.log("Filtro alterado", this.selectedSubject, this.selectedDifficulty, this.maxNumOfQuestions);
+
     this.filteredExams = this.exams.results.filter(exam => {
       const subjectMatch = this.selectedSubject ? exam.subject.id === this.selectedSubject.id : true;
-      const numQuestionsMatch = this.maxNumOfQuestions ? exam.questions.length <= this.maxNumOfQuestions : true;
-      return subjectMatch &&  numQuestionsMatch;
+      const difficultyMatch = this.selectedDifficulty ? exam.difficultyId === this.selectedDifficulty.id : true;
+      const numQuestionsMatch = this.maxNumOfQuestions ? (exam.questions?.length || 0) <= this.maxNumOfQuestions : true;
+      return subjectMatch && difficultyMatch && numQuestionsMatch;
     });
   }
 

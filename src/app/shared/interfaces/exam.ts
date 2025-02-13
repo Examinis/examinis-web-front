@@ -1,4 +1,5 @@
 export interface Exam {
+  difficultyId: number | undefined;
   id: number;
   title: string;
   instructions: string; // Enunciado da prova
