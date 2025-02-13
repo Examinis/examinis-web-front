@@ -24,7 +24,7 @@ import { Subject } from '../../shared/interfaces/subject';
 
 
 import { Router, RouterModule } from '@angular/router';
-import { ExamAutomaticCreate, ExamCreate, ExamManualCreate } from '../../shared/interfaces/exam/exam-create';
+import { ExamAutomaticCreate, ExamManualCreate } from '../../shared/interfaces/exam/exam-create';
 import { ExamApiService } from '../../shared/services/exam-api.service';
 
 
@@ -59,7 +59,7 @@ export class QuestionListComponent implements OnInit {
   private router: Router = inject(Router);
 
   questions: Page<Question> = { total: 0, page: 1, size: 10, results: [] };
-  examToBeCreated?: ExamManualCreate;
+  examToBeCreated: ExamManualCreate = { title: '', instructions: '', subject_id: 0, questions: [] };
   filteredQuestions: Question[] = [];
 
   subjects: Subject[] = [];
@@ -72,8 +72,9 @@ export class QuestionListComponent implements OnInit {
   ];
   selectedDifficulty?: Difficulty;
   
-  sidebarVisible: any;
+  sidebarVisible?: boolean;
   createExamDialogVisible: boolean = false;
+  isSelectingQuestions: boolean = false;
 
   constructor() { }
 
@@ -81,7 +82,7 @@ export class QuestionListComponent implements OnInit {
     this.loadData();
   }
 
-  trackByQuestionId(index: number, item: any): number {
+  trackByQuestionId(item: any): number {
     return item.id;
   }
 
@@ -180,17 +181,28 @@ export class QuestionListComponent implements OnInit {
 
   handleDialogSubmitted(examData: ExamAutomaticCreate | ExamManualCreate): void {
     this.examToBeCreated = examData as ExamManualCreate;
-
   }
 
   handleChooseQuestionsPressed(selectedSubject: Subject) {
     this.selectedSubject = selectedSubject;
+    this.isSelectingQuestions = true;
+    this.applyFilters();
+    this.messageService.add(
+      { severity: 'info', summary: 'Importante',
+        detail: 'Selecione as questões desejadas clicando ou tocando nelas.' });
+  }
+
+  cancelSelectingQuestions() {
+    this.isSelectingQuestions = false;
+    this.examToBeCreated = { title: '', instructions: '', subject_id: 0, questions: [] };
+    this.selectedSubject = undefined;
     this.applyFilters();
   }
 
   toggleSidebar() {
     this.sidebarVisible = !this.sidebarVisible; // Alterna a visibilidade do Sidebar
   }
+
   toggleDifficulty(difficulty: Difficulty): void {
     this.selectedDifficulty = this.selectedDifficulty === difficulty ? undefined : difficulty;
   }
