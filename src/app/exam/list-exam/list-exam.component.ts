@@ -95,19 +95,25 @@ export class ListExamComponent {
   showCreateExamDialog() {
     this.createExamDialogVisible = true;
   }
-
+  
   closeCreateExamDialog() {
     this.createExamDialogVisible = false;
-  }
-onFilterChange() {
-  console.log("Filtro alterado", this.selectedSubject, this.selectedDifficulty, this.maxNumOfQuestions);
 
-  this.filteredExams = this.exams.results.filter(exam => {
-    const subjectMatch = this.selectedSubject ? exam.subjectId === this.selectedSubject.id : true;
-    const difficultyMatch = this.selectedDifficulty ? exam.difficultyId === this.selectedDifficulty.id : true;
-    return subjectMatch && difficultyMatch;
-  });
-}
+    // Recarrega os exames para incluir o novo
+    this.examApiService.getExams(this.exams.page, this.exams.size).subscribe(exams => {
+      this.exams = exams;
+    });
+  }
+
+  onFilterChange() {
+    console.log("Filtro alterado", this.selectedSubject, this.selectedDifficulty, this.maxNumOfQuestions);
+
+    this.filteredExams = this.exams.results.filter(exam => {
+      const subjectMatch = this.selectedSubject ? exam.subjectId === this.selectedSubject.id : true;
+      const difficultyMatch = this.selectedDifficulty ? exam.difficultyId === this.selectedDifficulty.id : true;
+      return subjectMatch && difficultyMatch;
+    });
+  }
 
   // private mockExams(): Page<Exam> {
   //   return {
