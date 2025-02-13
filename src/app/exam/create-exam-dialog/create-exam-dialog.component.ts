@@ -25,6 +25,7 @@ export class CreateExamDialogComponent implements OnInit {
   private examApiService: ExamApiService = inject(ExamApiService);
 
   @Input({ required: true, transform: booleanAttribute }) visible: boolean = false;
+  @Input({ required: true, transform: booleanAttribute }) isAutomaticGeneration: boolean = false;
   @Input({ required: true }) subjects: Subject[] = [];
   @Output() dialogClosed: EventEmitter<boolean> = new EventEmitter<boolean>();
 

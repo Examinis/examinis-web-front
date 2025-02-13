@@ -7,8 +7,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { SelectModule } from 'primeng/select';
 import { PaginatorModule } from 'primeng/paginator';
+import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { SidebarDrawerComponent } from '../../shared/components/sidebar-drawer/sidebar-drawer.component';
@@ -16,6 +16,7 @@ import { SidebarDrawerComponent } from '../../shared/components/sidebar-drawer/s
 import { QuestionApiService } from '../../shared/services/question-api.service';
 import { SubjectApiService } from '../../shared/services/subject-api.service';
 
+import { CreateExamDialogComponent } from '../../exam/create-exam-dialog/create-exam-dialog.component';
 import { Difficulty } from '../../shared/interfaces/difficulty';
 import { Page } from '../../shared/interfaces/page';
 import { Question } from '../../shared/interfaces/question';
@@ -42,17 +43,22 @@ import { Router, RouterModule } from '@angular/router';
     ButtonModule,
     ToastModule,
     RouterModule,
-    SidebarDrawerComponent
+    SidebarDrawerComponent,
+    CreateExamDialogComponent,
   ],
 })
 export class QuestionListComponent implements OnInit {
+  
   private questionApiService = inject(QuestionApiService);
   private subjectApiService = inject(SubjectApiService);
+  private confirmationService: ConfirmationService = inject(ConfirmationService);
+  private messageService: MessageService = inject(MessageService);
+  private router: Router = inject(Router);
 
   questions: Page<Question> = { total: 0, page: 1, size: 10, results: [] };
   filteredQuestions: Question[] = [];
 
-  categories: Subject[] = [];
+  subjects: Subject[] = [];
   selectedSubject?: Subject;
 
   difficulties: Difficulty[] = [
@@ -61,13 +67,11 @@ export class QuestionListComponent implements OnInit {
     { id: 3, name: 'Difícil' },
   ];
   selectedDifficulty?: Difficulty;
+  
   sidebarVisible: any;
+  createExamDialogVisible: boolean = false;
 
-  constructor(
-    private confirmationService: ConfirmationService,
-    private messageService: MessageService,
-    private router: Router
-  ) { }
+  constructor() { }
 
   ngOnInit(): void {
     this.loadData();
@@ -87,12 +91,20 @@ export class QuestionListComponent implements OnInit {
       ),
     }).subscribe({
       next: ({ subjects, questions }) => {
-        this.categories = subjects;
+        this.subjects = subjects;
         this.questions = questions;
         this.applyFilters();
       },
       error: (error) => console.error('Error in forkJoin', error),
     });
+  }
+ 
+  showCreateExamDialog() {
+    this.createExamDialogVisible = true;
+  }
+
+  closeCreateExamDialog() {
+    this.createExamDialogVisible = false;
   }
 
   onFilterChange(): void {
