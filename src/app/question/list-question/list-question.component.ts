@@ -208,8 +208,6 @@ export class QuestionListComponent implements OnInit {
     } else {
       this.examToBeCreated.questions.push(questionId);
     }
-
-    console.log('Questions selected:', this.examToBeCreated.questions);
   }
 
   toggleSidebar() {
