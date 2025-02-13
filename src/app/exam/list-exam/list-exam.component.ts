@@ -11,13 +11,11 @@ import { SelectModule } from 'primeng/select';
 import { Exam } from '../../shared/interfaces/exam';
 import { Page } from '../../shared/interfaces/page';
 import { Subject } from '../../shared/interfaces/subject';
-import { Difficulty } from '../../shared/interfaces/difficulty';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { CreateExamDialogComponent } from '../create-exam-dialog/create-exam-dialog.component';
 import { SubjectApiService } from '../../shared/services/subject-api.service';
 import { catchError, forkJoin, of } from 'rxjs';
-import { DifficultyApiService } from '../../shared/services/difficulty-api.service';
 import { ExamApiService } from '../../shared/services/exam-api.service';
 
 @Component({
@@ -37,15 +35,16 @@ export class ListExamComponent {
 
   subjects: Subject[] = [];
   selectedSubject?: Subject;
-  difficulties: Difficulty[] = [];
-  selectedDifficulty?: Difficulty;
+
+  teachers: { id: number; first_name: string; last_name: string; fullName: string }[] = []; // Lista de professores com nome completo
+  selectedTeacher?: { id: number; first_name: string; last_name: string; fullName: string }; // Professor selecionado
+
   maxNumOfQuestions: number = 10;
 
   createExamDialogVisible: boolean = false;
 
   private router: Router = inject(Router);
   private subjectApiService: SubjectApiService = inject(SubjectApiService);
-  private difficultyApiService: DifficultyApiService = inject(DifficultyApiService);
   private examApiService: ExamApiService = inject(ExamApiService);
   private confirmationService: ConfirmationService = inject(ConfirmationService);
 
@@ -55,25 +54,21 @@ export class ListExamComponent {
     this.loadInitialData();
   }
 
-  // Carrega os dados iniciais (disciplinas, dificuldades e exames)
+  // Carrega os dados iniciais (disciplinas, professores e exames)
   loadInitialData() {
     forkJoin({
       subjects: this.subjectApiService.getSubjects().pipe(
-        catchError(() => of([]))
-      ),
-      difficulties: this.difficultyApiService.getDifficulties().pipe(
         catchError(() => of([]))
       ),
       exams: this.examApiService.getExams().pipe(
         catchError(() => of({ total: 0, page: 1, size: 8, results: [] }))
       )
     }).subscribe({
-      next: ({ subjects, difficulties, exams }) => {
+      next: ({ subjects, exams }) => {
         this.subjects = subjects;
-        this.difficulties = difficulties;
 
-        // Verifique os dados recebidos
-        console.log('Exams:', exams);
+        // Extrai a lista de professores únicos dos exames
+        this.teachers = this.extractUniqueTeachers(exams.results);
 
         // Garante que exams.results seja um array
         this.exams = {
@@ -88,19 +83,27 @@ export class ListExamComponent {
     });
   }
 
-  // Retorna o número de questões de um exame
-  getNumQuestions(exam: Exam): number {
-    return exam.total_question;
+  // Extrai a lista de professores únicos dos exames
+  private extractUniqueTeachers(exams: Exam[]): { id: number; first_name: string; last_name: string; fullName: string }[] {
+    const teachersMap = new Map<number, { id: number; first_name: string; last_name: string; fullName: string }>();
+    exams.forEach(exam => {
+      if (exam.user && !teachersMap.has(exam.user.id)) {
+        teachersMap.set(exam.user.id, {
+          ...exam.user,
+          fullName: `${exam.user.first_name} ${exam.user.last_name}` // Adiciona o nome completo
+        });
+      }
+    });
+    return Array.from(teachersMap.values());
   }
 
+  // Formata a data de criação
   formatDate(dateString: string): string {
-    // Converte a string "dd/MM/yyyy HH:mm:ss" para um objeto Date
     const [datePart, timePart] = dateString.split(' ');
     const [day, month, year] = datePart.split('/');
     const [hour, minute, second] = timePart.split(':');
     const date = new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}`);
 
-    // Formata a data usando o pipe date do Angular
     return date.toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
@@ -110,6 +113,7 @@ export class ListExamComponent {
       second: '2-digit'
     });
   }
+
   // Navega para a página de visualização de um exame
   viewExam(examId: number) {
     this.router.navigate(['/exams', examId]);
@@ -127,7 +131,10 @@ export class ListExamComponent {
   // Atualiza a lista de exames quando a página é alterada
   onPageChange(event: any) {
     this.examApiService.getExams(event.page + 1, event.rows).subscribe(exams => {
-      this.exams = exams;
+      this.exams = {
+        ...exams,
+        results: exams.results || []
+      };
       this.onFilterChange(); // Reaplica os filtros após a mudança de página
     });
   }
@@ -143,18 +150,23 @@ export class ListExamComponent {
 
     // Recarrega os exames para incluir o novo
     this.examApiService.getExams(this.exams.page, this.exams.size).subscribe(exams => {
-      this.exams = exams;
+      this.exams = {
+        ...exams,
+        results: exams.results || []
+      };
       this.onFilterChange(); // Reaplica os filtros após recarregar
     });
   }
 
+  // Aplica os filtros de disciplina, professor e número de questões
   onFilterChange() {
-    console.log("Filtro alterado", this.selectedSubject, this.selectedDifficulty, this.maxNumOfQuestions);
+    console.log("Filtro alterado", this.selectedSubject, this.selectedTeacher, this.maxNumOfQuestions);
 
     this.filteredExams = this.exams.results.filter(exam => {
       const subjectMatch = this.selectedSubject ? exam.subject.id === this.selectedSubject.id : true;
-      const numQuestionsMatch = this.maxNumOfQuestions ? (exam.total_question || 0) <= this.maxNumOfQuestions : true;
-      return subjectMatch && numQuestionsMatch;
+      const teacherMatch = this.selectedTeacher ? exam.user.id === this.selectedTeacher.id : true;
+      const numQuestionsMatch = this.maxNumOfQuestions ? exam.total_question <= this.maxNumOfQuestions : true;
+      return subjectMatch && teacherMatch && numQuestionsMatch;
     });
   }
 
