@@ -33,11 +33,6 @@ export const routes: Routes = [
     title: 'List exams',
   },
   {
-    path: 'test-dialog',
-    component: CreateExamDialogComponent,
-    title: 'Test dialog',
-  },
-  {
     path: '**',
     component: HomeComponent,
     title: 'Home',
