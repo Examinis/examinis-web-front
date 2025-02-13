@@ -18,6 +18,7 @@ import { CreateExamDialogComponent } from '../create-exam-dialog/create-exam-dia
 import { SubjectApiService } from '../../shared/services/subject-api.service';
 import { catchError, forkJoin, of } from 'rxjs';
 import { DifficultyApiService } from '../../shared/services/difficulty-api.service';
+import { ExamApiService } from '../../shared/services/exam-api.service';
 
 @Component({
   selector: 'app-list-exam',
@@ -36,7 +37,7 @@ export class ListExamComponent {
 
   subjects: Subject[] = [];
   selectedSubject?: Subject;
-  difficulties: Difficulty[] = []
+  difficulties: Difficulty[] = [];
   selectedDifficulty?: Difficulty;
   maxNumOfQuestions: number = 10;
 
@@ -45,65 +46,50 @@ export class ListExamComponent {
   private router: Router = inject(Router);
   private subjectApiService: SubjectApiService = inject(SubjectApiService);
   private difficultyApiService: DifficultyApiService = inject(DifficultyApiService);
+  private examApiService: ExamApiService = inject(ExamApiService);
 
-  // constructor(private confirmationService: ConfirmationService) {}
   constructor() { }
 
   ngOnInit() {
-    // Fetch subjects and difficulties
     forkJoin({
       subjects: this.subjectApiService.getSubjects().pipe(
         catchError(() => of([]))
       ),
       difficulties: this.difficultyApiService.getDifficulties().pipe(
         catchError(() => of([]))
+      ),
+      exams: this.examApiService.getExams().pipe(
+        catchError(() => of({ total: 0, page: 1, size: 8, results: [] }))
       )
     }).subscribe({
-      next: ({ subjects, difficulties }) => {
+      next: ({ subjects, difficulties, exams }) => {
         this.subjects = subjects;
         this.difficulties = difficulties;
+        this.exams = exams;
       },
       error: (error) => console.error('Error in forkJoin', error),
     });
-    // Carregue os dados das provas aqui, por exemplo, de um serviço
-    // this.examService.getExams().subscribe(exams => this.exams = exams);
-    this.exams = this.mockExams();
   }
 
   viewExam(examId: number) {
-    this.router.navigate(['/exams', examId]); // Navega para a rota de visualização
+    this.router.navigate(['/exams', examId]);
   }
 
   editExam(examId: number) {
-    this.router.navigate(['/exams/edit', examId]); // Navega para a rota de edição
+    this.router.navigate(['/exams/edit', examId]);
   }
-
-  // confirmDeleteExam(examId: number) {
-  //   this.confirmationService.confirm({
-  //     message: 'Tem certeza de que deseja excluir esta prova?',
-  //     accept: () => {
-  //       this.deleteExam(examId);
-  //     }
-  //   });
-  // }
 
   deleteExam(examId: number) {
-    // Implemente a lógica de exclusão aqui, por exemplo, chamando um serviço
-    // this.examService.deleteExam(examId).subscribe(() => {
-    //   // Atualize a lista de provas após a exclusão
-    //   this.exams = this.exams.filter(exam => exam.id !== examId);
-    // });
+    this.examApiService.deleteExam(examId).subscribe(() => {
+      this.exams.results = this.exams.results.filter(exam => exam.id !== examId);
+      this.exams.total--;
+    });
   }
-
-  onFilterChange() {
-    throw new Error('Method not implemented.');
-  }
-
 
   onPageChange(event: any) {
-    // Lógica para paginação, ajuste conforme necessário
-    console.log(event);
-    // Atualize a lista de exames com base nos parâmetros de paginação
+    this.examApiService.getExams(event.page + 1, event.rows).subscribe(exams => {
+      this.exams = exams;
+    });
   }
 
   showCreateExamDialog() {
@@ -114,22 +100,21 @@ export class ListExamComponent {
     this.createExamDialogVisible = false;
   }
 
-  private mockExams(): Page<Exam> {
-    return {
-      total: 10,
-      page: 1,
-      size: 8,
-      results: [
-        { id: 1, title: 'Prova 1', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-        { id: 2, title: 'Prova 2', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-        { id: 3, title: 'Prova 3', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-        { id: 4, title: 'Prova 4', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-        { id: 5, title: 'Prova 5', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-        { id: 6, title: 'Prova 6', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-        { id: 7, title: 'Prova 7', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-        { id: 8, title: 'Prova 8', createdAt: new Date(), updatedAt: new Date(), userId: 1 }
-      ]
-    };
-  }
-
+  // private mockExams(): Page<Exam> {
+  //   return {
+  //     total: 10,
+  //     page: 1,
+  //     size: 8,
+  //     results: [
+  //       { id: 1, title: 'Prova 1', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
+  //       { id: 2, title: 'Prova 2', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
+  //       { id: 3, title: 'Prova 3', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
+  //       { id: 4, title: 'Prova 4', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
+  //       { id: 5, title: 'Prova 5', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
+  //       { id: 6, title: 'Prova 6', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
+  //       { id: 7, title: 'Prova 7', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
+  //       { id: 8, title: 'Prova 8', createdAt: new Date(), updatedAt: new Date(), userId: 1 }
+  //     ]
+  //   };
+  // }
 }
