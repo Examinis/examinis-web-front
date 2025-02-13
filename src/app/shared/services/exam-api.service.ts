@@ -35,7 +35,8 @@ export class ExamApiService {
    */
   getExamById(id: number): Observable<Exam> {
     return this.http.get<Exam>(`${this.BASE_URL}/${id}`).pipe(
-      map((exam: Exam) => this.convertToCamelCase(exam)));
+      map((exam: Exam) => this.convertToCamelCase(exam))
+    );
   }
 
   /**
@@ -69,22 +70,20 @@ export class ExamApiService {
   }
 
   /**
- * Converts an `Exam` object to a format with camelCase properties.
- * @param {Exam} exam - The exam object received from the API.
- * @returns {Exam} The converted exam object with camelCase properties.
- */
+   * Converts an `Exam` object to a format with camelCase properties.
+   * @param {Exam} exam - The exam object received from the API.
+   * @returns {Exam} The converted exam object with camelCase properties.
+   */
   private convertToCamelCase(exam: any): Exam {
     return {
       id: exam.id,
       title: exam.title,
-      createdAt: exam.created_at || exam.createdAt,
-      updatedAt: exam.updated_at || exam.updatedAt,
-      userId: exam.user_id || exam.userId,
-      subjectId: exam.subject_id || exam.subjectId,
-      difficultyId: exam.difficulty_id || exam.difficultyId,
-      numQuestions: exam.num_questions || exam.numQuestions || 0,
-      subject: exam.subject || { id: 0, name: 'Não informado' }
+      instructions: exam.instructions, // Adicionado
+      created_at: exam.created_at, // Mantido como snake_case
+      updated_at: exam.updated_at, // Mantido como snake_case
+      user: exam.user || { id: 0, first_name: 'Não informado', last_name: '' }, // Adicionado
+      subject: exam.subject || { id: 0, name: 'Não informado' }, // Adicionado
+      questions: exam.questions || [] // Adicionado
     };
   }
-
 }

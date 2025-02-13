@@ -47,10 +47,16 @@ export class ListExamComponent {
   private subjectApiService: SubjectApiService = inject(SubjectApiService);
   private difficultyApiService: DifficultyApiService = inject(DifficultyApiService);
   private examApiService: ExamApiService = inject(ExamApiService);
+  private confirmationService: ConfirmationService = inject(ConfirmationService);
 
   constructor() { }
 
   ngOnInit() {
+    this.loadInitialData();
+  }
+
+  // Carrega os dados iniciais (disciplinas, dificuldades e exames)
+  loadInitialData() {
     forkJoin({
       subjects: this.subjectApiService.getSubjects().pipe(
         catchError(() => of([]))
@@ -65,71 +71,76 @@ export class ListExamComponent {
       next: ({ subjects, difficulties, exams }) => {
         this.subjects = subjects;
         this.difficulties = difficulties;
+
+        // Atribui os exames recebidos da API
         this.exams = exams;
+        this.onFilterChange(); // Aplica os filtros iniciais
       },
       error: (error) => console.error('Error in forkJoin', error),
     });
   }
 
+  // Retorna o número de questões de um exame
+  getNumQuestions(exam: Exam): number {
+    return exam.questions?.length || 0;
+  }
+
+  // Navega para a página de visualização de um exame
   viewExam(examId: number) {
     this.router.navigate(['/exams', examId]);
   }
 
-  editExam(examId: number) {
-    this.router.navigate(['/exams/edit', examId]);
-  }
-
+  // Exclui um exame
   deleteExam(examId: number) {
     this.examApiService.deleteExam(examId).subscribe(() => {
       this.exams.results = this.exams.results.filter(exam => exam.id !== examId);
       this.exams.total--;
+      this.onFilterChange(); // Reaplica os filtros após a exclusão
     });
   }
 
+  // Atualiza a lista de exames quando a página é alterada
   onPageChange(event: any) {
     this.examApiService.getExams(event.page + 1, event.rows).subscribe(exams => {
       this.exams = exams;
+      this.onFilterChange(); // Reaplica os filtros após a mudança de página
     });
   }
 
+  // Abre o diálogo de criação de exame
   showCreateExamDialog() {
     this.createExamDialogVisible = true;
   }
-  
+
+  // Fecha o diálogo de criação de exame e recarrega os exames
   closeCreateExamDialog() {
     this.createExamDialogVisible = false;
 
     // Recarrega os exames para incluir o novo
     this.examApiService.getExams(this.exams.page, this.exams.size).subscribe(exams => {
       this.exams = exams;
+      this.onFilterChange(); // Reaplica os filtros após recarregar
     });
   }
 
+  // Aplica os filtros de disciplina, dificuldade e número de questões
   onFilterChange() {
-    console.log("Filtro alterado", this.selectedSubject, this.selectedDifficulty, this.maxNumOfQuestions);
-
     this.filteredExams = this.exams.results.filter(exam => {
-      const subjectMatch = this.selectedSubject ? exam.subjectId === this.selectedSubject.id : true;
-      const difficultyMatch = this.selectedDifficulty ? exam.difficultyId === this.selectedDifficulty.id : true;
-      return subjectMatch && difficultyMatch;
+      const subjectMatch = this.selectedSubject ? exam.subject.id === this.selectedSubject.id : true;
+      const numQuestionsMatch = this.maxNumOfQuestions ? exam.questions.length <= this.maxNumOfQuestions : true;
+      return subjectMatch &&  numQuestionsMatch;
     });
   }
 
-  // private mockExams(): Page<Exam> {
-  //   return {
-  //     total: 10,
-  //     page: 1,
-  //     size: 8,
-  //     results: [
-  //       { id: 1, title: 'Prova 1', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-  //       { id: 2, title: 'Prova 2', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-  //       { id: 3, title: 'Prova 3', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-  //       { id: 4, title: 'Prova 4', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-  //       { id: 5, title: 'Prova 5', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-  //       { id: 6, title: 'Prova 6', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-  //       { id: 7, title: 'Prova 7', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-  //       { id: 8, title: 'Prova 8', createdAt: new Date(), updatedAt: new Date(), userId: 1 }
-  //     ]
-  //   };
-  // }
+  // Confirma a exclusão de um exame
+  confirmDeleteExam(examId: number) {
+    this.confirmationService.confirm({
+      message: 'Tem certeza de que deseja excluir esta prova?',
+      header: 'Confirmação',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteExam(examId);
+      }
+    });
+  }
 }

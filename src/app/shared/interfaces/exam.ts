@@ -1,12 +1,25 @@
 export interface Exam {
   id: number;
   title: string;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: number;
-  subjectId?: number;
-  difficultyId?: number;
-  numQuestions: number; // Número de questões
-  subject: { id: number; name: string }; // Matéria (Disciplina)
+  instructions: string; // Enunciado da prova
+  created_at: string; // Data de criação (string)
+  updated_at: string; // Data de atualização (string)
+  user: { // Professor criador
+    id: number;
+    first_name: string;
+    last_name: string;
+  };
+  subject: { // Matéria (Disciplina)
+    id: number;
+    name: string;
+  };
+  questions: { // Lista de questões
+    id: number;
+    text: string;
+    options: {
+      id: number;
+      description: string;
+      letter: string;
+    }[];
+  }[];
 }
-
