@@ -58,7 +58,7 @@ export class QuestionApiService {
    */
   updateQuestion(question: QuestionSend): Observable<QuestionSend> {
     const payload = this.convertToSnakeCase(question);
-    return this.http.put<QuestionSend>(`${this.BASE_URL}/${question.id}`, payload);
+    return this.http.put<QuestionSend>(`${this.BASE_URL}`, payload);
   }
 
   /**
