@@ -84,6 +84,12 @@ export class CreateExamDialogComponent {
     }
 
     this.onDialogClose();
+    this.examCreationForm.reset({
+      title: '',
+      instructions: '',
+      subject: null,
+      amount: 5
+    });
   }
 
   private emitAutomaticExamCreation() {
