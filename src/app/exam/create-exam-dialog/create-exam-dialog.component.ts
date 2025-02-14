@@ -26,8 +26,8 @@ export class CreateExamDialogComponent {
   @Input({ required: true }) subjects: Subject[] = [];
   @Output() dialogClosed: EventEmitter<boolean> = new EventEmitter<boolean>();
   // This emitter means an automatic exam creation (no need to select questions manually)
-  @Output() examSubmitted: EventEmitter<ExamAutomaticCreate | ExamManualCreate> =
-    new EventEmitter<ExamAutomaticCreate | ExamManualCreate>();
+  @Output() examSubmitted: EventEmitter<ExamAutomaticCreate> = new EventEmitter<
+    ExamAutomaticCreate>();
   // This emitter means a basic info submitted (title, instructions and subject) for a manual
   // exam creation. You need to choose the questions manually
   @Output() basicInfoSubmitted: EventEmitter<ExamManualCreate> = new EventEmitter<

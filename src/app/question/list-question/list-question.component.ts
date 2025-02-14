@@ -26,6 +26,7 @@ import { Subject } from '../../shared/interfaces/subject';
 import { Router, RouterModule } from '@angular/router';
 import { ExamAutomaticCreate, ExamManualCreate } from '../../shared/interfaces/exam/exam-create';
 import { ExamApiService } from '../../shared/services/exam-api.service';
+import { response } from 'express';
 
 
 @Component({
@@ -182,8 +183,36 @@ export class QuestionListComponent implements OnInit {
     });
   }
 
-  handleDialogSubmitted(examData: ExamAutomaticCreate | ExamManualCreate): void {
-    this.examToBeCreated = examData as ExamManualCreate;
+  confirmExamManualCreation() {
+    this.confirmationService.confirm({
+      message: 'Tem certeza de que deseja criar a prova?',
+      header: 'Atenção!',
+      acceptLabel: 'Sim',
+      rejectLabel: 'Não',
+      accept: () => {
+        this.createExam();
+      },
+      reject: () => {
+        this.messageService.add(
+          { severity: 'info', summary: 'Cancelado', detail: 'Criação de exame cancelada.' });
+      },
+    });
+  }
+
+  private createExam() {
+    this.examApiService.createExamManually(this.examToBeCreated).subscribe({
+      next: (response) => {
+        console.log('Exam created', response);
+      },
+      error: (error) => {
+        console.error('Error creating exam', error);
+      },
+    });
+  }
+
+  handleDialogSubmitted(examData: ExamManualCreate): void {
+    this.examToBeCreated = examData;
+    console.log('Exam to be created: ', this.examToBeCreated);
   }
 
   handleChooseQuestionsPressed(selectedSubject: Subject) {

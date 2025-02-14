@@ -6,7 +6,7 @@
 <app-create-exam-dialog [visible]="createExamDialogVisible"
   [subjects]="subjects"
   [isAutomaticGeneration]="false"
-  (examSubmitted)="handleDialogSubmitted($event)"
+  (basicInfoSubmitted)="handleDialogSubmitted($event)"
   (chooseQuestionsPressed)="handleChooseQuestionsPressed($event)"
   (dialogClosed)="closeCreateExamDialog()"></app-create-exam-dialog>
 
@@ -42,14 +42,16 @@
       <!-- Create exam manually -->
       @if (isSelectingQuestions) {
 
-        <!-- Only allow an exam to be created when at least 5 questions were selected -->
-        @if (examToBeCreated.questions.length >= 5) {
-          <p-button type="button" label="Confirmar"
-             />
-        }
+        <div class="flex items-center gap-4">
+          <!-- Only allow an exam to be created when at least 5 questions were selected -->
+          @if (examToBeCreated.questions.length >= 5) {
+            <p-button type="button" label="Confirmar"
+              (click)="confirmExamManualCreation()" />
+          }
+          <p-button type="button" label="Cancelar" severity="danger"
+            (click)="cancelSelectingQuestions()" />
+        </div>
 
-        <p-button type="button" label="Cancelar" severity="danger"
-          (click)="cancelSelectingQuestions()" />
       } @else {
         <p-button type="button" label="Criar prova" class="w-full md:w-auto"
           (click)="showCreateExamDialog()" />
