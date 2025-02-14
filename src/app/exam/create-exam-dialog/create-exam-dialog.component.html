@@ -11,11 +11,14 @@
     Informe como você quer que sua prova seja gerada.
   </span>
 
-  <form [formGroup]="examCreationForm" (ngSubmit)="createExam()">
+  <form [formGroup]="examCreationForm" (ngSubmit)="onCreateDialogSubmit()">
    
     <!-- Exam's title -->
     <div class="flex flex-col items-start gap-2 mb-2">
-      <label for="exam-title" class="font-normal">Título da prova</label>
+      <div>
+        <label for="exam-title" class="font-normal">Título da prova</label>
+        <span [style]="{ color: 'red' }"> *</span>
+      </div>
       <input type="text"
         pInputText
         formControlName="title"
@@ -52,9 +55,12 @@
   
     <!-- Exam's subject -->
     <div class="flex flex-col items-start gap-2 mb-2">
-      <label for="subject-select" (click)="subjectSelect.show(true)">Matéria</label>
-      <p-select #subjectSelect
-        id="subject-select"
+      <div>
+        <label for="dialog-subject-select" (click)="dialogSubjectSelect.show(true)">Matéria</label>
+        <span [style]="{ color: 'red' }"> *</span>
+      </div>
+      <p-select #dialogSubjectSelect
+        id="dialog-subject-select"
         [options]="subjects"
         [filter]="true" filterBy="name"
         [showClear]="true"
@@ -78,36 +84,42 @@
       
     </div>
   
-    <!-- Number of questions -->
-    <div class="flex flex-col items-start gap-2 mb-2">
-      <label for="question-amount" class="font-normal">Quantidade de questões</label>
-      <p-inputnumber [showButtons]="true"
-        inputId="question-amount"
-        formControlName="amount"
-        [min]="5"
-        [max]="20"
-        required
-        name="number-of-questions"
-        [class]="amount?.invalid && (amount?.touched || amount?.dirty) ?
-          'ng-invalid ng-dirty w-96' : 'w-96'">
-        <ng-template #incrementbuttonicon>
-          <span class="pi pi-plus"></span>
-        </ng-template>
-        <ng-template #decrementbuttonicon>
-          <span class="pi pi-minus"></span>
-        </ng-template>
-      </p-inputnumber>
-      @if (amount?.invalid && (amount?.touched || amount?.dirty)) {
-        <p-message severity="error" variant="simple" size="small">
-          É necessário escolher uma quantidade de questões
-        </p-message> 
-      }
-    </div>
+    @if (isAutomaticGeneration) {
+      <!-- Number of questions -->
+      <div class="flex flex-col items-start gap-2 mb-2">
+        <label for="question-amount" class="font-normal">Quantidade de questões</label>
+        <p-inputnumber [showButtons]="true"
+          inputId="question-amount"
+          formControlName="amount"
+          [min]="5"
+          [max]="20"
+          required
+          name="number-of-questions"
+          [class]="amount?.invalid && (amount?.touched || amount?.dirty) ?
+            'ng-invalid ng-dirty w-96' : 'w-96'">
+          <ng-template #incrementbuttonicon>
+            <span class="pi pi-plus"></span>
+          </ng-template>
+          <ng-template #decrementbuttonicon>
+            <span class="pi pi-minus"></span>
+          </ng-template>
+        </p-inputnumber>
+        @if (amount?.invalid && (amount?.touched || amount?.dirty)) {
+          <p-message severity="error" variant="simple" size="small">
+            É necessário escolher uma quantidade de questões
+          </p-message> 
+        }
+      </div>
+    }
     
     <!-- Actions -->
     <div class="flex justify-end gap-4 mt-4">
       <p-button label="Cancelar" [outlined]="true" severity="danger" (click)="visible = false" />
-      <p-button type="submit" label="Criar" severity="success" />
+      @if (isAutomaticGeneration) {
+        <p-button type="submit" label="Criar" severity="success" />
+      } @else {
+        <p-button type="submit" label="Escolher questões" severity="success" />
+      }
     </div>
   
   </form>

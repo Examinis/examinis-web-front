@@ -1,11 +1,10 @@
-import { Difficulty } from './../models/difficulty';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
-import { ExamCreate } from '../interfaces/exam/exam-create';
-import { Page } from '../interfaces/page';
 import { Exam } from '../interfaces/exam';
+import { ExamAutomaticCreate, ExamManualCreate } from '../interfaces/exam/exam-create';
+import { Page } from '../interfaces/page';
 
 @Injectable({
   providedIn: 'root'
@@ -43,11 +42,23 @@ export class ExamApiService {
   /**
    * Create an exam automatically
    * Sends an exam to be automatically created by sending a POST request to the server.
-   * @param {ExamCreate} exam - The exam data to be created.
-   * @returns {Observable<ExamCreate>} An observable containing the created exam data.
+   *
+   * @param {ExamAutomaticCreate} exam - The exam data to be created.
+   * @returns {Observable<ExamAutomaticCreate>} An observable containing the created exam data.
    */
-  createExamAutomatically(exam: ExamCreate): Observable<ExamCreate> {
-    return this.http.post<ExamCreate>(`${this.BASE_URL}/automatic`, exam);
+  createExamAutomatically(exam: ExamAutomaticCreate): Observable<ExamAutomaticCreate> {
+    return this.http.post<ExamAutomaticCreate>(`${this.BASE_URL}/automatic`, exam);
+  }
+
+
+  /**
+   * Creates an exam manually by sending a POST request to the server.
+   *
+   * @param {ExamManualCreate} exam - The exam data to be created.
+   * @returns {Observable<ExamManualCreate>} An observable containing the created exam data.
+   */
+  createExamManually(exam: ExamManualCreate): Observable<ExamManualCreate> {
+    return this.http.post<ExamManualCreate>(`${this.BASE_URL}/manual`, exam);
   }
 
   /**

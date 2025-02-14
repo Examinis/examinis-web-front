@@ -1,22 +1,24 @@
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { Component, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { PaginatorModule } from 'primeng/paginator';
-import { ToastModule } from 'primeng/toast';
-import { SidebarDrawerComponent } from "../../shared/components/sidebar-drawer/sidebar-drawer.component";
 import { SelectModule } from 'primeng/select';
+import { ToastModule } from 'primeng/toast';
+import { catchError, forkJoin, of } from 'rxjs';
+import { SidebarDrawerComponent } from "../../shared/components/sidebar-drawer/sidebar-drawer.component";
 import { Exam } from '../../shared/interfaces/exam';
+import { ExamAutomaticCreate, ExamManualCreate } from '../../shared/interfaces/exam/exam-create';
 import { Page } from '../../shared/interfaces/page';
 import { Subject } from '../../shared/interfaces/subject';
-import { ButtonModule } from 'primeng/button';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { CreateExamDialogComponent } from '../create-exam-dialog/create-exam-dialog.component';
-import { SubjectApiService } from '../../shared/services/subject-api.service';
-import { catchError, forkJoin, of } from 'rxjs';
+import { DifficultyApiService } from '../../shared/services/difficulty-api.service';
 import { ExamApiService } from '../../shared/services/exam-api.service';
+import { SubjectApiService } from '../../shared/services/subject-api.service';
+import { CreateExamDialogComponent } from '../create-exam-dialog/create-exam-dialog.component';
 
 @Component({
   selector: 'app-list-exam',
@@ -30,6 +32,12 @@ import { ExamApiService } from '../../shared/services/exam-api.service';
 })
 export class ListExamComponent {
 
+  private router: Router = inject(Router);
+  private subjectApiService: SubjectApiService = inject(SubjectApiService);
+  private difficultyApiService: DifficultyApiService = inject(DifficultyApiService);
+  private examApiService: ExamApiService = inject(ExamApiService);
+  private confirmationService: ConfirmationService = inject(ConfirmationService);
+
   exams: Page<Exam> = { total: 0, page: 1, size: 8, results: [] };
   filteredExams: Exam[] = [];
 
@@ -42,11 +50,6 @@ export class ListExamComponent {
   maxNumOfQuestions: number = 10;
 
   createExamDialogVisible: boolean = false;
-
-  private router: Router = inject(Router);
-  private subjectApiService: SubjectApiService = inject(SubjectApiService);
-  private examApiService: ExamApiService = inject(ExamApiService);
-  private confirmationService: ConfirmationService = inject(ConfirmationService);
 
   constructor() { }
 
@@ -139,7 +142,18 @@ export class ListExamComponent {
     });
   }
 
-  // Abre o diálogo de criação de exame
+  handleDialogSubmitted(examData: ExamAutomaticCreate | ExamManualCreate) {
+    this.examApiService.createExamAutomatically(examData as ExamAutomaticCreate).subscribe({
+      next: (response) => {
+        console.log('Exam created', response);
+        this.closeCreateExamDialog();
+      },
+      error: (error) => {
+        console.error('Error creating exam', error);
+      }
+    });
+  }
+
   showCreateExamDialog() {
     this.createExamDialogVisible = true;
   }
