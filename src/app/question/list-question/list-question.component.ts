@@ -58,6 +58,9 @@ export class QuestionListComponent implements OnInit {
   private messageService: MessageService = inject(MessageService);
   private router: Router = inject(Router);
 
+  readonly MAX_QUESTIONS = 20;
+  readonly MIN_QUESTIONS = 5;
+
   questions: Page<Question> = { total: 0, page: 1, size: 10, results: [] };
   examToBeCreated: ExamManualCreate = { title: '', instructions: '', subject_id: 0, questions: [] };
   filteredQuestions: Question[] = [];
@@ -200,7 +203,7 @@ export class QuestionListComponent implements OnInit {
   }
 
   toggleQuestionSelection(questionId?: number) {
-    if (!this.isSelectingQuestions || !questionId) { return; }
+    if (!this.isSelectingQuestions || !questionId || !this.maxQuestionsNumberReached()) { return; }
     
     if (this.examToBeCreated.questions.includes(questionId)) {
       this.examToBeCreated.questions = this.examToBeCreated.questions.filter(
@@ -216,5 +219,9 @@ export class QuestionListComponent implements OnInit {
 
   toggleDifficulty(difficulty: Difficulty): void {
     this.selectedDifficulty = this.selectedDifficulty === difficulty ? undefined : difficulty;
+  }
+
+  private maxQuestionsNumberReached(): boolean {
+    return this.examToBeCreated.questions.length <= this.MAX_QUESTIONS;
   }
 }

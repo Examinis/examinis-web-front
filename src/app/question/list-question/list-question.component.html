@@ -41,6 +41,13 @@
 
       <!-- Create exam manually -->
       @if (isSelectingQuestions) {
+
+        <!-- Only allow an exam to be created when at least 5 questions were selected -->
+        @if (examToBeCreated.questions.length >= 5) {
+          <p-button type="button" label="Confirmar"
+             />
+        }
+
         <p-button type="button" label="Cancelar" severity="danger"
           (click)="cancelSelectingQuestions()" />
       } @else {
