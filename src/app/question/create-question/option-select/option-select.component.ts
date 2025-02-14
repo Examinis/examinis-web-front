@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { Option } from '../../../shared/interfaces/option';
@@ -13,38 +13,40 @@ export class OptionSelectComponent implements OnInit {
 
   // Emit the updated options list to the parent component
   @Output() optionChangedEvent = new EventEmitter<Option[]>();
-  options: Option[] = [];
+  @Input() options: Option[] = [];
   selectedCorrectOption: number | null = null;
 
   ngOnInit(): void {
 
-    this.options = [
-      {
-        description: '',
-        letter: 'A',
-        isCorrect: true
-      },
-      {
-        description: '',
-        letter: 'B',
-        isCorrect: false
-      },
-      {
-        description: '',
-        letter: 'C',
-        isCorrect: false
-      },
-      {
-        description: '',
-        letter: 'D',
-        isCorrect: false
-      },
-      {
-        description: '',
-        letter: 'E',
-        isCorrect: false
-      }
-    ];
+    if (this.options.length === 0) {
+      this.options = [
+        {
+          description: '',
+          letter: 'A',
+          isCorrect: true
+        },
+        {
+          description: '',
+          letter: 'B',
+          isCorrect: false
+        },
+        {
+          description: '',
+          letter: 'C',
+          isCorrect: false
+        },
+        {
+          description: '',
+          letter: 'D',
+          isCorrect: false
+        },
+        {
+          description: '',
+          letter: 'E',
+          isCorrect: false
+        }
+      ];
+    }
 
     this.optionChangedEvent.emit(this.options);
     this.chooseCorrectOption(0);

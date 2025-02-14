@@ -7,7 +7,9 @@
     <div class="mb-3">
       <h2 class="text-base">Preencha os campos necessários para criar uma questão</h2>
     </div>
-    <form [formGroup]="questionCreationForm" (ngSubmit)="createOrUpdateQuestion()" class="flex flex-col gap-4">
+    <form [formGroup]="questionCreationForm" (ngSubmit)="createOrUpdateQuestion()" class="flex flex-col gap-4"
+      [method]="question.id ? 'PUT' : 'POST'">
+      <!-- [action]="question.id ? 'question/' + question.id : 'question'" -->
      
       <label for="question-text">Texto da questão</label>
       <textarea id="question-text" rows="5" cols="30" pTextarea formControlName="questionText" [required]="true"
@@ -52,7 +54,8 @@
         </ng-template>
       </p-fileupload>
      
-      <app-option-select (optionChangedEvent)="onOptionsChanged($event)"></app-option-select>
+      <app-option-select (optionChangedEvent)="onOptionsChanged($event)"
+        [options]="question.options"></app-option-select>
      
       <div class="flex gap-4 mt-1">
         <p-button type="submit" [disabled]="questionCreationForm.invalid" [label]="variableLabels.button" class="w-full"
