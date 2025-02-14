@@ -11,7 +11,6 @@ import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 import { catchError, forkJoin, of } from 'rxjs';
 import { SidebarDrawerComponent } from "../../shared/components/sidebar-drawer/sidebar-drawer.component";
-import { Difficulty } from '../../shared/interfaces/difficulty';
 import { Exam } from '../../shared/interfaces/exam';
 import { ExamAutomaticCreate, ExamManualCreate } from '../../shared/interfaces/exam/exam-create';
 import { Page } from '../../shared/interfaces/page';
@@ -37,76 +36,110 @@ export class ListExamComponent {
   private subjectApiService: SubjectApiService = inject(SubjectApiService);
   private difficultyApiService: DifficultyApiService = inject(DifficultyApiService);
   private examApiService: ExamApiService = inject(ExamApiService);
+  private confirmationService: ConfirmationService = inject(ConfirmationService);
 
   exams: Page<Exam> = { total: 0, page: 1, size: 8, results: [] };
   filteredExams: Exam[] = [];
 
   subjects: Subject[] = [];
   selectedSubject?: Subject;
-  difficulties: Difficulty[] = []
-  selectedDifficulty?: Difficulty;
+
+  teachers: { id: number; first_name: string; last_name: string; fullName: string }[] = []; // Lista de professores com nome completo
+  selectedTeacher?: { id: number; first_name: string; last_name: string; fullName: string }; // Professor selecionado
+
   maxNumOfQuestions: number = 10;
 
   createExamDialogVisible: boolean = false;
 
-  // constructor(private confirmationService: ConfirmationService) {}
   constructor() { }
 
   ngOnInit() {
-    // Fetch subjects and difficulties
+    this.loadInitialData();
+  }
+
+  // Carrega os dados iniciais (disciplinas, professores e exames)
+  loadInitialData() {
     forkJoin({
       subjects: this.subjectApiService.getSubjects().pipe(
         catchError(() => of([]))
       ),
-      difficulties: this.difficultyApiService.getDifficulties().pipe(
-        catchError(() => of([]))
+      exams: this.examApiService.getExams().pipe(
+        catchError(() => of({ total: 0, page: 1, size: 8, results: [] }))
       )
     }).subscribe({
-      next: ({ subjects, difficulties }) => {
+      next: ({ subjects, exams }) => {
         this.subjects = subjects;
-        this.difficulties = difficulties;
+
+        // Extrai a lista de professores únicos dos exames
+        this.teachers = this.extractUniqueTeachers(exams.results);
+
+        // Garante que exams.results seja um array
+        this.exams = {
+          ...exams,
+          results: exams.results || []
+        };
+
+        // Aplica os filtros iniciais
+        this.onFilterChange();
       },
       error: (error) => console.error('Error in forkJoin', error),
     });
-    // Carregue os dados das provas aqui, por exemplo, de um serviço
-    // this.examService.getExams().subscribe(exams => this.exams = exams);
-    this.exams = this.mockExams();
   }
 
+  // Extrai a lista de professores únicos dos exames
+  private extractUniqueTeachers(exams: Exam[]): { id: number; first_name: string; last_name: string; fullName: string }[] {
+    const teachersMap = new Map<number, { id: number; first_name: string; last_name: string; fullName: string }>();
+    exams.forEach(exam => {
+      if (exam.user && !teachersMap.has(exam.user.id)) {
+        teachersMap.set(exam.user.id, {
+          ...exam.user,
+          fullName: `${exam.user.first_name} ${exam.user.last_name}` // Adiciona o nome completo
+        });
+      }
+    });
+    return Array.from(teachersMap.values());
+  }
+
+  // Formata a data de criação
+  formatDate(dateString: string): string {
+    const [datePart, timePart] = dateString.split(' ');
+    const [day, month, year] = datePart.split('/');
+    const [hour, minute, second] = timePart.split(':');
+    const date = new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}`);
+
+    return date.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+  }
+
+  // Navega para a página de visualização de um exame
   viewExam(examId: number) {
-    this.router.navigate(['/exams', examId]); // Navega para a rota de visualização
+    this.router.navigate(['/exams', examId]);
   }
 
-  editExam(examId: number) {
-    this.router.navigate(['/exams/edit', examId]); // Navega para a rota de edição
-  }
-
-  // confirmDeleteExam(examId: number) {
-  //   this.confirmationService.confirm({
-  //     message: 'Tem certeza de que deseja excluir esta prova?',
-  //     accept: () => {
-  //       this.deleteExam(examId);
-  //     }
-  //   });
-  // }
-
+  // Exclui um exame
   deleteExam(examId: number) {
-    // Implemente a lógica de exclusão aqui, por exemplo, chamando um serviço
-    // this.examService.deleteExam(examId).subscribe(() => {
-    //   // Atualize a lista de provas após a exclusão
-    //   this.exams = this.exams.filter(exam => exam.id !== examId);
-    // });
+    this.examApiService.deleteExam(examId).subscribe(() => {
+      this.exams.results = this.exams.results.filter(exam => exam.id !== examId);
+      this.exams.total--;
+      this.onFilterChange(); // Reaplica os filtros após a exclusão
+    });
   }
 
-  onFilterChange() {
-    throw new Error('Method not implemented.');
-  }
-
-
+  // Atualiza a lista de exames quando a página é alterada
   onPageChange(event: any) {
-    // Lógica para paginação, ajuste conforme necessário
-    console.log(event);
-    // Atualize a lista de exames com base nos parâmetros de paginação
+    this.examApiService.getExams(event.page + 1, event.rows).subscribe(exams => {
+      this.exams = {
+        ...exams,
+        results: exams.results || []
+      };
+      this.onFilterChange(); // Reaplica os filtros após a mudança de página
+    });
   }
 
   handleDialogSubmitted(examData: ExamAutomaticCreate | ExamManualCreate) {
@@ -125,26 +158,41 @@ export class ListExamComponent {
     this.createExamDialogVisible = true;
   }
 
+  // Fecha o diálogo de criação de exame e recarrega os exames
   closeCreateExamDialog() {
     this.createExamDialogVisible = false;
+
+    // Recarrega os exames para incluir o novo
+    this.examApiService.getExams(this.exams.page, this.exams.size).subscribe(exams => {
+      this.exams = {
+        ...exams,
+        results: exams.results || []
+      };
+      this.onFilterChange(); // Reaplica os filtros após recarregar
+    });
   }
 
-  private mockExams(): Page<Exam> {
-    return {
-      total: 10,
-      page: 1,
-      size: 8,
-      results: [
-        { id: 1, title: 'Prova 1', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-        { id: 2, title: 'Prova 2', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-        { id: 3, title: 'Prova 3', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-        { id: 4, title: 'Prova 4', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-        { id: 5, title: 'Prova 5', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-        { id: 6, title: 'Prova 6', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-        { id: 7, title: 'Prova 7', createdAt: new Date(), updatedAt: new Date(), userId: 1 },
-        { id: 8, title: 'Prova 8', createdAt: new Date(), updatedAt: new Date(), userId: 1 }
-      ]
-    };
+  // Aplica os filtros de disciplina, professor e número de questões
+  onFilterChange() {
+    console.log("Filtro alterado", this.selectedSubject, this.selectedTeacher, this.maxNumOfQuestions);
+
+    this.filteredExams = this.exams.results.filter(exam => {
+      const subjectMatch = this.selectedSubject ? exam.subject.id === this.selectedSubject.id : true;
+      const teacherMatch = this.selectedTeacher ? exam.user.id === this.selectedTeacher.id : true;
+      const numQuestionsMatch = this.maxNumOfQuestions ? exam.total_question <= this.maxNumOfQuestions : true;
+      return subjectMatch && teacherMatch && numQuestionsMatch;
+    });
   }
 
+  // Confirma a exclusão de um exame
+  confirmDeleteExam(examId: number) {
+    this.confirmationService.confirm({
+      message: 'Tem certeza de que deseja excluir esta prova?',
+      header: 'Confirmação',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteExam(examId);
+      }
+    });
+  }
 }
