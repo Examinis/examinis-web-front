@@ -199,17 +199,6 @@ export class QuestionListComponent implements OnInit {
     });
   }
 
-  private createExam() {
-    this.examApiService.createExamManually(this.examToBeCreated).subscribe({
-      next: (response) => {
-        console.log('Exam created', response);
-      },
-      error: (error) => {
-        console.error('Error creating exam', error);
-      },
-    });
-  }
-
   handleDialogSubmitted(examData: ExamManualCreate): void {
     this.examToBeCreated = examData;
     console.log('Exam to be created: ', this.examToBeCreated);
@@ -225,9 +214,7 @@ export class QuestionListComponent implements OnInit {
   }
 
   cancelSelectingQuestions() {
-    this.isSelectingQuestions = false;
-    this.examToBeCreated = { title: '', instructions: '', subject_id: 0, questions: [] };
-    this.selectedSubject = undefined;
+    this.emptyExamCreationData();
     this.applyFilters();
   }
 
@@ -248,6 +235,30 @@ export class QuestionListComponent implements OnInit {
 
   toggleDifficulty(difficulty: Difficulty): void {
     this.selectedDifficulty = this.selectedDifficulty === difficulty ? undefined : difficulty;
+  }
+
+  private createExam() {
+    this.examApiService.createExamManually(this.examToBeCreated).subscribe({
+      next: (response) => {
+        this.messageService.add(
+          { severity: 'success', summary: 'Sucesso', detail: 'Prova criada com sucesso.' });
+        this.emptyExamCreationData();
+        this.applyFilters();
+      },
+      error: (error) => {
+        this.messageService.add(
+          { severity: 'error', summary: 'Erro', detail: 'Erro ao criar a prova.' });
+        console.error('Error creating exam', error);
+        this.emptyExamCreationData();
+        this.applyFilters();
+      },
+    });
+  }
+
+  private emptyExamCreationData() {
+    this.isSelectingQuestions = false;
+    this.examToBeCreated = { title: '', instructions: '', subject_id: 0, questions: [] };
+    this.selectedSubject = undefined;
   }
 
   private maxQuestionsNumberReached(): boolean {

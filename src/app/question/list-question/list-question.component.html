@@ -43,6 +43,14 @@
       @if (isSelectingQuestions) {
 
         <div class="flex items-center gap-4">
+          <span>
+            @if (examToBeCreated.questions.length === 1 ) {
+              {{ examToBeCreated.questions.length }} questão selecionada
+            }
+            @if (examToBeCreated.questions.length > 1) {
+              {{ examToBeCreated.questions.length }} questões selecionadas
+            }
+          </span>
           <!-- Only allow an exam to be created when at least 5 questions were selected -->
           @if (examToBeCreated.questions.length >= 5) {
             <p-button type="button" label="Confirmar"
