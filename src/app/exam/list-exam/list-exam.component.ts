@@ -15,7 +15,6 @@ import { Exam } from '../../shared/interfaces/exam';
 import { ExamAutomaticCreate, ExamManualCreate } from '../../shared/interfaces/exam/exam-create';
 import { Page } from '../../shared/interfaces/page';
 import { Subject } from '../../shared/interfaces/subject';
-import { DifficultyApiService } from '../../shared/services/difficulty-api.service';
 import { ExamApiService } from '../../shared/services/exam-api.service';
 import { SubjectApiService } from '../../shared/services/subject-api.service';
 import { CreateExamDialogComponent } from '../create-exam-dialog/create-exam-dialog.component';
@@ -34,7 +33,6 @@ export class ListExamComponent {
 
   private router: Router = inject(Router);
   private subjectApiService: SubjectApiService = inject(SubjectApiService);
-  private difficultyApiService: DifficultyApiService = inject(DifficultyApiService);
   private examApiService: ExamApiService = inject(ExamApiService);
   private confirmationService: ConfirmationService = inject(ConfirmationService);
 
@@ -172,15 +170,20 @@ export class ListExamComponent {
     });
   }
 
-  // Aplica os filtros de disciplina, professor e número de questões
+  /**
+   * Handles the filter change event by fetching filtered exams from the API.
+   * It uses the selected subject and teacher IDs to filter the exams.
+   * Updates the exams list with the filtered results.
+   * Logs an error message to the console if the filtering process fails.
+   *
+   * @returns {void}
+   */
   onFilterChange() {
-    console.log("Filtro alterado", this.selectedSubject, this.selectedTeacher, this.maxNumOfQuestions);
-
-    this.filteredExams = this.exams.results.filter(exam => {
-      const subjectMatch = this.selectedSubject ? exam.subject.id === this.selectedSubject.id : true;
-      const teacherMatch = this.selectedTeacher ? exam.user.id === this.selectedTeacher.id : true;
-      const numQuestionsMatch = this.maxNumOfQuestions ? exam.total_question <= this.maxNumOfQuestions : true;
-      return subjectMatch && teacherMatch && numQuestionsMatch;
+    this.examApiService.getFilteredExams(this.exams.page, this.exams.size,
+      this.selectedSubject?.id, this.selectedTeacher?.id
+    ).subscribe({
+      next: (exams) => this.exams = { ...exams },
+      error: () => console.error("Algo deu errado durante a filtragem")
     });
   }
 

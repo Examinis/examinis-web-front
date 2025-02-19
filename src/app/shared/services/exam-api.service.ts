@@ -39,6 +39,18 @@ export class ExamApiService {
     );
   }
 
+  getFilteredExams(page: number = 1, size: number = 10,
+    subjectId?: number, teacherId?: number): Observable<Page<Exam>> {
+    
+    let url = `${this.BASE_URL}?page=${page}&size=${size}`;
+    
+    if (subjectId) url += `&subject_id=${subjectId}`;
+    if (teacherId) url += `&teacher_id=${teacherId}`;
+    
+    return this.http.get<Page<Exam>>(url);
+
+  }
+
   /**
    * Create an exam automatically
    * Sends an exam to be automatically created by sending a POST request to the server.
