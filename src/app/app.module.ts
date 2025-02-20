@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
@@ -27,7 +27,8 @@ import { Sidebar, SidebarModule } from 'primeng/sidebar';
     PanelModule,
     CreateQuestionComponent,
     Sidebar,
-    SidebarModule
+    SidebarModule,
+    ReactiveFormsModule
   ],
   providers: [
 

@@ -4,6 +4,7 @@ import { QuestionListComponent } from './question/list-question/list-question.co
 import { HomeComponent } from './home/home.component';
 import { QuestionDetailsComponent } from './question/question-details/question-details.component';
 import { ListExamComponent } from './exam/list-exam/list-exam.component';
+import { CreateExamAutomaticComponent } from './exam/create-exam-automatic/create-exam-automatic.component';
 
 export const routes: Routes = [
   {
@@ -30,6 +31,11 @@ export const routes: Routes = [
     path: 'exams',
     component: ListExamComponent,
     title: 'List exams',
+  },
+  {
+    path: 'exams/create-automatic',
+    component: CreateExamAutomaticComponent,
+    title: 'Create automatic exam',
   },
   {
     path: '',
