@@ -5,6 +5,7 @@ import { HomeComponent } from './home/home.component';
 import { QuestionDetailsComponent } from './question/question-details/question-details.component';
 import { ListExamComponent } from './exam/list-exam/list-exam.component';
 import { CreateExamAutomaticComponent } from './exam/create-exam-automatic/create-exam-automatic.component';
+import { CreateExamManualComponent } from './exam/create-exam-manual/create-exam-manual.component';
 
 export const routes: Routes = [
   {
@@ -36,6 +37,11 @@ export const routes: Routes = [
     path: 'exams/create-automatic',
     component: CreateExamAutomaticComponent,
     title: 'Create automatic exam',
+  },
+  {
+    path: 'exams/create-manual',
+    component: CreateExamManualComponent,
+    title: 'Create manual exam',
   },
   {
     path: '',

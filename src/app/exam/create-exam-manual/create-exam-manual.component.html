@@ -1,0 +1,32 @@
+<app-create-exam-dialog [visible]="showExamDialog"
+  [subjects]="subjects"
+  [isAutomaticGeneration]="false"
+  (basicInfoSubmitted)="handleDialogSubmitted($event)"
+  (chooseQuestionsPressed)="handleChooseQuestionsPressed($event)"
+  (dialogClosed)="closeCreateExamDialog()"></app-create-exam-dialog>
+
+<!-- Lista de questões -->
+<div *ngIf="questions.results.length > 0">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div *ngFor="let question of questions.results;"
+      class="surface-card p-4 border-round shadow-2 hover:shadow-4 transition-all duration-300 border border-gray-500 rounded-md">
+      <div class="flex justify-between items-center">
+        <h3 class="text-xl font-semibold text-900">{{ question.text }}</h3>
+      </div>
+      <div class="text-sm text-600">
+        <div class="flex items-center gap-2">
+          <i class="pi pi-book"></i>{{ question.subject.name }}
+        </div>
+        <div class="flex items-center gap-2 mt-1">
+          <i class="pi pi-chart-line"></i>{{ question.difficulty.name }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paginação -->
+  <div class="flex justify-center items-center mt-8">
+    <p-paginator (onPageChange)="onPageChange($event)" [first]="(questions.page - 1) * questions.size"
+      [rows]="questions.size" [totalRecords]="questions.total || 0" [rowsPerPageOptions]="[5, 10, 15]" />
+  </div>
+</div>
