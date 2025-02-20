@@ -43,7 +43,7 @@
 
 <!-- Lista de questões -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-  <div *ngFor="let question of filteredQuestions; trackBy: trackById"
+  <div *ngFor="let question of questions.results; trackBy: trackById"
     class="surface-card p-4 border-round shadow-2 hover:shadow-4 transition-all duration-300 border border-gray-500 rounded-md">
     <div class="flex justify-between items-center">
       <h3 class="text-xl font-semibold text-900">{{ question.text }}</h3>

@@ -19,7 +19,7 @@ import { SubjectApiService } from '../../shared/services/subject-api.service';
 
 import { Difficulty } from '../../shared/interfaces/difficulty';
 import { Page } from '../../shared/interfaces/page';
-import { Question } from '../../shared/interfaces/question';
+import { QuestionList } from '../../shared/interfaces/question';
 import { Subject } from '../../shared/interfaces/subject';
 
 
@@ -59,8 +59,7 @@ export class QuestionListComponent implements OnInit {
     { id: 2, name: 'Médio' },
     { id: 3, name: 'Difícil' },
   ];
-  questions: Page<Question> = { total: 0, page: 1, size: 10, results: [] };
-  filteredQuestions: Question[] = [];
+  questions: Page<QuestionList> = { total: 0, page: 1, size: 10, results: [] };
 
   // Variáveis para controle do modal de filtro
   filterDialogVisible = false;
@@ -104,7 +103,6 @@ export class QuestionListComponent implements OnInit {
       next: ({ subjects, questions }) => {
         this.subjects = subjects;
         this.questions = questions;
-        this.applyFilters();
       },
       error: (error) => console.error('Error in forkJoin', error),
     });
@@ -142,16 +140,21 @@ export class QuestionListComponent implements OnInit {
   }
 
   applyFilters(): void {
-    this.filteredQuestions = this.questions.results.filter((question) => {
-      const subjectMatch = !this.selectedSubject || this.selectedSubject.id === null || (question.subject && question.subject.id === this.selectedSubject.id);
-      const difficultyMatch = !this.selectedDifficulty || this.selectedDifficulty.id === null || (question.difficulty && question.difficulty.id === this.selectedDifficulty.id);
-      this.filterDialogVisible = false;
-      return subjectMatch && difficultyMatch;
+    this.questionApiService.getFilteredQuestions(this.questions.page, this.questions.size,
+      this.selectedSubject?.id, this.selectedDifficulty?.id
+    ).subscribe({
+      next: (questions) => this.questions = { ...questions },
+      error: () => console.error("Algo deu errado durante a filtragem de questões.")
     });
   }
 
-  onPageChange(event: any): void {
-    this.loadData(event.page + 1, event.rows);
+  onPageChange(event: any) {
+    this.questionApiService.getFilteredQuestions(event.page + 1, event.rows, this.selectedSubject?.id, this.selectedDifficulty?.id).subscribe(questions => {
+      this.questions = {
+        ...questions,
+        results: questions.results || []
+      };
+    });
   }
 
   viewQuestion(id?: number): void {
