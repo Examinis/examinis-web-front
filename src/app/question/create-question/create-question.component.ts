@@ -19,7 +19,6 @@ import { DifficultyApiService } from '../../shared/services/difficulty-api.servi
 import { Toast } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
-import { SidebarDrawerComponent } from '../../shared/components/sidebar-drawer/sidebar-drawer.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 
@@ -31,7 +30,7 @@ interface UploadEvent {
   selector: 'app-create-question',
   imports: [
     PanelModule, ButtonModule, TextareaModule, ReactiveFormsModule, IftaLabelModule,
-    SelectModule, FileUpload, OptionSelectComponent, Toast, SidebarDrawerComponent, ConfirmDialogModule,],
+    SelectModule, FileUpload, OptionSelectComponent, Toast, ConfirmDialogModule,],
   templateUrl: './create-question.component.html',
   styleUrl: './create-question.component.css',
   providers: [ConfirmationService, MessageService],

@@ -11,7 +11,6 @@ import { PaginatorModule } from 'primeng/paginator';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
-import { SidebarDrawerComponent } from '../../shared/components/sidebar-drawer/sidebar-drawer.component';
 
 import { QuestionApiService } from '../../shared/services/question-api.service';
 import { SubjectApiService } from '../../shared/services/subject-api.service';
@@ -46,7 +45,6 @@ import { response } from 'express';
     ButtonModule,
     ToastModule,
     RouterModule,
-    SidebarDrawerComponent,
     CreateExamDialogComponent,
   ],
 })
