@@ -4,28 +4,27 @@ import { QuestionListComponent } from './question/list-question/list-question.co
 import { HomeComponent } from './home/home.component';
 import { QuestionDetailsComponent } from './question/question-details/question-details.component';
 import { ListExamComponent } from './exam/list-exam/list-exam.component';
-import { CreateExamDialogComponent } from './exam/create-exam-dialog/create-exam-dialog.component';
 
 export const routes: Routes = [
   {
-    path: 'create-question',
+    path: 'questions/create',
     component: CreateQuestionComponent,
     title: 'Create a question',
   },
   {
-    path: 'edit-question/:id',
+    path: 'questions/edit/:id',
     component: CreateQuestionComponent,
     title: 'Edit a question',
   },
   {
-    path: 'list-question',
+    path: 'questions',
     component: QuestionListComponent,
     title: 'List questions',
   },
   {
     path: 'questions/:id',
     component: QuestionDetailsComponent,
-    title: 'List questions',
+    title: 'Question details',
   },
   {
     path: 'exams',
@@ -33,8 +32,12 @@ export const routes: Routes = [
     title: 'List exams',
   },
   {
-    path: '**',
+    path: '',
     component: HomeComponent,
     title: 'Home',
+  },
+  {
+    path: '**',
+    redirectTo: '',
   },
 ];

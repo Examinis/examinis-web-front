@@ -12,6 +12,7 @@ import { Option } from '../../shared/interfaces/option';
 import { Question } from '../../shared/interfaces/question';
 import { QuestionApiService } from '../../shared/services/question-api.service';
 import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-question-details',
   imports: [PanelModule, TagModule, ImageModule, ListboxModule, FormsModule, ButtonModule,

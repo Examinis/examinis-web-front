@@ -49,7 +49,7 @@ import { response } from 'express';
   ],
 })
 export class QuestionListComponent implements OnInit {
-  
+
   private questionApiService = inject(QuestionApiService);
   private subjectApiService = inject(SubjectApiService);
   private examApiService: ExamApiService = inject(ExamApiService);
@@ -73,7 +73,7 @@ export class QuestionListComponent implements OnInit {
     { id: 3, name: 'Difícil' },
   ];
   selectedDifficulty?: Difficulty;
-  
+
   sidebarVisible?: boolean;
   createExamDialogVisible: boolean = false;
   isSelectingQuestions: boolean = false;
@@ -105,7 +105,7 @@ export class QuestionListComponent implements OnInit {
       error: (error) => console.error('Error in forkJoin', error),
     });
   }
- 
+
   showCreateExamDialog() {
     this.createExamDialogVisible = true;
   }
@@ -207,8 +207,10 @@ export class QuestionListComponent implements OnInit {
     this.isSelectingQuestions = true;
     this.applyFilters();
     this.messageService.add(
-      { severity: 'info', summary: 'Importante',
-        detail: 'Selecione as questões desejadas clicando ou tocando nelas.' });
+      {
+        severity: 'info', summary: 'Importante',
+        detail: 'Selecione as questões desejadas clicando ou tocando nelas.'
+      });
   }
 
   cancelSelectingQuestions() {
@@ -218,7 +220,7 @@ export class QuestionListComponent implements OnInit {
 
   toggleQuestionSelection(questionId?: number) {
     if (!this.isSelectingQuestions || !questionId || !this.maxQuestionsNumberReached()) { return; }
-    
+
     if (this.examToBeCreated.questions.includes(questionId)) {
       this.examToBeCreated.questions = this.examToBeCreated.questions.filter(
         (id) => id !== questionId);

@@ -22,7 +22,6 @@ export class SidebarComponent implements OnInit {
 
   constructor(private router: Router) {}
 
-
   ngOnInit() {
     this.items = [
       {
@@ -31,11 +30,13 @@ export class SidebarComponent implements OnInit {
         items: [
           {
             label: 'Listar',
-            icon: 'pi pi-list'
+            icon: 'pi pi-list',
+            routerLink: '/questions'
           },
           {
             label: 'Criar',
-            icon: 'pi pi-pencil'
+            icon: 'pi pi-pencil',
+            routerLink: '/questions/create'
           }
         ]
       },
@@ -45,15 +46,18 @@ export class SidebarComponent implements OnInit {
         items: [
           {
             label: 'Listar',
-            icon: 'pi pi-list'
+            icon: 'pi pi-list',
+            routerLink: '/exams'
           },
           {
             label: 'Criar manual',
-            icon: 'pi pi-pencil'
+            icon: 'pi pi-pencil',
+            routerLink: '/exams/create-manual'
           },
           {
             label: 'Criar automático',
-            icon: 'pi pi-cog'
+            icon: 'pi pi-cog',
+            routerLink: '/exams/create-automatic'
           }
         ]
       }
