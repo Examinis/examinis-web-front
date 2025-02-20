@@ -42,8 +42,10 @@ export class ListExamComponent {
   subjects: Subject[] = [];
   selectedSubject?: Subject;
 
-  teachers: { id: number; first_name: string; last_name: string; fullName: string }[] = []; // Lista de professores com nome completo
-  selectedTeacher?: { id: number; first_name: string; last_name: string; fullName: string }; // Professor selecionado
+  // List of teachers with full name
+  teachers: { id: number; first_name: string; last_name: string; fullName: string }[] = [];
+  // Selected teacher
+  selectedTeacher?: { id: number; first_name: string; last_name: string; fullName: string };
 
   maxNumOfQuestions: number = 10;
 
@@ -55,30 +57,38 @@ export class ListExamComponent {
     this.loadInitialData();
   }
 
-  // Carrega os dados iniciais (disciplinas, professores e exames)
-  loadInitialData() {
+  /**
+   * Loads the initial data for the component, including subjects and exams.
+   * 
+   * This method uses `forkJoin` to make parallel API calls to fetch subjects and exams.
+   * If any of the API calls fail, it handles the error by returning default values.
+   * 
+   * Once the data is fetched, it updates the component's state with the subjects and exams.
+   * It also extracts a list of unique teachers from the exams and ensures that the exams'
+   * results are an array.
+   * 
+   * @returns {void}
+   */
+  loadInitialData(): void {
     forkJoin({
       subjects: this.subjectApiService.getSubjects().pipe(
         catchError(() => of([]))
       ),
       exams: this.examApiService.getExams().pipe(
-        catchError(() => of({ total: 0, page: 1, size: 8, results: [] }))
+        catchError(() => of({ total: 0, page: 1, size: 10, results: [] }))
       )
     }).subscribe({
       next: ({ subjects, exams }) => {
         this.subjects = subjects;
 
-        // Extrai a lista de professores únicos dos exames
+        // Extracts the list of unique teachers from the exams
         this.teachers = this.extractUniqueTeachers(exams.results);
 
-        // Garante que exams.results seja um array
+        // Ensures that exams.results is an array
         this.exams = {
           ...exams,
           results: exams.results || []
         };
-
-        // Aplica os filtros iniciais
-        this.onFilterChange();
       },
       error: (error) => console.error('Error in forkJoin', error),
     });
@@ -131,12 +141,11 @@ export class ListExamComponent {
 
   // Atualiza a lista de exames quando a página é alterada
   onPageChange(event: any) {
-    this.examApiService.getExams(event.page + 1, event.rows).subscribe(exams => {
-      this.exams = {
-        ...exams,
-        results: exams.results || []
-      };
-      this.onFilterChange(); // Reaplica os filtros após a mudança de página
+    this.examApiService.getFilteredExams(event.page + 1, event.rows,
+      this.selectedSubject?.id, this.selectedTeacher?.id
+    ).subscribe({
+      next: (exams) => this.exams = { ...exams },
+      error: () => console.error("Algo deu errado durante a filtragem de provas.")
     });
   }
 
@@ -178,16 +187,24 @@ export class ListExamComponent {
    *
    * @returns {void}
    */
-  onFilterChange() {
+  onFilterChange(): void {
     this.examApiService.getFilteredExams(this.exams.page, this.exams.size,
       this.selectedSubject?.id, this.selectedTeacher?.id
     ).subscribe({
       next: (exams) => this.exams = { ...exams },
-      error: () => console.error("Algo deu errado durante a filtragem")
+      error: () => console.error("Algo deu errado durante a filtragem de provas.")
     });
   }
 
-  // Confirma a exclusão de um exame
+  /**
+   * Displays a confirmation dialog to the user before deleting an exam.
+   * 
+   * @param examId - The unique identifier of the exam to be deleted.
+   * 
+   * The confirmation dialog will prompt the user with a message asking if they are sure
+   * they want to delete the exam. If the user accepts, the `deleteExam` method will be called
+   * with the provided `examId`.
+   */
   confirmDeleteExam(examId: number) {
     this.confirmationService.confirm({
       message: 'Tem certeza de que deseja excluir esta prova?',
@@ -198,4 +215,5 @@ export class ListExamComponent {
       }
     });
   }
+
 }

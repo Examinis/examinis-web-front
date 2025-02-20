@@ -39,6 +39,15 @@ export class ExamApiService {
     );
   }
 
+  /**
+   * Retrieves a paginated list of exams filtered by optional subject and teacher IDs.
+   *
+   * @param {number} [page=1] - The page number to retrieve.
+   * @param {number} [size=10] - The number of exams per page.
+   * @param {number} [subjectId] - Optional ID of the subject to filter exams by.
+   * @param {number} [teacherId] - Optional ID of the teacher to filter exams by.
+   * @returns {Observable<Page<Exam>>} An observable containing a page of exams.
+   */
   getFilteredExams(page: number = 1, size: number = 10,
     subjectId?: number, teacherId?: number): Observable<Page<Exam>> {
     
@@ -48,7 +57,6 @@ export class ExamApiService {
     if (teacherId) url += `&teacher_id=${teacherId}`;
     
     return this.http.get<Page<Exam>>(url);
-
   }
 
   /**
