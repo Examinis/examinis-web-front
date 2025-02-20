@@ -11,11 +11,12 @@ import { PaginatorModule } from 'primeng/paginator';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
+import { DialogModule } from 'primeng/dialog';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 import { QuestionApiService } from '../../shared/services/question-api.service';
 import { SubjectApiService } from '../../shared/services/subject-api.service';
 
-import { CreateExamDialogComponent } from '../../exam/create-exam-dialog/create-exam-dialog.component';
 import { Difficulty } from '../../shared/interfaces/difficulty';
 import { Page } from '../../shared/interfaces/page';
 import { Question } from '../../shared/interfaces/question';
@@ -23,10 +24,6 @@ import { Subject } from '../../shared/interfaces/subject';
 
 
 import { Router, RouterModule } from '@angular/router';
-import { ExamAutomaticCreate, ExamManualCreate } from '../../shared/interfaces/exam/exam-create';
-import { ExamApiService } from '../../shared/services/exam-api.service';
-import { response } from 'express';
-
 
 @Component({
   selector: 'app-question-list',
@@ -45,47 +42,54 @@ import { response } from 'express';
     ButtonModule,
     ToastModule,
     RouterModule,
-    CreateExamDialogComponent,
+    DialogModule,
+    AutoCompleteModule,
   ],
 })
 export class QuestionListComponent implements OnInit {
 
   private questionApiService = inject(QuestionApiService);
   private subjectApiService = inject(SubjectApiService);
-  private examApiService: ExamApiService = inject(ExamApiService);
   private confirmationService: ConfirmationService = inject(ConfirmationService);
   private messageService: MessageService = inject(MessageService);
-  private router: Router = inject(Router);
-
-  readonly MAX_QUESTIONS = 20;
-  readonly MIN_QUESTIONS = 5;
-
-  questions: Page<Question> = { total: 0, page: 1, size: 10, results: [] };
-  examToBeCreated: ExamManualCreate = { title: '', instructions: '', subject_id: 0, questions: [] };
-  filteredQuestions: Question[] = [];
 
   subjects: Subject[] = [];
-  selectedSubject?: Subject;
-
   difficulties: Difficulty[] = [
     { id: 1, name: 'Fácil' },
     { id: 2, name: 'Médio' },
     { id: 3, name: 'Difícil' },
   ];
+  questions: Page<Question> = { total: 0, page: 1, size: 10, results: [] };
+  filteredQuestions: Question[] = [];
+
+  // Variáveis para controle do modal de filtro
+  filterDialogVisible = false;
+  selectedSubject?: Subject;
   selectedDifficulty?: Difficulty;
 
   sidebarVisible?: boolean;
   createExamDialogVisible: boolean = false;
   isSelectingQuestions: boolean = false;
 
-  constructor() { }
+  filteredSubjects = this.subjects;
+  filteredDifficulties = this.difficulties;
+
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
     this.loadData();
   }
 
-  trackByQuestionId(item: any): number {
-    return item.id;
+  trackById(index: number, question: any): number {
+    return question.id;
+  }
+
+  showFilterDialog() {
+    this.filterDialogVisible = true;
+  }
+
+  hideFilterDialog() {
+    this.filterDialogVisible = false;
   }
 
   loadData(page: number = 1, size: number = this.questions.size): void {
@@ -114,6 +118,25 @@ export class QuestionListComponent implements OnInit {
     this.createExamDialogVisible = false;
   }
 
+  searchSubject(event: any) {
+    this.filteredSubjects = this.subjects.filter(subject => {
+      return subject.name.toLowerCase().includes(event.query.toLowerCase());
+    });
+  }
+
+  searchDifficulty(event: any) {
+    this.filteredDifficulties = this.difficulties.filter(difficulty => {
+      return difficulty.name.toLowerCase().includes(event.query.toLowerCase());
+    });
+  }
+
+  clearFilters() {
+    this.selectedSubject = undefined;
+    this.selectedDifficulty = undefined;
+    this.filteredSubjects = [];
+    this.filteredDifficulties = [];
+  }
+
   onFilterChange(): void {
     this.applyFilters();
   }
@@ -122,6 +145,7 @@ export class QuestionListComponent implements OnInit {
     this.filteredQuestions = this.questions.results.filter((question) => {
       const subjectMatch = !this.selectedSubject || this.selectedSubject.id === null || (question.subject && question.subject.id === this.selectedSubject.id);
       const difficultyMatch = !this.selectedDifficulty || this.selectedDifficulty.id === null || (question.difficulty && question.difficulty.id === this.selectedDifficulty.id);
+      this.filterDialogVisible = false;
       return subjectMatch && difficultyMatch;
     });
   }
@@ -137,7 +161,7 @@ export class QuestionListComponent implements OnInit {
 
   editQuestion(id?: number): void {
     if (!id) { return; }
-    this.router.navigate(['edit-question', id]);
+    this.router.navigate(['questions/edit', id]);
   }
 
   deleteQuestion(questionId: number): void {
@@ -147,7 +171,6 @@ export class QuestionListComponent implements OnInit {
       acceptLabel: 'Excluir',
       rejectLabel: 'Cancelar',
       accept: () => {
-        // Chama o serviço para excluir a questão
         this.questionApiService.deleteQuestion(questionId).pipe(
           tap(() => {
             // Recarrega as questões após a exclusão
@@ -181,27 +204,6 @@ export class QuestionListComponent implements OnInit {
     });
   }
 
-  confirmExamManualCreation() {
-    this.confirmationService.confirm({
-      message: 'Tem certeza de que deseja criar a prova?',
-      header: 'Atenção!',
-      acceptLabel: 'Sim',
-      rejectLabel: 'Não',
-      accept: () => {
-        this.createExam();
-      },
-      reject: () => {
-        this.messageService.add(
-          { severity: 'info', summary: 'Cancelado', detail: 'Criação de exame cancelada.' });
-      },
-    });
-  }
-
-  handleDialogSubmitted(examData: ExamManualCreate): void {
-    this.examToBeCreated = examData;
-    console.log('Exam to be created: ', this.examToBeCreated);
-  }
-
   handleChooseQuestionsPressed(selectedSubject: Subject) {
     this.selectedSubject = selectedSubject;
     this.isSelectingQuestions = true;
@@ -218,17 +220,6 @@ export class QuestionListComponent implements OnInit {
     this.applyFilters();
   }
 
-  toggleQuestionSelection(questionId?: number) {
-    if (!this.isSelectingQuestions || !questionId || !this.maxQuestionsNumberReached()) { return; }
-
-    if (this.examToBeCreated.questions.includes(questionId)) {
-      this.examToBeCreated.questions = this.examToBeCreated.questions.filter(
-        (id) => id !== questionId);
-    } else {
-      this.examToBeCreated.questions.push(questionId);
-    }
-  }
-
   toggleSidebar() {
     this.sidebarVisible = !this.sidebarVisible; // Alterna a visibilidade do Sidebar
   }
@@ -237,31 +228,8 @@ export class QuestionListComponent implements OnInit {
     this.selectedDifficulty = this.selectedDifficulty === difficulty ? undefined : difficulty;
   }
 
-  private createExam() {
-    this.examApiService.createExamManually(this.examToBeCreated).subscribe({
-      next: (response) => {
-        this.messageService.add(
-          { severity: 'success', summary: 'Sucesso', detail: 'Prova criada com sucesso.' });
-        this.emptyExamCreationData();
-        this.applyFilters();
-      },
-      error: (error) => {
-        this.messageService.add(
-          { severity: 'error', summary: 'Erro', detail: 'Erro ao criar a prova.' });
-        console.error('Error creating exam', error);
-        this.emptyExamCreationData();
-        this.applyFilters();
-      },
-    });
-  }
-
   private emptyExamCreationData() {
     this.isSelectingQuestions = false;
-    this.examToBeCreated = { title: '', instructions: '', subject_id: 0, questions: [] };
     this.selectedSubject = undefined;
-  }
-
-  private maxQuestionsNumberReached(): boolean {
-    return this.examToBeCreated.questions.length <= this.MAX_QUESTIONS;
   }
 }
