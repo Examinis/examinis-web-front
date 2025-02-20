@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SubjectApiService } from '../../shared/services/subject-api.service';
 import { Subject } from '../../shared/interfaces/subject';
@@ -8,11 +8,17 @@ import { AutoCompleteModule, AutoCompleteSelectEvent } from 'primeng/autocomplet
 import { ButtonModule } from 'primeng/button';
 import { ExamApiService } from '../../shared/services/exam-api.service';
 import { Router } from '@angular/router';
+import { MessageModule } from 'primeng/message';
+import { SelectModule } from 'primeng/select';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
 
 
 @Component({
   selector: 'app-create-exam-automatic',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, AutoCompleteModule, ButtonModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, AutoCompleteModule, 
+    ButtonModule, SelectModule, MessageModule, InputNumberModule, InputTextModule, TextareaModule],
   templateUrl: './create-exam-automatic.component.html',
   styleUrl: './create-exam-automatic.component.css'
 })
@@ -22,18 +28,20 @@ export class CreateExamAutomaticComponent {
   filteredSubjects: Subject[] = [];
   selectedSubject: Subject | null = null;
 
-  constructor(private fb: FormBuilder, private subjectService: SubjectApiService, private examService: ExamApiService, private router: Router) {
-    this.createForm = this.fb.group({
-      title: ['', [Validators.required]],
-      instructions: ['', [Validators.maxLength(500)]],
-      subject: new FormControl(null, Validators.required),
-      amount: [5, [Validators.required, Validators.min(5), Validators.max(20)]],
+  constructor(private subjectService: SubjectApiService, 
+    private examService: ExamApiService, private router: Router) {
+    this.createForm = new FormGroup({
+      title: new FormControl('', Validators.required),
+      instructions: new FormControl(''),
+      subject: new FormControl<Subject | null>(null, Validators.required),
+      amount: new FormControl(5, [Validators.required, Validators.min(5), Validators.max(20)])
     });
   }
 
-  get subjectControl(): FormControl {
-    return this.createForm.get('subject') as FormControl;
-  }
+  get subject() { return this.createForm.get('subject'); }
+  get title() { return this.createForm.get('title'); }
+  get instructions() { return this.createForm.get('instructions'); }
+  get amount() { return this.createForm.get('amount'); }
 
   ngOnInit(): void {
     this.fetchSubjects();
