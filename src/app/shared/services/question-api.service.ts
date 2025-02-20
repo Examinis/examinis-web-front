@@ -4,7 +4,7 @@ import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { QuestionReceive } from '../interfaces/api-receive/question-receive';
 import { Page } from '../interfaces/page';
-import { Question } from '../interfaces/question';
+import { Question, QuestionList } from '../interfaces/question';
 import { QuestionSend } from '../interfaces/question-send';
 
 @Injectable({
@@ -29,11 +29,12 @@ export class QuestionApiService {
   }
 
   getFilteredQuestions(page: number = 1, size: number = 10,
-    subjectId?: number, difficultyId?: number): Observable<Page<Question>> {
+    subjectId?: number, difficultyId?: number): Observable<Page<QuestionList>> {
+      
     let url = `${this.BASE_URL}?page=${page}&size=${size}`;
 
     if (subjectId) url += `&subject_id=${subjectId}`;
-    if (difficultyId) url += `difficulty_id=${difficultyId}`
+    if (difficultyId) url += `&difficulty_id=${difficultyId}`;
 
     return this.http.get<Page<Question>>(url);
   }

@@ -19,14 +19,13 @@ import { SubjectApiService } from '../../shared/services/subject-api.service';
 import { CreateExamDialogComponent } from '../../exam/create-exam-dialog/create-exam-dialog.component';
 import { Difficulty } from '../../shared/interfaces/difficulty';
 import { Page } from '../../shared/interfaces/page';
-import { Question } from '../../shared/interfaces/question';
+import { QuestionList } from '../../shared/interfaces/question';
 import { Subject } from '../../shared/interfaces/subject';
 
 
 import { Router, RouterModule } from '@angular/router';
-import { ExamAutomaticCreate, ExamManualCreate } from '../../shared/interfaces/exam/exam-create';
+import { ExamManualCreate } from '../../shared/interfaces/exam/exam-create';
 import { ExamApiService } from '../../shared/services/exam-api.service';
-import { response } from 'express';
 
 
 @Component({
@@ -62,9 +61,8 @@ export class QuestionListComponent implements OnInit {
   readonly MAX_QUESTIONS = 20;
   readonly MIN_QUESTIONS = 5;
 
-  questions: Page<Question> = { total: 0, page: 1, size: 10, results: [] };
+  questions: Page<QuestionList> = { total: 0, page: 1, size: 10, results: [] };
   examToBeCreated: ExamManualCreate = { title: '', instructions: '', subject_id: 0, questions: [] };
-  filteredQuestions: Question[] = [];
 
   subjects: Subject[] = [];
   selectedSubject?: Subject;
@@ -101,8 +99,10 @@ export class QuestionListComponent implements OnInit {
     }).subscribe({
       next: ({ subjects, questions }) => {
         this.subjects = subjects;
-        this.questions = questions;
-        this.applyFilters();
+        this.questions = {
+          ...questions,
+          results: questions.results || [],
+        };
       },
       error: (error) => console.error('Error in forkJoin', error),
     });
@@ -121,15 +121,24 @@ export class QuestionListComponent implements OnInit {
   }
 
   applyFilters(): void {
-    this.filteredQuestions = this.questions.results.filter((question) => {
-      const subjectMatch = !this.selectedSubject || this.selectedSubject.id === null || (question.subject && question.subject.id === this.selectedSubject.id);
-      const difficultyMatch = !this.selectedDifficulty || this.selectedDifficulty.id === null || (question.difficulty && question.difficulty.id === this.selectedDifficulty.id);
-      return subjectMatch && difficultyMatch;
+    this.questionApiService.getFilteredQuestions(this.questions.page, this.questions.size,
+      this.selectedSubject?.id, this.selectedDifficulty?.id
+    ).subscribe({
+      next: (questions) => {
+        this.questions = { ...questions };
+        this.questions.results.forEach((question) => console.log(question));
+      },
+      error: () => console.error("Algo deu errado durante a filtragem de questões.")
     });
   }
 
   onPageChange(event: any): void {
-    this.loadData(event.page + 1, event.rows);
+    this.questionApiService.getFilteredQuestions(event.page + 1, event.rows,
+      this.selectedSubject?.id, this.selectedDifficulty?.id
+    ).subscribe({
+      next: (questions) => this.questions = { ...questions },
+      error: () => console.error("Algo deu errado durante a mudança de página.")
+    });
   }
 
   viewQuestion(id?: number): void {

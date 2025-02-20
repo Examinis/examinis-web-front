@@ -12,3 +12,5 @@ export interface Question {
   user?: User;
   options: Option[];
 }
+
+export type QuestionList = Omit<Question, 'options'>;

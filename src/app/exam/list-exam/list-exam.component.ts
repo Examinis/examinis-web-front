@@ -36,7 +36,7 @@ export class ListExamComponent {
   private examApiService: ExamApiService = inject(ExamApiService);
   private confirmationService: ConfirmationService = inject(ConfirmationService);
 
-  exams: Page<Exam> = { total: 0, page: 1, size: 8, results: [] };
+  exams: Page<Exam> = { total: 0, page: 1, size: 10, results: [] };
   filteredExams: Exam[] = [];
 
   subjects: Subject[] = [];
