@@ -1,116 +1,73 @@
 <p-toast position="top-center"></p-toast>
 <p-confirmdialog></p-confirmdialog>
 
-<app-sidebar-drawer></app-sidebar-drawer>
+<!-- Botão para abrir o modal de filtro -->
+<div class="flex justify-center p-4">
+  <p-button label="Filtrar" severity="contrast" icon="pi pi-filter" (click)="showFilterDialog()" variant="outlined"
+    class="ml-auto"></p-button>
 
-<app-create-exam-dialog [visible]="createExamDialogVisible"
-  [subjects]="subjects"
-  [isAutomaticGeneration]="false"
-  (basicInfoSubmitted)="handleDialogSubmitted($event)"
-  (chooseQuestionsPressed)="handleChooseQuestionsPressed($event)"
-  (dialogClosed)="closeCreateExamDialog()"></app-create-exam-dialog>
-
-<div class="p-4 surface-ground transition-all">
-  <div class="max-w-screen-xl mx-auto">
-
-    <div class="flex items-center justify-between mb-4 w-full">
-      <h2 class="text-2xl font-semibold text-900">Questões</h2>
-     
-      <!-- Filters -->
-      <div class="flex items-end gap-4">
-        <div class="col-span-1 md:col-span-1">
-          <p-select [options]="subjects"
-            [filter]="true" filterBy="name"
-            [showClear]="true"
-            [(ngModel)]="selectedSubject"
-            optionLabel="name"
-            placeholder="Filtre por disciplina"
-            (onChange)="onFilterChange()"
-            class="w-full md:w-auto" />
-        </div>
-        <div class="col-span-1 md:col-span-1">
-          <p-select [options]="difficulties"
-            [showClear]="true"
-            [(ngModel)]="selectedDifficulty"
-            optionLabel="name"
-            placeholder="Filtre por dificuldade"
-            (onChange)="onFilterChange()"
-            class="w-full md:w-auto" />
-        </div>
+  <p-dialog header="Filtrar questões" [modal]="true" [(visible)]="filterDialogVisible" [style]="{ width: '30rem' }">
+    <!-- Filtro de Disciplina (com Autocomplete) -->
+    <div class="flex gap-2 flex-col">
+      <div class="mb-4 w-full">
+        <label for="subject" class="block font-medium mb-1">Disciplina</label>
+        <p-autocomplete [(ngModel)]="selectedSubject" [dropdown]="true" [suggestions]="filteredSubjects"
+          (completeMethod)="searchSubject($event)" field="name" placeholder="Selecione uma disciplina"
+          class="w-full p-2 max-h-60 overflow-y-auto">
+        </p-autocomplete>
       </div>
 
-      <!-- Create exam manually -->
-      @if (isSelectingQuestions) {
-
-        <div class="flex items-center gap-4">
-          <span>
-            @if (examToBeCreated.questions.length === 1 ) {
-              {{ examToBeCreated.questions.length }} questão selecionada
-            }
-            @if (examToBeCreated.questions.length > 1) {
-              {{ examToBeCreated.questions.length }} questões selecionadas
-            }
-          </span>
-          <!-- Only allow an exam to be created when at least 5 questions were selected -->
-          @if (examToBeCreated.questions.length >= 5) {
-            <p-button type="button" label="Confirmar"
-              (click)="confirmExamManualCreation()" />
-          }
-          <p-button type="button" label="Cancelar" severity="danger"
-            (click)="cancelSelectingQuestions()" />
-        </div>
-
-      } @else {
-        <p-button type="button" label="Criar prova" class="w-full md:w-auto"
-          (click)="showCreateExamDialog()" />
-      }
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      @for (question of filteredQuestions; track question.id) {
-
-      <!-- Question card -->
-      <!--
-        "isSelectingQuestions && toggleQuestionSelection(question.id)" - there is a verification
-        before calling the method toggleQuestionSelection(question.id) to avoid calling it when
-        the user is not selecting questions.
-      -->
-      <div
-        class="surface-card p-4 border-round shadow-2 hover:shadow-4 transition-all duration-300 border border-gray-500 rounded-md"
-        [ngClass]="{'hover:bg-gray-700 cursor-pointer relative transition-colors duration-300': isSelectingQuestions,
-          'bg-green-100/50 border-green-500': examToBeCreated.questions.includes(question.id!)
-        }"
-        (click)="isSelectingQuestions && toggleQuestionSelection(question.id)">
-        <div class="flex items-center justify-between mb-2">
-          <h3 class="text-xl font-semibold text-900">{{ question.text }}</h3>
-          <div class="flex gap-">
-            <button pButton type="button" icon="pi pi-eye" class="p-button-rounded p-button-text p-button-sm"
-              (click)="viewQuestion(question.id)" pTooltip="Visualizar" tooltipPosition="top"></button>
-
-            <button pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm"
-              (click)="editQuestion(question.id)" pTooltip="Editar" tooltipPosition="top"></button>
-
-            <button pButton type="button" icon="pi pi-trash"
-              class="p-button-rounded p-button-text p-button-sm p-button-danger"
-              (click)="question.id && deleteQuestion(question.id)" pTooltip="Excluir" tooltipPosition="top"></button>
-          </div>
-        </div>
-        <div class="text-sm text-600">
-          <div class="flex items-center gap-2">
-            <i class="pi pi-book"></i>{{ question.subject.name }}
-          </div>
-          <div class="flex items-center gap-2 mt-1">
-            <i class="pi pi-chart-line"></i>{{ question.difficulty.name }}
-          </div>
-        </div>
+      <!-- Filtro de Dificuldade (com Autocomplete) -->
+      <div class="mb-4 w-full">
+        <label for="difficulty" class="block font-medium mb-1">Dificuldade</label>
+        <p-autocomplete [(ngModel)]="selectedDifficulty" [dropdown]="true" [suggestions]="filteredDifficulties"
+          (completeMethod)="searchDifficulty($event)" field="name" placeholder="Selecione a dificuldade"
+          class="w-full p-2 max-h-60 overflow-y-auto" [appendTo]="'body'">
+        </p-autocomplete>
       </div>
-      }
     </div>
 
-    <div class="flex justify-center items-center mt-8 bottom-20 inset-x-0">
-      <p-paginator (onPageChange)="onPageChange($event)" [first]="(questions.page - 1) * questions.size"
-        [rows]="questions.size" [totalRecords]="questions.total" [rowsPerPageOptions]="[5, 10, 15]" />
-    </div>
+    <div class="flex justify-between gap-4 mt-4">
+      <!-- Botão Limpar Filtros -->
+      <p-button label="Limpar filtros" severity="danger" class="p-button-outlined" (click)="clearFilters()" />
 
+      <!-- Botões Cancelar e Aplicar -->
+      <div class="flex gap-4">
+        <p-button label="Cancelar" severity="secondary" class="p-button-outlined"
+          (click)="filterDialogVisible = false" />
+        <p-button label="Aplicar" class="p-button-primary" (click)="applyFilters()" />
+      </div>
+    </div>
+  </p-dialog>
+</div>
+
+<!-- Lista de questões -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div *ngFor="let question of questions.results; trackBy: trackById"
+    class="surface-card p-4 border-round shadow-2 hover:shadow-4 transition-all duration-300 border border-gray-500 rounded-md">
+    <div class="flex justify-between items-center">
+      <h3 class="text-xl font-semibold text-900">{{ question.text }}</h3>
+      <div class="flex">
+        <!-- Botões de ação -->
+        <p-button icon="pi pi-eye" [rounded]="true" [text]="true" (click)="viewQuestion(question.id)" />
+        <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info" (click)="editQuestion(question.id)" />
+        <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+          (click)="question.id && deleteQuestion(question.id)" />
+      </div>
+    </div>
+    <div class="text-sm text-600">
+      <div class="flex items-center gap-2">
+        <i class="pi pi-book"></i>{{ question.subject.name }}
+      </div>
+      <div class="flex items-center gap-2 mt-1">
+        <i class="pi pi-chart-line"></i>{{ question.difficulty.name }}
+      </div>
+    </div>
   </div>
+</div>
+
+<!-- Paginação -->
+<div class="flex justify-center items-center mt-8">
+  <p-paginator (onPageChange)="onPageChange($event)" [first]="(questions.page - 1) * questions.size"
+    [rows]="questions.size" [totalRecords]="questions.total" [rowsPerPageOptions]="[5, 10, 15]" />
 </div>

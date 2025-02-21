@@ -1,0 +1,106 @@
+<div class="max-w-lg m-auto p-8 mt-16 shadow-xl rounded-xl border border-gray-200">
+  <h2 class="text-3xl font-bold mb-6 text-center">Criar Prova Automática</h2>
+
+  <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    <!-- Exam's title -->
+    <div class="flex flex-col items-start gap-2 mb-2">
+      <div>
+        <label for="exam-title" class="font-normal">Título da prova</label>
+        <span [style]="{ color: 'red' }"> *</span>
+      </div>
+      <input type="text"
+        pInputText
+        formControlName="title"
+        placeholder="Título da prova"
+        name="title"
+        required
+        class="w-full"
+        [ngClass]="{'ng-invalid ng-dirty' : title?.invalid && (title?.touched || title?.dirty)}"/>
+        @if (title?.invalid && (title?.touched || title?.dirty)) {
+          <p-message severity="error" variant="simple" size="small">
+            É necessário inserir um título
+          </p-message>
+        }
+    </div>
+
+    <!-- Instruções -->
+    <div class="flex flex-col items-start gap-2 mb-2">
+      <label for="exam-instructions" class="font-normal">Instruções iniciais</label>
+      <textarea pTextarea
+        formControlName="instructions"
+        rows="6"
+        class="w-full"
+        placeholder="O que você gostaria que os alunos soubessem antes de começar a prova?"
+        name="instructions"
+        maxlength="500">
+      </textarea>
+    </div>
+
+    <!-- Disciplina -->
+    <div class="flex flex-col items-start gap-2 mb-2">
+      <div>
+        <label for="dialog-subject-select" (click)="dialogSubjectSelect.show(true)">Matéria</label>
+        <span [style]="{ color: 'red' }"> *</span>
+      </div>
+      <p-select #dialogSubjectSelect
+        id="dialog-subject-select"
+        [options]="subjects"
+        [filter]="true" filterBy="name"
+        [showClear]="true"
+        [appendTo]="'body'"
+        placeholder="Selecione uma matéria"
+        required
+        name="subject"
+        optionLabel="name"
+        formControlName="subject"
+        [class]="subject?.invalid && (subject?.touched || subject?.dirty) ?
+          'ng-invalid ng-dirty w-full' : 'w-full'">
+        <ng-template let-selectedOption>
+          <div>{{ selectedOption.name }}</div>
+        </ng-template>
+      </p-select>
+      @if (subject?.invalid && (subject?.touched || subject?.dirty)) {
+        <p-message severity="error" variant="simple" size="small">
+          É necessário escolher uma matéria
+        </p-message>
+      }
+      
+    </div>
+
+    <!-- Quantidade de Questões -->
+    <div class="flex flex-col items-start gap-2 mb-2">
+      <label for="question-amount" class="font-normal">Quantidade de questões</label>
+      <p-inputnumber [showButtons]="true"
+        inputId="question-amount"
+        formControlName="amount"
+        [min]="5"
+        [max]="20"
+        required
+        name="number-of-questions"
+        [class]="amount?.invalid && (amount?.touched || amount?.dirty) ?
+          'ng-invalid ng-dirty w-full' : 'w-full'">
+        <ng-template #incrementbuttonicon>
+          <span class="pi pi-plus"></span>
+        </ng-template>
+        <ng-template #decrementbuttonicon>
+          <span class="pi pi-minus"></span>
+        </ng-template>
+      </p-inputnumber>
+      @if (amount?.invalid && (amount?.touched || amount?.dirty)) {
+        <p-message severity="error" variant="simple" size="small">
+          É necessário escolher uma quantidade de questões
+        </p-message> 
+      }
+    </div>
+
+    <!-- Botões -->
+    <div class="flex justify-end gap-4">
+      <p-button label="Limpar" icon="pi pi-refresh" variant="outlined" severity="contrast" (click)="onReset()">
+      </p-button>
+
+      <p-button label="Criar Prova" icon="pi pi-check" type="submit" [disabled]="createForm.invalid">
+      </p-button>
+
+    </div>
+  </form>
+</div>

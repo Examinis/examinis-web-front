@@ -10,7 +10,6 @@ import { PaginatorModule } from 'primeng/paginator';
 import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 import { catchError, forkJoin, of } from 'rxjs';
-import { SidebarDrawerComponent } from "../../shared/components/sidebar-drawer/sidebar-drawer.component";
 import { Exam } from '../../shared/interfaces/exam';
 import { ExamAutomaticCreate, ExamManualCreate } from '../../shared/interfaces/exam/exam-create';
 import { Page } from '../../shared/interfaces/page';
@@ -21,7 +20,7 @@ import { CreateExamDialogComponent } from '../create-exam-dialog/create-exam-dia
 
 @Component({
   selector: 'app-list-exam',
-  imports: [SidebarDrawerComponent, ConfirmDialogModule, ToastModule,
+  imports: [ConfirmDialogModule, ToastModule,
     PaginatorModule, CommonModule, SelectModule, FormsModule, ButtonModule,
     InputNumberModule, CreateExamDialogComponent,
   ],

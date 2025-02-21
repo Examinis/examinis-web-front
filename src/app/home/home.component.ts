@@ -36,6 +36,6 @@ export class HomeComponent {
   }
 
   toListPage = () => {
-    this.router.navigate(['/list-question']);
+    this.router.navigate(['/questions']);
   }
 }
