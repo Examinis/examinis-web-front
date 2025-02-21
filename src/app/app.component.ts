@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { NgClass } from '@angular/common';
 
 import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.router.events.subscribe(() => {
-      this.isHomeRoute = this.router.url === '/';  // Verifique a rota
+      this.isHomeRoute = this.router.url === '/';
     });
   }
 }
