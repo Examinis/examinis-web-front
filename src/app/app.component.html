@@ -1,9 +1,10 @@
 <div class="flex h-screen">
     <!-- Sidebar fixa -->
-    <app-sidebar></app-sidebar>
+    @if(!isHomeRoute){
+      <app-sidebar></app-sidebar>
+    }
   
-    <!-- Conteúdo principal -->
-    <div class="flex-1 ml-64 p-6 overflow-auto">
+    <div [class]="isHomeRoute ? 'h-full w-full' : 'flex-1 ml-64 p-6 overflow-auto'">
       <router-outlet></router-outlet>
     </div>
   </div>
