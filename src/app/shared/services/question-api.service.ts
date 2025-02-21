@@ -33,7 +33,7 @@ export class QuestionApiService {
     let url = `${this.BASE_URL}?page=${page}&size=${size}`;
 
     if (subjectId) url += `&subject_id=${subjectId}`;
-    if (difficultyId) url += `difficulty_id=${difficultyId}`
+    if (difficultyId) url += `&difficulty_id=${difficultyId}`;
 
     return this.http.get<Page<Question>>(url);
   }
