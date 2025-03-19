@@ -1,0 +1,91 @@
+<div class="p-4">
+  <!-- Loading state -->
+  <div *ngIf="loading" class="flex justify-center items-center p-8 h-64">
+    <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error && !loading" class="p-4">
+    <p-messages severity="error">
+      <ng-template pTemplate="content">
+        <div class="flex flex-column">
+          <h3>Erro ao carregar prova</h3>
+          <p>{{ errorMessage }}</p>
+          <button pButton type="button" label="Voltar" icon="pi pi-arrow-left" (click)="goBack()" class="p-button-secondary mt-3"></button>
+        </div>
+      </ng-template>
+    </p-messages>
+  </div>
+
+  <!-- Exam details -->
+  <div *ngIf="exam && !loading" class="exam-container">
+    <p-panel>
+      <ng-template pTemplate="header">
+        <div class="flex justify-content-between align-items-center w-full">
+          <h2 class="m-0 text-xl font-bold">
+            <i class="pi pi-file-edit text-primary mr-2"></i>{{ exam.title }}
+          </h2>
+        </div>
+      </ng-template>
+
+      <div class="p-4">
+        <!-- Exam meta information -->
+        <div class="exam-header mb-4">
+          <div class="grid">
+            <div class="col-12 md:col-4 flex align-items-center mb-2">
+              <i class="pi pi-book text-primary mr-2"></i>
+              <span><strong>Disciplina:</strong> {{ exam.subject.name }}</span>
+            </div>
+            <div class="col-12 md:col-4 flex align-items-center mb-2">
+              <i class="pi pi-user text-primary mr-2"></i>
+              <span><strong>Professor:</strong> {{ exam.user.first_name }} {{ exam.user.last_name }}</span>
+            </div>
+            <div class="col-12 md:col-4 flex align-items-center mb-2">
+              <i class="pi pi-calendar text-primary mr-2"></i>
+              <span><strong>Criado em:</strong> {{ formatDate(exam.created_at) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Instructions - Correção do background -->
+        <div *ngIf="exam.instructions" class="mb-4 p-3 border-1 border-round surface-border">
+          <h3 class="mb-2 text-lg font-medium">Instruções</h3>
+          <p>{{ exam.instructions }}</p>
+        </div>
+
+        <p-divider></p-divider>
+
+        <!-- Questions -->
+        <div class="questions-container">
+          <h3 class="mb-3 text-lg">Questões ({{ exam.questions.length }})</h3>
+          
+          <div *ngFor="let question of exam.questions; let i = index" class="mb-4">
+            <p-card [header]="'Questão ' + (i + 1)" styleClass="shadow-2">
+              <p class="question-text mb-3">{{ question.text }}</p>
+              
+              <div class="options-container ml-2">
+                <div *ngFor="let option of question.options" 
+                     class="option p-2 border-round mb-2 surface-hover flex align-items-center"
+                     [ngClass]="{'correct-option': option.is_correct}">
+                  <!-- Adicionado ícone para alternativas corretas -->
+                  <i *ngIf="option.is_correct" class="pi pi-check-circle text-green-600 mr-2"></i>
+                  <span class="font-bold mr-2">{{ option.letter }})</span>
+                  <span [ngClass]="{'text-green-700': option.is_correct}">{{ option.description }}</span>
+                </div>
+              </div>
+            </p-card>
+          </div>
+        </div>
+
+        <div class="mt-4 flex justify-content-end">
+          <p-button 
+            icon="pi pi-arrow-left" 
+            label="Voltar para lista de provas" 
+            styleClass="p-button-secondary"
+            (click)="goBack()">
+          </p-button>
+        </div>
+      </div>
+    </p-panel>
+  </div>
+</div>
