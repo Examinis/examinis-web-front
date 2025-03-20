@@ -17,14 +17,36 @@
             <p-panelmenu [model]="items"/>
         </div>
 
-        <!-- Rodapé -->
-        <div class="mt-auto">
+        <!-- Rodapé - Informações do usuário e logout (apenas para usuários logados) -->
+        <div class="mt-auto" *ngIf="isAuthenticated">
             <hr class="mb-4 mx-4 border-t" />
-            <a pRipple
-                class="m-4 flex items-center cursor-pointer p-4 gap-2 rounded-lg hover:bg-gray-100 transition-colors">
-                <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" />
-                <span class="font-bold">Admin da Silva</span>
-            </a>
+            <div class="mx-4 px-4 py-3 flex items-center justify-between rounded-lg hover:bg-gray-100 transition-colors">
+                <!-- Email do usuário -->
+                <span class="font-bold">{{ userEmail }}</span>
+                
+                <!-- Botão de logout -->
+                <button pButton 
+                    pRipple 
+                    icon="pi pi-sign-out" 
+                    class="p-button-rounded p-button-text p-button-danger" 
+                    pTooltip="Sair" 
+                    tooltipPosition="top"
+                    (click)="logout()">
+                </button>
+            </div>
+        </div>
+
+        <!-- Rodapé para usuários não logados -->
+        <div class="mt-auto" *ngIf="!isAuthenticated">
+            <hr class="mb-4 mx-4 border-t" />
+            <div class="mx-4 px-4 py-3 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors">
+                <button pButton 
+                    label="Fazer login" 
+                    icon="pi pi-sign-in" 
+                    class="p-button-text" 
+                    routerLink="/login">
+                </button>
+            </div>
         </div>
     </div>
 </div>

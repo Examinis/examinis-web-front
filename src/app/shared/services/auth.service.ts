@@ -27,17 +27,14 @@ export class AuthService {
   private readonly BASE_URL = environment.apiUrl;
   private readonly USER_STORAGE_KEY = 'examinisUser';
   private readonly TOKEN_KEY = 'examinisToken';
+  private userName = "";
   
   // Login do usuário
   login(email: string, password: string): Observable<LoginResponse> {
     const loginData = new URLSearchParams();
     loginData.set('username', email);
     loginData.set('password', password);
-
-    // const loginData: LoginRequest = {
-    //   username: email, // A API espera 'username', mas o front usa 'email'
-    //   password: password
-    // };
+    this.userName = email;
     
     return this.http.post<LoginResponse>(
       `${this.BASE_URL}/auth`,
@@ -60,6 +57,10 @@ export class AuthService {
   // Verifica se o usuário está autenticado
   isAuthenticated(): boolean {
     return !!this.getToken();
+  }
+
+  getUsername(): string {
+    return this.userName;
   }
   
   // Obtém o token armazenado
@@ -134,6 +135,7 @@ export class AuthService {
   
   // Método para lidar com erros da API
   private handleError(error: HttpErrorResponse) {
+    this.userName = "";
     let errorMessage = 'Ocorreu um erro na comunicação com o servidor';
     
     if (error.error instanceof ErrorEvent) {

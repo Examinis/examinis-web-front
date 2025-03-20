@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.router.events.subscribe(() => {
-      this.showSidebar = this.router.url === '/' || this.router.url === '/register' || this.router.url === '/#funcionalidades' || this.router.url === '/#depoimentos' || this.router.url === '/#beneficios' || this.router.url === '/#contato';
+      this.showSidebar = this.router.url === '/' || this.router.url === '/register' || this.router.url === '/#funcionalidades' || this.router.url === '/#depoimentos' || this.router.url === '/#beneficios' || this.router.url === '/#contato'|| this.router.url.startsWith('/login');
     });
   }
 }
