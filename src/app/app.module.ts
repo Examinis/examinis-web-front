@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
@@ -8,7 +8,6 @@ import { QuestionListComponent } from '../app/question/list-question/list-questi
 import { AppComponent } from './app.component';
 import { CreateQuestionComponent } from './question/create-question/create-question.component';
 import { FilterCategoryPipe } from './shared/pipes/filter-category.pipe';
-import { QuestionService } from './shared/services/question.service';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 import { Sidebar, SidebarModule } from 'primeng/sidebar';
@@ -28,10 +27,11 @@ import { Sidebar, SidebarModule } from 'primeng/sidebar';
     PanelModule,
     CreateQuestionComponent,
     Sidebar,
-    SidebarModule
+    SidebarModule,
+    ReactiveFormsModule
   ],
   providers: [
-    QuestionService,
+
 
   ]
 })

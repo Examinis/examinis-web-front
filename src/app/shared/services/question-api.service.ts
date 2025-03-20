@@ -28,6 +28,16 @@ export class QuestionApiService {
     return this.http.get<Page<Question>>(this.BASE_URL + `?page=${page}&size=${size}`);
   }
 
+  getFilteredQuestions(page: number = 1, size: number = 10,
+    subjectId?: number, difficultyId?: number): Observable<Page<Question>> {
+    let url = `${this.BASE_URL}?page=${page}&size=${size}`;
+
+    if (subjectId) url += `&subject_id=${subjectId}`;
+    if (difficultyId) url += `&difficulty_id=${difficultyId}`;
+
+    return this.http.get<Page<Question>>(url);
+  }
+
   /**
    * Get a question by ID
    * Makes an HTTP GET request to retrieve a specific question by its ID.
@@ -58,7 +68,7 @@ export class QuestionApiService {
    */
   updateQuestion(question: QuestionSend): Observable<QuestionSend> {
     const payload = this.convertToSnakeCase(question);
-    return this.http.put<QuestionSend>(`${this.BASE_URL}/${question.id}`, payload);
+    return this.http.put<QuestionSend>(`${this.BASE_URL}`, payload);
   }
 
   /**

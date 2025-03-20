@@ -1,93 +1,73 @@
-<p-toast></p-toast>
+<p-toast position="top-center"></p-toast>
 <p-confirmdialog></p-confirmdialog>
 
-<!-- Sidebar -->
- <!-- Sidebar Estático -->
- <div class="w-64 bg-gray-800 text-white h-screen fixed top-0 left-0">
-  <div class="p-4">
-    <!-- Ícone de Menu (Alterna entre abrir e fechar) -->
-    <button (click)="toggleSidebar()" class="text-white mb-4">
-      <i class="fa-solid fa-bars"></i> Menu
-    </button>
-  </div>
+<!-- Botão para abrir o modal de filtro -->
+<div class="flex justify-center p-4">
+  <p-button label="Filtrar" severity="contrast" icon="pi pi-filter" (click)="showFilterDialog()" variant="outlined"
+    class="ml-auto"></p-button>
 
-  <!-- Links de Navegação -->
-  <ul class="space-y-4">
-    <li>
-      <a routerLink="/home" routerLinkActive="text-gray-300" class="block px-4 py-2 hover:bg-gray-700">
-        <i class="fa-solid fa-house mr-2"></i> Home
-      </a>
-    </li>
-    <li>
-      <a routerLink="/create-question" routerLinkActive="text-gray-300" class="block px-4 py-2 hover:bg-gray-700">
-        <i class="fa-solid fa-plus mr-2"></i> Criar Questão
-      </a>
-    </li>
-    <li>
-      <a routerLink="/list-question" routerLinkActive="text-gray-300" class="block px-4 py-2 hover:bg-gray-700">
-        <i class="fa-solid fa-list mr-2"></i> Listar Questões
-      </a>
-    </li>
-  </ul>
+  <p-dialog header="Filtrar questões" [modal]="true" [(visible)]="filterDialogVisible" [style]="{ width: '30rem' }">
+    <!-- Filtro de Disciplina (com Autocomplete) -->
+    <div class="flex gap-2 flex-col">
+      <div class="mb-4 w-full">
+        <label for="subject" class="block font-medium mb-1">Disciplina</label>
+        <p-autocomplete [(ngModel)]="selectedSubject" [dropdown]="true" [suggestions]="filteredSubjects"
+          (completeMethod)="searchSubject($event)" field="name" placeholder="Selecione uma disciplina"
+          class="w-full p-2 max-h-60 overflow-y-auto">
+        </p-autocomplete>
+      </div>
+
+      <!-- Filtro de Dificuldade (com Autocomplete) -->
+      <div class="mb-4 w-full">
+        <label for="difficulty" class="block font-medium mb-1">Dificuldade</label>
+        <p-autocomplete [(ngModel)]="selectedDifficulty" [dropdown]="true" [suggestions]="filteredDifficulties"
+          (completeMethod)="searchDifficulty($event)" field="name" placeholder="Selecione a dificuldade"
+          class="w-full p-2 max-h-60 overflow-y-auto" [appendTo]="'body'">
+        </p-autocomplete>
+      </div>
+    </div>
+
+    <div class="flex justify-between gap-4 mt-4">
+      <!-- Botão Limpar Filtros -->
+      <p-button label="Limpar filtros" severity="danger" class="p-button-outlined" (click)="clearFilters()" />
+
+      <!-- Botões Cancelar e Aplicar -->
+      <div class="flex gap-4">
+        <p-button label="Cancelar" severity="secondary" class="p-button-outlined"
+          (click)="filterDialogVisible = false" />
+        <p-button label="Aplicar" class="p-button-primary" (click)="applyFilters()" />
+      </div>
+    </div>
+  </p-dialog>
 </div>
 
-<!-- Conteúdo Principal com Padding e Centralização utilizando Tailwind -->
-<div class="p-4 pl-[270px] pr-4 max-w-screen-xl mx-auto transition-all">
-  <!-- Filtros -->
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-    <div class="col-span-1 md:col-span-1">
-      <p-dropdown [options]="categories" [(ngModel)]="selectedSubject" optionLabel="name"
-                  placeholder="Selecione a Disciplina" (onChange)="onFilterChange()"></p-dropdown>
-    </div>
-    <div class="col-span-1 md:col-span-1">
-      <p-dropdown [options]="difficulties" [(ngModel)]="selectedDifficulty" optionLabel="name"
-                  placeholder="Selecione a Dificuldade" (onChange)="onFilterChange()"></p-dropdown>
-    </div>
-  </div>
-
-  <!-- Lista de questões -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    @for (question of filteredQuestions; track question.id) {
-      <div
-        class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 transform hover:shadow-lg">
-        <div class="p-4">
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-gray-900">{{ question.text }}</h3>
-            <div class="flex gap-2">
-              <button pButton type="button" class="p-button-text p-button-sm text-blue-600"
-                      (click)="viewQuestion(question.id)" pTooltip="Visualizar" tooltipPosition="top">
-                <i class="fa-solid fa-eye"></i>
-              </button>
-              <button pButton type="button" class="p-button-text p-button-sm text-yellow-600"
-                      (click)="editQuestion(question.id)" pTooltip="Editar" tooltipPosition="top">
-                <i class="fa-solid fa-pen-to-square"></i>
-              </button>
-              <button pButton type="button" class="p-button-text p-button-sm text-red-600"
-                      (click)="question.id && deleteQuestion(question.id)" pTooltip="Excluir" tooltipPosition="top">
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
-            </div>
-          </div>
-          <div class="mt-2 text-sm text-gray-600">
-            <div class="flex items-center gap-2">
-              <i class="fa-solid fa-book"></i> <span>Disciplina:</span> {{ question.subject?.name }}
-            </div>
-            <div class="flex items-center gap-2 mt-1">
-              <i class="fa-solid fa-signal"></i> <span>Dificuldade:</span> {{ question.difficulty?.name }}
-            </div>
-          </div>
-        </div>
+<!-- Lista de questões -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div *ngFor="let question of questions.results; trackBy: trackById"
+    class="surface-card p-4 border-round shadow-2 hover:shadow-4 transition-all duration-300 border border-gray-500 rounded-md">
+    <div class="flex justify-between items-center">
+      <h3 class="text-xl font-semibold text-900">{{ question.text }}</h3>
+      <div class="flex">
+        <!-- Botões de ação -->
+        <p-button icon="pi pi-eye" [rounded]="true" [text]="true" (click)="viewQuestion(question.id)" />
+        <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info" (click)="editQuestion(question.id)" />
+        <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+          (click)="question.id && deleteQuestion(question.id)" />
       </div>
-    }
+    </div>
+    <div class="text-sm text-600">
+      <div class="flex items-center gap-2">
+        <i class="pi pi-book"></i>{{ question.subject.name }}
+      </div>
+      <div class="flex items-center gap-2 mt-1">
+        <i class="pi pi-chart-line"></i>{{ question.difficulty.name }}
+      </div>
+    </div>
   </div>
+</div>
 
-  <!-- Paginador -->
-  <div class="card flex justify-center items-center">
-    <p-paginator
-      (onPageChange)="onPageChange($event)"
-      [first]="(questions.page - 1) * questions.size"
-      [rows]="questions.size"
-      [totalRecords]="questions.total"
-      [rowsPerPageOptions]="[5, 10, 15]"/>
-  </div>
+<!-- Paginação -->
+<div class="flex justify-center items-center mt-8">
+  <p-paginator (onPageChange)="onPageChange($event)" [first]="(questions.page - 1) * questions.size"
+    [rows]="questions.size" [totalRecords]="questions.total" [rowsPerPageOptions]="[5, 10, 15]" />
 </div>

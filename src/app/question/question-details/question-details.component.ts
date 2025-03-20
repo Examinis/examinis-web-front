@@ -11,6 +11,7 @@ import { TagModule } from 'primeng/tag';
 import { Option } from '../../shared/interfaces/option';
 import { Question } from '../../shared/interfaces/question';
 import { QuestionApiService } from '../../shared/services/question-api.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-question-details',
@@ -38,6 +39,12 @@ export class QuestionDetailsComponent implements OnInit {
   private questionApiService: QuestionApiService = inject(QuestionApiService);
   private route: ActivatedRoute = inject(ActivatedRoute);
 
+  constructor(private router: Router) { }
+
+  goTo(page: string): void {
+    this.router.navigate(['/' + page]);
+  }
+
   ngOnInit(): void {
     // Get the question ID from the URL and load the question details
     this.route.paramMap.subscribe(params => {
@@ -53,8 +60,8 @@ export class QuestionDetailsComponent implements OnInit {
     this.questionApiService.getQuestionById(id).subscribe({
       next: (q) => {
         this.question = q;
-        this.correctOption = q.options.find(o => o.isCorrect) || 
-          {description: '', letter: '', isCorrect: true };
+        this.correctOption = q.options.find(o => o.isCorrect) ||
+          { description: '', letter: '', isCorrect: true };
         this.loading = false;
       },
       error: (error) => {

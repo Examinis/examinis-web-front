@@ -1,0 +1,126 @@
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '27rem' }" (onHide)="onDialogClose()">
+
+  <ng-template #header>
+    <div class="inline-flex items-center justify-center gap-2">
+      <span class="font-bold whitespace-nowrap">Gerar nova prova</span>
+    </div>
+  </ng-template>
+
+  <span class="text-surface-500 dark:text-surface-400 block mb-4">
+    Informe como você quer que sua prova seja gerada.
+  </span>
+
+  <form [formGroup]="examCreationForm" (ngSubmit)="onCreateDialogSubmit()">
+   
+    <!-- Exam's title -->
+    <div class="flex flex-col items-start gap-2 mb-2">
+      <div>
+        <label for="exam-title" class="font-normal">Título da prova</label>
+        <span [style]="{ color: 'red' }"> *</span>
+      </div>
+      <input type="text"
+        pInputText
+        formControlName="title"
+        placeholder="Título da prova"
+        name="title"
+        required
+        class="w-96"
+        [ngClass]="{'ng-invalid ng-dirty' : title?.invalid && (title?.touched || title?.dirty)}"/>
+        @if (title?.invalid && (title?.touched || title?.dirty)) {
+          <p-message severity="error" variant="simple" size="small">
+            É necessário inserir um título
+          </p-message>
+        }
+    </div>
+  
+    <!-- Exam's initial instructions -->
+  
+    <!--
+      Example:
+      This test consists of 10 questions. Each question has 4 options, but only one is correct.
+      Choose the correct option and click on the "Next" button to go to the next question.
+    -->
+    <div class="flex flex-col items-start gap-2 mb-2">
+      <label for="exam-instructions" class="font-normal">Instruções iniciais</label>
+      <textarea pTextarea
+        formControlName="instructions"
+        rows="2"
+        class="w-96"
+        placeholder="O que você gostaria que os alunos soubessem antes de começar a prova?"
+        name="instructions"
+        maxlength="500">
+      </textarea>
+    </div>
+  
+    <!-- Exam's subject -->
+    <div class="flex flex-col items-start gap-2 mb-2">
+      <div>
+        <label for="dialog-subject-select" (click)="dialogSubjectSelect.show(true)">Matéria</label>
+        <span [style]="{ color: 'red' }"> *</span>
+      </div>
+      <p-select #dialogSubjectSelect
+        id="dialog-subject-select"
+        [options]="subjects"
+        [filter]="true" filterBy="name"
+        [showClear]="true"
+        [appendTo]="'body'"
+        placeholder="Selecione uma matéria"
+        required
+        name="subject"
+        optionLabel="name"
+        formControlName="subject"
+        [class]="subject?.invalid && (subject?.touched || subject?.dirty) ?
+          'ng-invalid ng-dirty w-96' : 'w-96'">
+        <ng-template let-selectedOption>
+          <div>{{ selectedOption.name }}</div>
+        </ng-template>
+      </p-select>
+      @if (subject?.invalid && (subject?.touched || subject?.dirty)) {
+        <p-message severity="error" variant="simple" size="small">
+          É necessário escolher uma matéria
+        </p-message>
+      }
+      
+    </div>
+  
+    @if (isAutomaticGeneration) {
+      <!-- Number of questions -->
+      <div class="flex flex-col items-start gap-2 mb-2">
+        <label for="question-amount" class="font-normal">Quantidade de questões</label>
+        <p-inputnumber [showButtons]="true"
+          inputId="question-amount"
+          formControlName="amount"
+          [min]="5"
+          [max]="20"
+          required
+          name="number-of-questions"
+          [class]="amount?.invalid && (amount?.touched || amount?.dirty) ?
+            'ng-invalid ng-dirty w-96' : 'w-96'">
+          <ng-template #incrementbuttonicon>
+            <span class="pi pi-plus"></span>
+          </ng-template>
+          <ng-template #decrementbuttonicon>
+            <span class="pi pi-minus"></span>
+          </ng-template>
+        </p-inputnumber>
+        @if (amount?.invalid && (amount?.touched || amount?.dirty)) {
+          <p-message severity="error" variant="simple" size="small">
+            É necessário escolher uma quantidade de questões
+          </p-message> 
+        }
+      </div>
+    }
+    
+    <!-- Actions -->
+    <div class="flex justify-end gap-4 mt-4">
+      <p-button label="Cancelar" [outlined]="true" severity="danger" (click)="visible = false" />
+      @if (isAutomaticGeneration) {
+        <p-button type="submit" label="Criar" severity="success" />
+      } @else {
+        <p-button type="submit" label="Escolher questões" severity="success" />
+      }
+    </div>
+  
+  </form>
+
+</p-dialog>

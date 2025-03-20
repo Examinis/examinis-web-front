@@ -17,7 +17,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Question } from '../../shared/interfaces/question';
 import { DifficultyApiService } from '../../shared/services/difficulty-api.service';
 import { Toast } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { Router } from '@angular/router';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+
 
 interface UploadEvent {
   files: File[];
@@ -25,20 +28,22 @@ interface UploadEvent {
 
 @Component({
   selector: 'app-create-question',
-  imports: [PanelModule, ButtonModule, TextareaModule, ReactiveFormsModule, IftaLabelModule,
-    SelectModule, FileUpload, OptionSelectComponent, Toast],
+  imports: [
+    PanelModule, ButtonModule, TextareaModule, ReactiveFormsModule, IftaLabelModule,
+    SelectModule, FileUpload, OptionSelectComponent, Toast, ConfirmDialogModule,],
   templateUrl: './create-question.component.html',
   styleUrl: './create-question.component.css',
-  providers: [MessageService]
+  providers: [ConfirmationService, MessageService],
 })
 export class CreateQuestionComponent implements OnInit {
-
   question: Question = {
     text: '',
     subject: { name: '' },
     difficulty: { name: '' },
     options: []
   };
+
+  visible: boolean = true;
 
   subjects: Subject[] = [];
   difficulties: Difficulty[] = [];
@@ -66,9 +71,16 @@ export class CreateQuestionComponent implements OnInit {
   private subjectApi = inject(SubjectApiService);
   private difficultyApi = inject(DifficultyApiService);
   private route: ActivatedRoute = inject(ActivatedRoute);
-  private messageService = inject(MessageService);
 
-  constructor() { }
+  constructor(
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService,
+    private router: Router
+  ) { }
+
+  goTo(page: string): void {
+    this.router.navigate(['/' + page]);
+  }
 
   ngOnInit() {
 
@@ -112,6 +124,10 @@ export class CreateQuestionComponent implements OnInit {
     this.question.options = options;
   }
 
+  toggleSidebar() {
+    this.visible = !this.visible; // Alterna a visibilidade do Sidebar
+  }
+
   /**
    * Handles the file upload event triggered by a user interaction.
    * This method processes the files provided by the event and 
@@ -145,15 +161,45 @@ export class CreateQuestionComponent implements OnInit {
     };
 
     if (questionToSend.id) {
-      this.updateQuestion(questionToSend);
+      this.showConfirmationDialog(questionToSend);
     } else {
       this.createQuestion(questionToSend);
     }
 
   }
 
+  private showConfirmationDialog(questionToSend: QuestionSend) {
+    this.confirmationService.confirm({
+      message: 'Tem certeza de que deseja atualizar esta questão?',
+      header: 'Atenção!',
+      acceptLabel: 'Atualizar',
+      rejectLabel: 'Cancelar',
+      accept: () => {
+        this.updateQuestion(questionToSend);
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Cancelado',
+          detail: 'Edição cancelada.',
+        });
+      },
+    });
+  }
 
   private createQuestion(question: QuestionSend) {
+    if (question.options.map(o => o.isCorrect).filter(c => c).length === 0) {
+      this.messageService.add({ severity: 'error', summary: 'Cadastro',
+        detail: 'A questão deve ter pelo menos uma resposta correta.', life: 3000 });
+      return;
+    }
+
+    if (question.options.map(o => o.description).filter(t => t === '').length > 0) {
+      this.messageService.add({ severity: 'error', summary: 'Cadastro',
+        detail: 'Todas as opções devem ter texto.', life: 3000 });
+      return;
+    }
+
     this.questionApi.createQuestion(question).subscribe(
       {
         next: () => {
@@ -165,6 +211,8 @@ export class CreateQuestionComponent implements OnInit {
           this.messageService.add({ severity: 'error', summary: 'Cadastro', detail: this.variableLabels.messageError, life: 3000 });
         }
       });
+
+    this.questionCreationForm.reset();
   }
 
   private updateQuestion(question: QuestionSend) {
