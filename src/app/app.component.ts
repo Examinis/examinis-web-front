@@ -12,13 +12,15 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
   
 })
 export class AppComponent implements OnInit { 
-  isHomeRoute: boolean = false;
+  showSidebar: boolean = false;
+  isHomeRouter: boolean = false;
 
   constructor(private router: Router) {}
 
   ngOnInit() {
     this.router.events.subscribe(() => {
-      this.isHomeRoute = this.router.url === '/';
+      this.showSidebar = this.router.url === '/' || this.router.url === '/register';
+      this.isHomeRouter = this.router.url === '/';
     });
   }
 }

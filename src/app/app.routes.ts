@@ -7,6 +7,7 @@ import { ListExamComponent } from './exam/list-exam/list-exam.component';
 import { CreateExamAutomaticComponent } from './exam/create-exam-automatic/create-exam-automatic.component';
 import { CreateExamManualComponent } from './exam/create-exam-manual/create-exam-manual.component';
 import { ShowExamComponent } from './exam/show-exam/show-exam.component';
+import { RegisterComponent } from './register/register.component';
 
 export const routes: Routes = [
   {
@@ -53,6 +54,11 @@ export const routes: Routes = [
     path: '',
     component: HomeComponent,
     title: 'Home',
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
+    title: 'Cadastro - Examinis'
   },
   {
     path: '**',

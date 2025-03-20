@@ -1,6 +1,6 @@
 import { Subject } from "./subject";
 import { Difficulty } from "./difficulty";
-import { User } from "./user";
+import { User } from "./user/user";
 import { Option } from "./option";
 
 export interface Question {

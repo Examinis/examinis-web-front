@@ -1,0 +1,182 @@
+<p-toast></p-toast>
+<p-confirmdialog></p-confirmdialog>
+<div class="p-4 pr-4 max-w-screen-xl mx-auto transition-all">
+  <p-panel header="Cadastro no Examinis">
+    <div class="mb-3">
+      <h2 class="text-base">Preencha os campos necessários para criar sua conta</h2>
+    </div>
+    
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+      <!-- Dados pessoais em duas colunas -->
+      <div class="flex gap-4 max-[768px]:flex-col">
+        <!-- Nome -->
+        <div class="flex flex-col gap-2 md:w-1/2">
+          <label for="first_name">Nome*</label>
+          <input 
+            id="first_name" 
+            type="text"
+            pInputText 
+            class="w-full"
+            formControlName="first_name"
+            placeholder="Seu nome">
+          <small *ngIf="isFieldInvalid('first_name')" class="p-error">
+            {{ getErrorMessage('first_name') }}
+          </small>
+        </div>
+        
+        <!-- Sobrenome -->
+        <div class="flex flex-col gap-2 md:w-1/2">
+          <label for="last_name">Sobrenome*</label>
+          <input 
+            id="last_name" 
+            type="text"
+            pInputText 
+            class="w-full"
+            formControlName="last_name"
+            placeholder="Seu sobrenome">
+          <small *ngIf="isFieldInvalid('last_name')" class="p-error">
+            {{ getErrorMessage('last_name') }}
+          </small>
+        </div>
+      </div>
+      
+      <!-- Email e Instituição em duas colunas -->
+      <div class="flex gap-4 max-[768px]:flex-col">
+        <!-- Email -->
+        <div class="flex flex-col gap-2 md:w-1/2">
+          <label for="email">Email*</label>
+          <input 
+            id="email" 
+            type="email"
+            pInputText 
+            class="w-full"
+            formControlName="email"
+            placeholder="Seu email">
+          <small *ngIf="isFieldInvalid('email')" class="p-error">
+            {{ getErrorMessage('email') }}
+          </small>
+        </div>
+        
+        <!-- Instituição -->
+        <div class="flex flex-col gap-2 md:w-1/2">
+          <label for="institution">Instituição <small>(opcional)</small></label>
+          <input 
+            id="institution" 
+            type="text"
+            pInputText 
+            class="w-full"
+            formControlName="institution"
+            placeholder="Nome da instituição de ensino">
+        </div>
+      </div>
+      
+      <!-- Senhas em duas colunas -->
+      <div class="flex gap-4 max-[768px]:flex-col">
+        <!-- Senha -->
+        <div class="flex flex-col gap-2 md:w-1/2">
+          <label for="password">Senha*</label>
+          <p-password 
+            id="password" 
+            formControlName="password"
+            [feedback]="true"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            placeholder="Sua senha">
+            <ng-template pTemplate="header">
+              <h6>Defina uma senha forte</h6>
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <p class="mt-2 text-xs">Requisitos:</p>
+              <ul class="pl-2 ml-2 mt-0 text-xs">
+                <li>Mínimo de 8 caracteres</li>
+                <li>Recomendado: letras maiúsculas e minúsculas</li>
+                <li>Recomendado: números e símbolos</li>
+              </ul>
+            </ng-template>
+          </p-password>
+          <small *ngIf="isFieldInvalid('password')" class="p-error">
+            {{ getErrorMessage('password') }}
+          </small>
+        </div>
+        
+        <!-- Confirmação de Senha -->
+        <div class="flex flex-col gap-2 md:w-1/2">
+          <label for="confirmPassword">Confirmar Senha*</label>
+          <p-password 
+            id="confirmPassword" 
+            formControlName="confirmPassword"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            placeholder="Repita sua senha">
+          </p-password>
+          <small *ngIf="isFieldInvalid('confirmPassword')" class="p-error">
+            {{ getErrorMessage('confirmPassword') }}
+          </small>
+          <small *ngIf="registerForm.hasError('passwordsNotMatch') && !isFieldInvalid('confirmPassword')" class="p-error">
+            As senhas não coincidem
+          </small>
+        </div>
+      </div>
+      
+      <!-- Upload de comprovante de identidade -->
+      <div class="mt-2">
+        <label>Comprovante de Identidade* <small>(PDF)</small></label>
+        <p-fileUpload
+          name="identityProof"
+          (onSelect)="onFileSelect($event)"
+          accept="application/pdf"
+          maxFileSize="5000000"
+          mode="advanced"
+          [showUploadButton]="false"
+          chooseLabel="Escolher"
+          cancelLabel="Cancelar">
+          <ng-template pTemplate="empty">
+            <div>Arraste e solte seu documento em PDF aqui para fazer upload.</div>
+          </ng-template>
+          <ng-template pTemplate="content">
+            <div *ngIf="identityProofFile">
+              <ul>
+                <li>{{ identityProofFile.name }} - {{ (identityProofFile.size / 1024).toFixed(2) }} KB</li>
+              </ul>
+            </div>
+          </ng-template>
+        </p-fileUpload>
+        <small *ngIf="isFieldInvalid('identity_proof')" class="p-error">
+          Comprovante de identidade é obrigatório
+        </small>
+        <small class="text-secondary block mt-1">
+          Envie um documento para comprovar sua identidade (RG, CNH, etc.) em formato PDF
+        </small>
+      </div>
+      
+      <!-- Botões de ação -->
+      <div class="flex gap-4 mt-4">
+        <p-button 
+          type="submit" 
+          [disabled]="registerForm.invalid || isSubmitting"
+          label="Criar conta" 
+          class="w-full"
+          styleClass="w-full">
+        </p-button>
+        
+        <p-button 
+          (click)="goToLogin()" 
+          label="Voltar para login" 
+          severity="secondary" 
+          class="w-full" 
+          [outlined]="true"
+          styleClass="w-full">
+        </p-button>
+      </div>
+      
+      <!-- Indicador de processamento -->
+      <div *ngIf="isSubmitting" class="flex justify-content-center align-items-center mt-3">
+        <p-progressSpinner [style]="{width: '30px', height: '30px'}" styleClass="mr-2" strokeWidth="4"></p-progressSpinner>
+        <span>Processando seu cadastro...</span>
+      </div>
+    </form>
+  </p-panel>
+</div>
