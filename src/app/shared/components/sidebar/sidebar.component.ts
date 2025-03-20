@@ -1,28 +1,57 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Importar CommonModule
-import { AvatarModule } from 'primeng/avatar';
-import { MenuItem } from 'primeng/api';
-import { PanelMenu } from 'primeng/panelmenu';
-import { Router } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
-
+import { PanelMenuModule } from 'primeng/panelmenu';
+import { ButtonModule } from 'primeng/button';
+import { RippleModule } from 'primeng/ripple';
+import { TooltipModule } from 'primeng/tooltip';
+import { MenuItem } from 'primeng/api';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [
-    CommonModule, RouterModule,
-    AvatarModule, PanelMenu],
-  templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.css',
   standalone: true,
+  imports: [
+    CommonModule, 
+    RouterModule, 
+    PanelMenuModule, 
+    ButtonModule, 
+    RippleModule,
+    TooltipModule
+  ],
+  templateUrl: './sidebar.component.html',
+  styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit {
+  private authService = inject(AuthService);
   items: MenuItem[] = [];
+  userName: string = "";
+  
+  // Propriedade para verificar se o usuário está autenticado
+  get isAuthenticated(): boolean {
+    return this.authService.isAuthenticated();
+  }
 
-  constructor(private router: Router) {}
-
+  // Propriedade para obter o email do usuário
+  get userEmail(): string {
+    return this.authService.getUsername();
+  }
+  
   ngOnInit() {
+    this.loadUserData();
+    this.setupMenuItems();
+  }
+  
+  loadUserData() {
+    // Carregar os dados do usuário do serviço de autenticação
+    const user = this.authService.getCurrentUser();
+    if (user) {
+      this.userName = `${user.firstName} ${user.lastName}`;
+    }
+  }
+  
+  setupMenuItems() {
+    // Configuração dos itens do menu (manter o código existente)
     this.items = [
       {
         label: 'Questões',
@@ -61,11 +90,14 @@ export class SidebarComponent implements OnInit {
           }
         ]
       }
-    ]
+    ];
+    
+    // Opcional: ajustar o menu com base no estado de autenticação
+    // Você pode optar por mostrar/ocultar certos itens do menu
+    // dependendo se o usuário está logado ou não
   }
-
-  goTo(route: string) {
-    // Aqui você pode chamar o roteamento do Angular
-    console.log(`Navegando para: ${route}`);
+  
+  logout() {
+    this.authService.logout();
   }
 }

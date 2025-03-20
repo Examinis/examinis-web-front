@@ -19,16 +19,6 @@ export const routes: Routes = [
     title: 'Home',
   },
   {
-    path: 'exams',
-    component: ListExamComponent,
-    title: 'List exams',
-  },
-  {
-    path: 'exams/:id',
-    component: ShowExamComponent,
-    title: 'Detalhes da Prova',
-  },
-  {
     path: 'register',
     component: RegisterComponent,
     title: 'Cadastro - Examinis'
@@ -39,7 +29,31 @@ export const routes: Routes = [
     title: 'Login - Examinis'
   },
   
-  // Rotas protegidas (requerem autenticação)
+  // Rotas de exames - observe a ordem: específicas vêm primeiro
+  {
+    path: 'exams/create-automatic',
+    component: CreateExamAutomaticComponent,
+    title: 'Create automatic exam',
+    canActivate: [authGuard]
+  },
+  {
+    path: 'exams/create-manual',
+    component: CreateExamManualComponent,
+    title: 'Create manual exam',
+    canActivate: [authGuard]
+  },
+  {
+    path: 'exams/:id',
+    component: ShowExamComponent,
+    title: 'Detalhes da Prova',
+  },
+  {
+    path: 'exams',
+    component: ListExamComponent,
+    title: 'List exams',
+  },
+  
+  // Rotas de questões
   {
     path: 'questions/create',
     component: CreateQuestionComponent,
@@ -53,27 +67,15 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
-    path: 'questions',
-    component: QuestionListComponent,
-    title: 'List questions',
-    canActivate: [authGuard]
-  },
-  {
     path: 'questions/:id',
     component: QuestionDetailsComponent,
     title: 'Question details',
     canActivate: [authGuard]
   },
   {
-    path: 'exams/create-automatic',
-    component: CreateExamAutomaticComponent,
-    title: 'Create automatic exam',
-    canActivate: [authGuard]
-  },
-  {
-    path: 'exams/create-manual',
-    component: CreateExamManualComponent,
-    title: 'Create manual exam',
+    path: 'questions',
+    component: QuestionListComponent,
+    title: 'List questions',
     canActivate: [authGuard]
   },
   
