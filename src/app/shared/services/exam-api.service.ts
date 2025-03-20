@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment.development';
 import { Exam } from '../interfaces/exam';
 import { ExamAutomaticCreate, ExamManualCreate } from '../interfaces/exam/exam-create';
 import { Page } from '../interfaces/page';
+import { SpecificExam } from '../interfaces/exam/specific-exam';
 
 @Injectable({
   providedIn: 'root'
@@ -30,13 +31,12 @@ export class ExamApiService {
   /**
    * Get an exam by ID
    * Makes an HTTP GET request to retrieve a specific exam by its ID.
+   * Returns a detailed exam with questions and options.
    * @param {number} id - The ID of the exam to retrieve.
-   * @returns {Observable<Exam>} An observable containing the exam.
+   * @returns {Observable<SpecificExam>} An observable containing the detailed exam.
    */
-  getExamById(id: number): Observable<Exam> {
-    return this.http.get<Exam>(`${this.BASE_URL}/${id}`).pipe(
-      map((exam: Exam) => this.convertToCamelCase(exam))
-    );
+  getExamById(id: number): Observable<SpecificExam> {
+    return this.http.get<SpecificExam>(`${this.BASE_URL}/${id}/details`);
   }
 
   getFilteredExams(page: number = 1, size: number = 10,
@@ -48,7 +48,6 @@ export class ExamApiService {
     if (teacherId) url += `&teacher_id=${teacherId}`;
     
     return this.http.get<Page<Exam>>(url);
-
   }
 
   /**
