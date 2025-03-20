@@ -30,13 +30,24 @@ export class AuthService {
   
   // Login do usuário
   login(email: string, password: string): Observable<LoginResponse> {
-    const loginData: LoginRequest = {
-      username: email, // A API espera 'username', mas o front usa 'email'
-      password: password
-    };
+    const loginData = new URLSearchParams();
+    loginData.set('username', email);
+    loginData.set('password', password);
+
+    // const loginData: LoginRequest = {
+    //   username: email, // A API espera 'username', mas o front usa 'email'
+    //   password: password
+    // };
     
-    return this.http.post<LoginResponse>(`${this.BASE_URL}/auth`, loginData)
-      .pipe(
+    return this.http.post<LoginResponse>(
+      `${this.BASE_URL}/auth`,
+      loginData.toString(),
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }
+    ).pipe(
         tap(response => {
           console.log(response);
           // Salvar o token no localStorage
