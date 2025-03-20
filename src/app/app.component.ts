@@ -13,14 +13,12 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
 })
 export class AppComponent implements OnInit { 
   showSidebar: boolean = false;
-  isHomeRouter: boolean = false;
 
   constructor(private router: Router) {}
 
   ngOnInit() {
     this.router.events.subscribe(() => {
-      this.showSidebar = this.router.url === '/' || this.router.url === '/register';
-      this.isHomeRouter = this.router.url === '/';
+      this.showSidebar = this.router.url === '/' || this.router.url === '/register' || this.router.url === '/#funcionalidades' || this.router.url === '/#depoimentos' || this.router.url === '/#beneficios' || this.router.url === '/#contato';
     });
   }
 }

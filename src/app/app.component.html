@@ -4,7 +4,7 @@
       <app-sidebar></app-sidebar>
     }
   
-    <div [class]="isHomeRouter ? 'h-full w-full' : 'flex-1 ml-64 p-6 overflow-auto'">
+    <div [class]="showSidebar ? 'h-full w-full' : 'flex-1 ml-64 p-6 overflow-auto'">
       <router-outlet></router-outlet>
     </div>
   </div>

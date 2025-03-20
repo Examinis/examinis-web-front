@@ -5,18 +5,82 @@ import { environment } from '../../../environments/environment.development';
 import { ApiError } from '../interfaces/user/api-error';
 import { RegisterUser } from '../interfaces/user/register-user';
 import { User } from '../interfaces/user/user';
+import { Router } from '@angular/router';
+
+// Novas interfaces para autenticação
+export interface LoginRequest {
+  username: string; // email do usuário
+  password: string;
+}
+
+export interface LoginResponse {
+  access_token: string;
+  token_type: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private http = inject(HttpClient);
+  private router = inject(Router);
   private readonly BASE_URL = environment.apiUrl;
   private readonly USER_STORAGE_KEY = 'examinisUser';
+  private readonly TOKEN_KEY = 'examinisToken';
+  
+  // Login do usuário
+  login(email: string, password: string): Observable<LoginResponse> {
+    const loginData: LoginRequest = {
+      username: email, // A API espera 'username', mas o front usa 'email'
+      password: password
+    };
+    
+    return this.http.post<LoginResponse>(`${this.BASE_URL}/auth`, loginData)
+      .pipe(
+        tap(response => {
+          console.log(response);
+          // Salvar o token no localStorage
+          this.setToken(response);
+        }),
+        catchError(this.handleError)
+      );
+  }
   
   // Verifica se o usuário está autenticado
   isAuthenticated(): boolean {
-    return localStorage.getItem(this.USER_STORAGE_KEY) !== null;
+    return !!this.getToken();
+  }
+  
+  // Obtém o token armazenado
+  getToken(): string | null {
+    const tokenData = localStorage.getItem(this.TOKEN_KEY);
+    if (!tokenData) return null;
+    
+    try {
+      const parsedToken = JSON.parse(tokenData) as LoginResponse;
+      return parsedToken.access_token;
+    } catch (e) {
+      this.logout(); // Se o token estiver corrompido, faz logout
+      return null;
+    }
+  }
+  
+  // Armazena o token no localStorage
+  private setToken(token: LoginResponse): void {
+    localStorage.setItem(this.TOKEN_KEY, JSON.stringify(token));
+  }
+  
+  // Obtém o tipo de token (Bearer)
+  getTokenType(): string {
+    const tokenData = localStorage.getItem(this.TOKEN_KEY);
+    if (!tokenData) return 'Bearer'; // Default
+    
+    try {
+      const parsedToken = JSON.parse(tokenData) as LoginResponse;
+      return parsedToken.token_type;
+    } catch (e) {
+      return 'Bearer'; // Default se houver erro
+    }
   }
   
   // Obtém o usuário atual armazenado localmente
@@ -74,6 +138,8 @@ export class AuthService {
         ).join('; ');
         
         errorMessage = `Erro de validação: ${errorDetails}`;
+      } else if (error.status === 401) {
+        errorMessage = 'Email ou senha incorretos. Por favor, tente novamente.';
       } else {
         errorMessage = `Código de erro: ${error.status}, Mensagem: ${error.message}`;
       }
@@ -85,5 +151,7 @@ export class AuthService {
   // Método para logout
   logout(): void {
     localStorage.removeItem(this.USER_STORAGE_KEY);
+    localStorage.removeItem(this.TOKEN_KEY);
+    this.router.navigate(['/login']);
   }
 }
